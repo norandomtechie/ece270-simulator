@@ -83,7 +83,7 @@ cd ..
 echo "Installing node modules..."
 npm i
 echo "Starting node server..."
-node index.js > serverlog 2>&1 &
+node cluster.js > serverlog 2>&1 &
 if [ "$(cat serverlog)" == "" ]
 then
     echo "The node server with dependencies have been successfully set up!  Visit localhost:4500 to access the simulator hosted on this machine, or configure https://verilog.ecn.purdue.edu/ to use your computer to perform simulations!"

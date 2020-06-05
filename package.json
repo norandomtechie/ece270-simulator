@@ -5,8 +5,6 @@
   "main": "js_cvc_interface_prod.js",
   "dependencies": {
     "basic-auth": "^2.0.1",
-    "bcrypt": "^3.0.7",
-    "current-processes": "^0.2.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-http-to-https": "^1.1.4",
@@ -22,7 +20,6 @@
     "showdown": "^1.9.1",
     "socket.io": "^2.3.0",
     "spdy": "^4.0.1",
-    "tail": "^2.0.3",
     "vcd-parser": "^1.0.0",
     "vcd-stream": "^0.7.1",
     "ws": "^7.1.2",

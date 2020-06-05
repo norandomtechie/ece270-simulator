@@ -18,8 +18,6 @@ const https = require('follow-redirects').https
 const fs = require('fs')
 const hostname = os.hostname() // needs the thing for checking which server we're using
 const url = require('url')
-const Tail = require('tail').Tail
-
 const app = require ('./server')
 
 const server = https.createServer(app)
@@ -55,10 +53,6 @@ function getTime()
     var time = today.getHours() + ":" + min + ":" + sec;
     return (date + ' ' + time);
 }
-
-access_tail = new Tail ("logging/access.log")
-simulation_tail = new Tail ("analytics/simulation.log")
-
 
 if (module.parent) { // not launched directly
     module.exports = app
