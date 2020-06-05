@@ -12,10 +12,11 @@ declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["cvc64"]="
 echo "Setting up folders..."
 for folder in analytics logging error_log
 do
-    mkdir -p ../$folder
+    mkdir -p ../$folder && chown $SUDO_USER:$SUDO_USER ../$folder
 done
 
 touch ../analytics/simulation.log
+chown $SUDO_USER:$SUDO_USER ../analytics/simulation.log
 
 echo "Checking for dependencies..."
 for command in "verilator" "yosys" "cvc64" "node"
