@@ -86,7 +86,7 @@ mkdir -p /tmp/tmpcode
 echo "Starting node server..."
 node cluster.js > serverlog 2>&1 &
 sleep 3
-if [ "$(cat serverlog)" == "" ]
+if [ "$(cat serverlog)" == "Simulator started and running on port 4500."* ]
 then
     echo "The node server with dependencies have been successfully set up!  Visit localhost:4500 to access the simulator hosted on this machine, or configure https://verilog.ecn.purdue.edu/ to use your computer to perform simulations!"
     exit 0

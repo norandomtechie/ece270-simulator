@@ -69,6 +69,7 @@ else {
         try {
             process.setgid('users');
             process.setuid(process.cwd().match ('/home/([^/]+)/')[1]);
+            console.log ("Simulator started and running on port 4500.")
         } 
         catch (err) {
             console.log('Unable to launch as non-root user.');
