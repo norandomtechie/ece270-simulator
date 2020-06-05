@@ -20,7 +20,8 @@ touch ../analytics/simulation.log
 echo "Checking for dependencies..."
 for command in "verilator" "yosys" "cvc64" "node"
 do
-    if [[ -z "$(which $command)" ]]
+    which $command
+    if [[ $? == 1 ]]
     then
         echo "$command does not exist on this system!  Installing $command..."
         if [[ "$EUID" -ne 0 ]]
