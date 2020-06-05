@@ -536,34 +536,39 @@ function ice40hx8k_handler() {
 				if (typeof event.data == "string" && event.data.includes("timing violation")) {
 					alert(event.data)
 					update_status("CODE_ERROR", "Status: FF Timing Violation")
+					this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
 				}
 				else if (typeof event.data == "string" && event.data.includes("TIME LIMIT EXCEEDED")) {
 					update_status("CODE_ERROR", "Status: Simulation timeout")
+					this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
 				}
 				else if (typeof event.data == "string" && event.data.includes("MISSING TOP MODULE")) {
 					update_status("CODE_ERROR", "Status: Missing top module")
 					alert("The code received doesn't describe any hardware. Since there's nothing to synthesize and/or simulate, " +
 						"the server immediately killed the simulation. Try adding some code before simulating.")
+						this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
 				}
 				else if (event.data.includes("END SIMULATION")) {
 					console.log ("END SIMULATION")
+					this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
 				}
 				else if (event.data.includes("YOSYS HUNG")) {
 					alert("Your code took longer than expected to compile, which is an indicator that your design is too complex and must be optimized. " +
 						  "Check your design with a TA or Rick. \n" +
 						  "We do not allow compile times to exceed 30 seconds to allow for other students to continue running their simulations. ")
 					update_status("CODE_ERROR", "Status: Synthesis timeout")
+					this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
 				}
 				else if (event.data.includes("CVC HUNG")) {
 					alert("Your simulation was killed because of a bug in your code.  Ensure that your flip flops are only changing regs as they're meant to, " + 
 						  "and that you are not changing regs in different always blocks.  If you're absolutely sure your code is correct, post it privately to instructors on Piazza.")
 					update_status("CODE_ERROR", "Status: Simulation hung on server")
+					this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
 				}
 				else {
 					console.error (err)
 					console.log(event.data)
 				}
-				this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
 			}
 		}
 	}

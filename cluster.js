@@ -15,6 +15,7 @@
 const http = require("http")
 const os = require("os")
 const fs = require('fs')
+const cp = require('child_process')
 const hostname = os.hostname() // needs the thing for checking which server we're using
 const url = require('url')
 const app = require ('./server')
@@ -24,6 +25,7 @@ const WebSocket = require('ws')
 const wss = new WebSocket.Server ({ clientTracking: true, noServer: true })
 
 process.on ('SIGTERM', function () {
+    cp.execSync ('pkill -9 cvc64')
     debugLog ("Simulator main process was SIGTERM'ed! Exiting!")
     process.exit()
 })
