@@ -24,11 +24,11 @@ do
             echo "This script needs to install dependencies for $command.  Rerun as root."
             exit 1
         fi
-        git clone echo "${gitlinks["$command"]}"
+        git clone "${gitlinks["$command"]}"
         
         case "$command" in
         "verilator")
-            cd verilator/
+            cd verilator
             apt-get install perl python3 make g++ libfl2 libfl-dev zlibc zlib1g zlib1g-dev autoconf flex bison
             git checkout stable
             autoconf
