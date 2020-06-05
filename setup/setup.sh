@@ -10,7 +10,7 @@ declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["y
 echo "Setting up folders..."
 for folder in analytics logging error_log
 do
-    mkdir -p $folder
+    mkdir -p ../$folder
 done
 
 echo "Checking for dependencies..."
