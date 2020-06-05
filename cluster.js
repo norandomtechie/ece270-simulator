@@ -14,13 +14,12 @@
 
 const http = require("http")
 const os = require("os")
-const https = require('follow-redirects').https
 const fs = require('fs')
 const hostname = os.hostname() // needs the thing for checking which server we're using
 const url = require('url')
 const app = require ('./server')
 
-const server = https.createServer(app)
+const server = http.createServer(app)
 const WebSocket = require('ws')
 const wss = new WebSocket.Server ({ clientTracking: true, noServer: true })
 
@@ -64,5 +63,14 @@ else {
             wss.emit ('simulate', ws, request);
         });
     });
-    server.listen (4500, '0.0.0.0');
+    server.listen (4500, '0.0.0.0', null, function() {
+        try {
+            process.setgid('users');
+            process.setuid(process.cwd().match ('/home/([^/]+)/')[1]);
+        } 
+        catch (err) {
+            console.log('Unable to launch as non-root user.');
+            process.exit(1);
+        }
+    });
 }
