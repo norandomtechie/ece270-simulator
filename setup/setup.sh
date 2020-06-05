@@ -15,7 +15,7 @@ do
     mkdir -p ../$folder
 done
 
-touch analytics/simulation.log
+touch ../analytics/simulation.log
 
 echo "Checking for dependencies..."
 for command in "verilator" "yosys" "cvc64" "node"
