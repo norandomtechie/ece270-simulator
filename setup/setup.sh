@@ -10,9 +10,9 @@ declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["y
 declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["cvc64"]="open-src-cvc" )
 
 echo "Setting up folders..."
-for folder in analytics logging error_log
+for folder in ../analytics ../logging ../error_log /tmp/tmpcode
 do
-    mkdir -p ../$folder && chown $SUDO_USER:$SUDO_USER ../$folder
+    mkdir -p $folder && chown $SUDO_USER:$SUDO_USER $folder
 done
 
 touch ../analytics/simulation.log
@@ -85,7 +85,7 @@ done
 
 cd ..
 echo "Installing node modules..."
-npm i
+npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
 mkdir -p /tmp/tmpcode
 echo "Starting node server..."
 node cluster.js > serverlog 2>&1 &
