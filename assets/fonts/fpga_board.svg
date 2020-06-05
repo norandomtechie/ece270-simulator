@@ -1,0 +1,114 @@
+<svg width="600" height="600" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <filter id="svg_127_blur" x="-50%" y="-50%" width="200%" height="200%">
+   <feGaussianBlur stdDeviation="0"/>
+  </filter>
+ </defs>
+ <g>
+  <title>background</title>
+  <rect x="-1" y="-1" width="602" height="602" id="canvas_background" fill="#17183f"/>
+  <g id="canvasGrid" display="none">
+   <rect id="svg_2" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+  </g>
+ </g>
+ <g xmlns="http://www.w3.org/2000/svg">
+  <title>Layer 1</title>
+  <rect fill="#fff" stroke-width="1.5" x="14.997626" y="49.661171" width="52.941165" height="106.372523" id="svg_1" stroke="#000" opacity="0.5"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="24.845323" y1="65.57354" x2="57.531162" y2="65.57354" id="ss7_a" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="6.828724" y1="83.933263" x2="40.5086" y2="83.933263" id="ss7_f" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 23.668663024902333,83.93326568603517) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="41.719314" y1="83.635124" x2="75.597999" y2="83.635124" id="ss7_b" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 58.65866088867187,83.63512420654298) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="24.845323" y1="101.305744" x2="57.531162" y2="101.305744" id="ss7_g" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="6.828724" y1="119.160417" x2="40.5086" y2="119.160417" id="ss7_e" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 23.668663024902333,119.16041564941408) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="41.719314" y1="118.862279" x2="75.597999" y2="118.862279" id="ss7_c" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 58.65866088867187,118.86228179931642) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="24.845323" y1="136.532898" x2="57.531162" y2="136.532898" id="ss7_d" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <rect fill="#fff" stroke-width="1.5" x="89.24782" y="49.06097" width="52.941165" height="106.372523" id="svg_23" stroke="#000" opacity="0.5"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="99.396218" y1="65.645298" x2="132.082057" y2="65.645298" id="ss6_a" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="81.379619" y1="84.00502" x2="115.059495" y2="84.00502" id="ss6_f" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 98.21957397460938,84.00504302978517) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="116.270209" y1="83.706882" x2="150.148894" y2="83.706882" id="ss6_b" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 133.2095642089844,83.70690155029298) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="99.396218" y1="101.377501" x2="132.082057" y2="101.377501" id="ss6_g" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="81.379619" y1="119.232175" x2="115.059495" y2="119.232175" id="ss6_e" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 98.21957397460939,119.23160552978516) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="116.270209" y1="118.934036" x2="150.148894" y2="118.934036" id="s67_c" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 133.2095642089844,118.93347167968751) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="99.396218" y1="136.604656" x2="132.082057" y2="136.604656" id="ss6_d" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <rect fill="#fff" stroke-width="1.5" x="164.1867" y="49.383105" width="52.941165" height="106.372523" id="svg_79" stroke="#000" opacity="0.5"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="174.335098" y1="65.967433" x2="207.020937" y2="65.967433" id="ss5_a" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="156.318499" y1="84.327155" x2="189.998376" y2="84.327155" id="ss5_f" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 173.1584625244141,84.32717132568361) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="191.209089" y1="84.029017" x2="225.087774" y2="84.029017" id="ss5_b" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 208.1484527587891,84.02902984619142) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="174.335098" y1="101.699636" x2="207.020937" y2="101.699636" id="ss5_g" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="156.318499" y1="119.55431" x2="189.998376" y2="119.55431" id="ss5_e" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 173.1584625244141,119.55374908447267) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="191.209089" y1="119.256171" x2="225.087774" y2="119.256171" id="ss5_c" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 208.1484527587891,119.25561523437501) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="174.335098" y1="136.926791" x2="207.020937" y2="136.926791" id="ss5_d" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <rect fill="#fff" stroke-width="1.5" x="238.737595" y="50.281309" width="52.941165" height="106.372523" id="svg_87" stroke="#000" opacity="0.5"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="248.885993" y1="66.865636" x2="281.571832" y2="66.865636" id="ss4_a" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="230.869394" y1="85.225359" x2="264.54927" y2="85.225359" id="ss4_f" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 247.7093505859375,85.22537994384768) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="265.759984" y1="84.92722" x2="299.638669" y2="84.92722" id="ss4_b" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 282.69934082031256,84.9272384643555) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="248.885993" y1="102.59784" x2="281.571832" y2="102.59784" id="ss4_g" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="230.869394" y1="120.452513" x2="264.54927" y2="120.452513" id="ss4_e" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 247.70935058593753,120.4519500732422) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="265.759984" y1="120.154375" x2="299.638669" y2="120.154375" id="ss4_c" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 282.69934082031256,120.15381622314456) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="248.885993" y1="137.824994" x2="281.571832" y2="137.824994" id="ss4_d" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <rect fill="#fff" stroke-width="1.5" x="314.166469" y="49.988841" width="52.941165" height="106.372523" id="svg_95" stroke="#000" opacity="0.5"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="324.314866" y1="66.573168" x2="357.000705" y2="66.573168" id="ss3_a" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="306.298267" y1="84.932891" x2="339.978144" y2="84.932891" id="ss3_f" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 323.1382141113282,84.93290710449222) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="341.188858" y1="84.634752" x2="375.067543" y2="84.634752" id="ss3_b" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 358.1282043457031,84.63476562500004) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="324.314866" y1="102.305372" x2="357.000705" y2="102.305372" id="ss3_g" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="306.298267" y1="120.160045" x2="339.978144" y2="120.160045" id="ss3_e" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 323.1382141113282,120.15947723388675) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="341.188858" y1="119.861907" x2="375.067543" y2="119.861907" id="ss3_c" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 358.1282043457032,119.86134338378909) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="324.314866" y1="137.532526" x2="357.000705" y2="137.532526" id="ss3_d" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <rect fill="#fff" stroke-width="1.5" x="388.717364" y="50.887044" width="52.941165" height="106.372523" id="svg_103" stroke="#000" opacity="0.5"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="398.865761" y1="67.471372" x2="431.5516" y2="67.471372" id="ss2_a" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="380.849162" y1="85.831094" x2="414.529039" y2="85.831094" id="ss2_f" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 397.6891174316406,85.83111572265629) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="415.739752" y1="85.532956" x2="449.618437" y2="85.532956" id="ss2_b" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 432.6791076660156,85.5329742431641) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="398.865761" y1="103.203575" x2="431.5516" y2="103.203575" id="ss2_g" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="380.849162" y1="121.058249" x2="414.529039" y2="121.058249" id="ss2_e" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 397.6891174316406,121.05767822265629) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="415.739752" y1="120.760111" x2="449.618437" y2="120.760111" id="ss2_c" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 432.6791076660156,121.59544372558598) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="398.865761" y1="138.43073" x2="431.5516" y2="138.43073" id="ss2_d" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <rect fill="#fff" stroke-width="1.5" x="463.656244" y="50.382733" width="52.941165" height="106.372523" id="svg_111" stroke="#000" opacity="0.5"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="473.804641" y1="66.967061" x2="506.49048" y2="66.967061" id="ss1_a" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="455.788043" y1="85.326783" x2="489.467919" y2="85.326783" id="ss1_f" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 472.62799072265625,85.3267974853516) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="490.678633" y1="85.028645" x2="524.557318" y2="85.028645" id="ss1_b" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 507.61712646484375,85.02865600585942) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="473.804641" y1="102.699264" x2="506.49048" y2="102.699264" id="ss1_g" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="455.788043" y1="120.553938" x2="489.467919" y2="120.553938" id="ss1_e" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 472.62799072265625,120.55337524414067) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="490.678633" y1="120.2558" x2="524.557318" y2="120.2558" id="ss1_c" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 507.61712646484375,120.25524139404301) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="473.804641" y1="137.926419" x2="506.49048" y2="137.926419" id="ss1_d" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <rect fill="#fff" stroke-width="1.5" x="538.207139" y="50.454491" width="52.941165" height="106.372523" id="svg_119" stroke="#000" opacity="0.5"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="548.355536" y1="67.038819" x2="581.041375" y2="67.038819" id="ss0_a" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="530.338937" y1="85.398541" x2="564.018814" y2="85.398541" id="ss0_f" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 547.1780395507814,85.39855957031254) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="565.229528" y1="85.100403" x2="599.108213" y2="85.100403" id="ss0_b" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 582.1680297851564,85.10041809082036) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="548.355536" y1="102.771022" x2="581.041375" y2="102.771022" id="ss0_g" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="530.338937" y1="120.625696" x2="564.018814" y2="120.625696" id="ss0_e" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 547.1780395507814,120.62512969970707) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="565.229528" y1="120.327557" x2="599.108213" y2="120.327557" id="ss0_c" stroke-linejoin="null" stroke-linecap="null" stroke="#000" transform="rotate(90 582.1680297851564,120.32699584960942) "/>
+  <line fill="none" stroke-width="1.5" stroke-opacity="null" fill-opacity="null" x1="548.355536" y1="137.998177" x2="581.041375" y2="137.998177" id="ss0_d" stroke-linejoin="null" stroke-linecap="null" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="44.873013" cy="204.545386" id="lf_7" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="74.792387" cy="204.545386" id="lf_6" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="104.386401" cy="204.948612" id="lf_5" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="134.739677" cy="204.948612" id="lf_4" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="164.777596" cy="205.026157" id="lf_3" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="194.69697" cy="205.026157" id="lf_2" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="224.290984" cy="205.429383" id="lf_1" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="254.64426" cy="205.429383" id="lf_0" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#666666" stroke-width="1.25" stroke-opacity="null" cx="303.099804" cy="205.429383" id="rgbled" rx="15" ry="15" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="353.90529" cy="204.545386" id="rt_7" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="383.824664" cy="204.545386" id="rt_6" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="413.418678" cy="204.948612" id="rt_5" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="443.771954" cy="204.948612" id="rt_4" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="473.809873" cy="205.026157" id="rt_3" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="503.729247" cy="205.026157" id="rt_2" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="533.323261" cy="205.429383" id="rt_1" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <ellipse fill="#2b0000" stroke-width="1.25" stroke-opacity="null" cx="563.676537" cy="205.429383" id="rt_0" rx="11.157021" ry="11.157021" filter="url(#svg_127_blur)" stroke="#000"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="224.129016" y="258.129053" width="64.838718" height="65.483867" id="sw14" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="130.129016" y="258.129053" width="64.838718" height="65.483867" id="sw15" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="413.129016" y="258.129053" width="64.838718" height="65.483867" id="sw12" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="318.129016" y="258.129053" width="64.838718" height="65.483867" id="sw13" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="224.129016" y="336.129053" width="64.838718" height="65.483867" id="sw10" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="130.129016" y="336.129053" width="64.838718" height="65.483867" id="sw11" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="413.129016" y="336.129053" width="64.838718" height="65.483867" id="sw08" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="318.129016" y="336.129053" width="64.838718" height="65.483867" id="sw09" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="224.129016" y="415.129053" width="64.838718" height="65.483867" id="sw06" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="130.129016" y="415.129053" width="64.838718" height="65.483867" id="sw07" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="413.129016" y="415.129053" width="64.838718" height="65.483867" id="sw04" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="318.129016" y="415.129053" width="64.838718" height="65.483867" id="sw05" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="224.129016" y="495.129053" width="64.838718" height="65.483867" id="sw02" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="130.129016" y="495.129053" width="64.838718" height="65.483867" id="sw03" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="413.129016" y="495.129053" width="64.838718" height="65.483867" id="sw00" rx="5"/>
+  <rect stroke="#000" fill="#666666" stroke-width="1.25" stroke-opacity="null" x="318.129016" y="495.129053" width="64.838718" height="65.483867" id="sw01" rx="5"/>
+ </g>
+</svg>

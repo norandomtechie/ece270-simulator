@@ -1,0 +1,91 @@
+<b>Updates:</b>
+
+<b>2/3/2020</b>
+- Login page set up to allow easier sign-ups, password resets, moving from Basic HTTP Auth.
+
+- Editor now features tabs!  
+
+- To add a new tab, click the + button.
+
+- To remove a tab, click the corresponding button, but you cannot close all the tabs.  One must be open at all times.
+
+- To open a tab, simply click on it.  Hold down Ctrl while hovering over the tab label if you want to change the name.
+
+- Keyboard shortcuts are also available.  While your cursor is active inside the editor: 
+
+- - - Ctrl+Alt+W will close the current tab.
+
+- - - Ctrl+Shift+T will add a tab.
+
+- - - Ctrl+` will scroll to the next tab.  The ` key is the one right above Tab on your keyboard.
+
+- Currently, only the code visible on the screen in one tab will be simulated at once.  We may add module support by tabs at a later date.
+
+- SystemVerilog (sort of) works.  You won't be able to use things like 'typedef enum', but you can use logic instead of regs, reformat the module declaration header, or always_ff/always_latch/always_comb etc.
+
+- Code will be saved ONLY to your browser.  It does not leave your computer, so please do not ask for partial credit if you finished your assignment on the simulator but didn't turn it in.
+
+<b>10/13/2019</b>
+- You can now reset your password at https://verilog.ecn.purdue.edu/reset. This will give you a temporary password that will allow you to login, and then change your password once you've logged in. Sorry for the delay - we were having internal issues that did not allow us to set this up earlier.
+
+- For those of you familiar with Regex, the Ace code editor now has a Find box with Regex support. Regex (or regular expressions) is a powerful language that allows users to capture multiple words with the same pattern.
+
+- Some of you noticed that holding more than one key does not hold down the corresponding button, and that was why we had set up the Shift key to allow holding down more than one key. You can now hold down up to four buttons at once by holding down their respective keys.
+
+- Color fades with status change now as opposed to simply switching colors in the status bar (as well as the description section of About/Functionality/Usage/Credits/Privacy/Source). I learnt some fancy CSS animation today, and I thought I'd utilize it!
+
+<b>10/1/2019</b>
+Added a visibility toggler for the password change box.
+
+<b>9/30/2019</b> 
+Trying to pulse buttons on the simulator may kill your simulations. This is because the software is intended to handle <i>humans</i> calmly pressing buttons to send inputs to the server, and not pretend machines attempting to break keyboards. In no lab will you ever have to rapidly hit the buttons.
+
+<b>Here's a list of all the features and gimmicks included in this version of the simulator!</b>
+
+- The simulator automatically backs up your code every 2 minutes to the browser's local storage, and manually saves your code every time you hit Ctrl+S, while you are typing inside the editor. Pressing Ctrl+S outside the code editor will not save the code, however.
+
+- The Ace code editor you're typing code into has some pretty great shortcuts. Check them out <a href='https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts'>here.</a> One of my favorite ones is Ctrl+Alt+Up/Down, which can be used to select multiple lines. While the cursor is one line, use Ctrl+Alt+Direction to duplicate the cursor in the direction you want to edit. You can also hold down Ctrl while clicking on multiple lines to add cursors to them.
+
+- (ignore this until you start sequential logic in class) When you design flip-flops using the provided 'reset' input as the reset signal, you can manually assert the 'reset' signal by pressing Ctrl+Alt+R.
+
+- Clicking the button (push down and release) will also push and then release the button. You can also hold down a button with the mouse, or use Shift+Click to make sure it stays down.
+
+- You don't always have to click the input buttons! They are also mapped to the corresponding keyboard keys, i.e. 0-9, A-F and W,X,Y,Z. Holding down Shift while holding down one of the buttons will keep the button down.
+
+<b>Regarding the top set of icons:</b>
+
+  <b>- New (the paper with a folded corner)</b> - Pulls an empty template with the top module declaration from the server. Be very careful - you cannot recover any unsaved work after clicking it!
+
+  <b>- Open (the partially open folder)</b> - Opens up a list of previously saved code files, from both autosaves and manual saves. Double clicking on an option loads the code into the editor.
+
+  <b>- Save (the floppy disk)</b> - Self-explanatory. Saves the code to the browser. Do keep in mind that code is not saved across browsers.
+
+  <b>- Download (circle with a down arrow)</b> - Lets you download the code directly to a file on your computer.
+
+  <b>- Settings (set of gears)</b> - Contains settings for Dark Mode, Simulate-upon-Save, password change, AutoSave interval, board color change
+
+  <b>- Help (a question mark)</b> - Simply opens this dialog!
+
+
+<b>Different settings you can change:</b>
+
+- <b>Dark Mode -</b> if you're used to coding in the dark, or you just like dark themed code editors, there's an option to enable this in Settings. The setting is not saved to the server, so if you use the simulator on multiple browsers, you will have to set it for each one. The default option is Disabled.
+
+- <b>Simulate-upon-Save</b> - not as fancy as it sounds! Enabling it allows you to use Ctrl+S to save as well as simulate immediately while you are typing in the editor. The default option is Disabled.
+
+- <b>Change AutoSave Interval</b> - Determines the amount of time between saves.
+
+- <b>Change Evaluation Board Theme</b> - The actual FPGA evaluation board is green, but I preferred blue to match the theme of the site. Rick disagrees and wants it to be an exact replica of the board. So we leave the color option to you. You can select the Modern (blue board) option, which is selected by default, or the Original option (green board) option.
+
+
+<b>Buttons underneath the board:</b>
+
+- <b>Reload Code/Load Template</b> - This will change text based on whether you have saved code. If you have loaded the site for the first time, or no code has been saved to the browser, the button will say Load Template, otherwise it will say Reload Code. You can force it to reload the empty code template by holding down Ctrl as you click the button (which also changes the text!)
+
+- <b>Simulate</b> - Whatever code is entered in the text editor undergoes a few checks first, then is sent to the server via WebSocket for compilation. If successful, simulation will start, and if not, errors will be displayed line-by-line on the site.
+
+- <b>Demo</b> - A simple demonstration of a Verilog module that flashes all the lights with no interaction from the user. This is simply to showcase the capability of the output handling from the server, and was the first feature I added to test whether the simulator was working! 
+
+- <b>Freeze</b> - This stops the simulation, but doesn't clear the board outputs. If you want to take a screenshot of the state of the board when you assert a certain output, but you can't because the output is changing rapidly, you can quickly hit Freeze to stop the simulation server-side, but hold the current output on the board.
+
+- <b>Stop</b> - This does the same thing as Freeze, but the board resets to its initial state. 

@@ -1,0 +1,311 @@
+.btn-bevel {
+  cursor: pointer;
+  box-shadow: 0 4px 9px 0 #888;
+}
+
+.navbar-special {
+  border-bottom: 1px solid #bbb;
+}
+
+.divider-vertical {
+height: 50px;
+margin: 0 9px;
+border-left: 1px solid #F2F2F2;
+border-right: 1px solid #FFF;
+}
+
+@media screen and (max-width: 600px) {
+  #navbar-page-info {
+    visibility: hidden;
+    clear: both;
+    float: left;
+    /* margin: 10px auto 5px 20px; */
+    /* width: 28%; */
+    display: none;
+  }
+}
+
+.ace-line-error-light {
+  position:absolute;
+  background:#ffadad;
+  z-index:20
+}
+
+.ace-line-error-dark {
+  position:absolute;
+  background:#550000;
+  z-index:20
+}
+
+#codemirror_box {
+  border-top: 1px #777 solid;
+  border-bottom: 1px #777 solid;
+  border-left: 1px #777 solid;
+  border-right: 1px #777 solid;
+  width: 50vw;
+  height: 70vh;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.btn {
+  cursor: pointer
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* For firefox */
+/***************************************************************/
+.ace_scrollbar {
+  scrollbar-color: #999 #dadada;
+  scroll-behavior: auto;
+  border-radius: 10px;
+}
+
+.help_scrollbar {
+  scrollbar-color: #999 #dadada;
+  scroll-behavior: auto;
+  border-radius: 10px;
+}
+.ace_scrollbar:hover {
+  scrollbar-color: #666 #dadada;
+  /* scroll-behavior: smooth; */
+  border-radius: 10px;
+}
+
+.help_scrollbar:hover {
+  scrollbar-color: #666 #dadada;
+  /* scroll-behavior: smooth; */
+  border-radius: 10px;
+}
+
+/***************************************************************/
+
+/* For chrome */
+/***************************************************************/
+
+.ace_scrollbar-v::-webkit-scrollbar {
+  width: 8px;
+}
+
+.help_scrollbar-v::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+.ace_scrollbar_light::-webkit-scrollbar-track {
+  background: #999;
+}
+
+.help_scrollbar_light::-webkit-scrollbar-track {
+  background: #999;
+}
+
+/* Handle */
+.ace_scrollbar_light::-webkit-scrollbar-thumb {
+  width: 6px;
+  background: #555;
+  border-radius: 10px;
+}
+.help_scrollbar_light::-webkit-scrollbar-thumb {
+  width: 6px;
+  background: #555;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.ace_scrollbar_light::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+
+.help_scrollbar_light::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+
+/* Track */
+.ace_scrollbar_dark::-webkit-scrollbar-track {
+  background: #666;
+}
+
+.help_scrollbar_dark::-webkit-scrollbar-track {
+  background: #666;
+}
+
+/* Handle */
+.ace_scrollbar_dark::-webkit-scrollbar-thumb {
+  width: 6px;
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.help_scrollbar_dark::-webkit-scrollbar-thumb {
+  width: 6px;
+  background: #ccc;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.ace_scrollbar_dark::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.help_scrollbar_dark::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+/***************************************************************/
+
+#overlay {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,30,50,0.6); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  transition: 0.3s;
+}
+
+#overlay.open {
+	opacity: 1;
+	visibility: visible;
+	transition: 0.3s;
+}
+
+#overlay.close {
+	opacity: 0;
+	visibility: visible;
+	transition: 0.3s;
+}
+
+#overlay_top {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,20,40,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  transition: 0.3s;
+}
+
+#overlay_top.open {
+	opacity: 1;
+	visibility: visible;
+	transition: 0.3s;
+}
+
+#overlay_top.close {
+	opacity: 0;
+	visibility: visible;
+	transition: 0.3s;
+}
+
+.enableBlur>* {
+  filter: blur(7px); opacity: 0.95
+}
+
+.disableBlur {
+  filter: blur(0); opacity: 1
+}
+#overlay_2 {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  filter: blur(0);
+  background-color: rgba(0,30,50,0.6); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  transition: 0.3s;
+}
+
+#overlay_2.open {
+	opacity: 1;
+	visibility: visible;
+	transition: 0.3s;
+}
+
+#overlay_2.close {
+	opacity: 0;
+	visibility: hidden;
+	transition: 0.3s;
+}
+
+#overlay_3 {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  filter: blur(0);
+  background-color: rgba(0,30,50,0.6); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  transition: 0.3s;
+}
+
+#overlay_3.open {
+	opacity: 1;
+	visibility: visible;
+	transition: 0.3s;
+}
+
+#overlay_3.close {
+	opacity: 0;
+	visibility: hidden;
+	transition: 0.3s;
+}
+
+#open_dialog_icon {
+  opacity: 0.5;
+  margin-top: 2vh;
+  border-top: 1px #bbb solid;
+  border-bottom: 1px #bbb solid;
+  border-left: 1px #bbb solid;
+  border-right: 1px #bbb solid;
+  border-radius: 12px
+}
+
+.inner_overlay {
+  position: fixed;
+  text-align: center;
+  margin-top: 23vh;
+  margin-left: 25%;
+  padding-top: 1vw;
+  padding-left: 1vw;
+  border-radius: 15px;
+  height: 60%;
+  width: 50%;
+  background-color: #fff;
+  z-index: 3;
+  position: fixed;
+  filter: blur(0);
+  border-top: 4px #444 solid;
+  border-bottom: 4px #444 solid;
+  border-left: 4px #444 solid;
+  border-right: 4px #444 solid;
+}
+
+.top-icon {
+  color: #666
+}
+
+.theme-select {
+  background-color: #444;
+  color: #aaa;
+}

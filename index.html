@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>eceFPGA Simulator</title>
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+  <link rel="stylesheet" href="assets/css/Features-Clean.css">
+  <link rel="stylesheet" href="assets/css/Header-Dark.css">
+  <link rel="stylesheet" href="assets/css/index.css">
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/xterm.css">
+  <link rel="stylesheet" href="assets/fontawesome/css/all.css">
+  <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+  <style>
+  /* latin */
+  @font-face {
+    font-family: 'Courier';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Courier Std Medium'), local('CourierStd'), url("assets/fonts/Courier.woff2") format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  html {
+    background-color: var(--navbar-upper-bg);
+  }
+  </style>
+  <script src="assets/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="assets/js/jquery-3.4.1.min.js"></script>
+  <script src="assets/fontawesome/js/all.js"></script>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body onresize="resizeHandler()" style="height: 100vh; background-color: var(--navbar-upper-bg);">
+  <div class="overlay" id="overlay_top" style="background-color: var(--navbar-upper-bg); display: block; opacity: 1"></div>
+  <div id="mainview" style="width: 100%;height:100%;margin-right: auto;margin-left: auto;">
+    <nav class="navbar navbar-light navbar-special navbar-expand-md navigation-clean-button theme-select" style="height: 8vh;">
+      <div class="d-flex align-items-center" style="width: 100%; flex-direction: row; justify-content: flex-start;">
+        <div style="display: flex; width: 35%; flex-direction: row; align-items: first baseline; justify-content: center;">
+          <i class="fal fa-file top-icon" title="Destructively loads starter template" style="float: left; width: calc(0.8vw + 1vh); height: calc(0.8vw + 1vh); cursor: pointer" onclick="javascript:$.get({url: 'assets/270sim_source.v', cache: false}, function(data) { editor.setValue (data, -1); });"></i>
+          <i class="fal fa-folder-open top-icon" title="Opens the simulator file manager" style="float: left; margin-left: 10px; width: calc(0.8vw + 1vh); height: calc(0.8vw + 1vh); cursor: pointer" onclick="javascript:openVerilog()"></i>
+          <i class="fal fa-save top-icon" title="Saves all code immediately to browser storage" style="float: left; margin-left: 10px; width: calc(0.8vw + 1vh); height: calc(0.8vw + 1vh); cursor: pointer" onclick="javascript:autosave_call(true)"></i>
+          <i class="fal fa-arrow-circle-down top-icon" title="Download a copy of the code in the active tab" style="float: left; margin-left: 10px; width: calc(0.8vw + 1vh); height: calc(0.8vw + 1vh); cursor: pointer" onclick="javascript:saveVerilog()"></i>
+          <i class="fal fa-cogs top-icon" title="Manage main simulator settings" style="float: left; margin-left: 10px; width: calc(0.8vw + 1vh); height: calc(0.8vw + 1vh); cursor: pointer" onclick="javascript:openSettings()"></i>
+          <i class="fal fa-terminal top-icon" title="Manage virtual FPGA terminal settings" style="float: left; margin-left: 10px; width: calc(0.8vw + 1vh); height: calc(0.8vw + 1vh); cursor: pointer" onclick="javascript:openUART()"></i>
+          <a style="text-decoration: none; color: black" target="_blank" href="/help"><i class="fal fa-question-circle top-icon" title="Opens simulator handbook in new tab" style="float: left; margin-left: 10px; width: calc(0.8vw + 1vh); height: calc(0.8vw + 1vh); cursor: pointer"></i></a>
+          <input id="open_elm" type="file" name="name" style="display: none"/>
+          <a id="downlink" href="none" download="verilog.v" style="display: none"></a>
+        </div>
+        <h1 title="There's Easter eggs like this all over the site!  Seek and ye shall find, and ye shall tell us on Piazza!" class="display-4 text-center text-muted" style="font-size: calc(1.3vw + 0.5vh); width: auto; margin: 0 10vw 0 10vw">eceFPGA Simulator</h1>
+      </div>
+    </nav>
+    <nav class="navbar navbar-page-info navbar-special" id="status-navbar" style="vertical-align: middle; padding: 0px!important; background-color: #eaeaea">
+      <div class="d-flex justify-content-center" style="width: 100%; height: 100%; padding-top: 1.25vh; padding-bottom: 0.75vh">
+        <div class="col" style="height: 100%">
+          <div class="row justify-content-center" style="vertical-align: middle; margin-left: 5vw; padding-right: 3vw;">
+            <div class="col">
+              <h1 class="display-4 text-center text-muted" id="status-text" style="font-size: calc(0.4vh + 0.8vw);">Status: Ready</h1>
+            </div>
+            <a onclick="javascript:display_info(0); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">About</h1></a>
+            <a onclick="javascript:display_info(1); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Functionality</h1></a>
+            <a onclick="javascript:display_info(2); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Usage</h1></a>
+            <a onclick="javascript:display_info(3); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Credits</h1></a>
+            <a onclick="javascript:display_info(4); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Privacy</h1></a>
+            <a onclick="javascript:display_info(5); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer;                               padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Source</h1></a>
+            <div style="margin-left: 10vw"></div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <nav class="description-navbar" id="description-navbar" style="max-height: 0; transition: max-height 0.2s ease-out; overflow: hidden; position: fixed; z-index: 2; background-color: #dfdfdf">
+      <p class="display-4 text-center text-muted" id="desctext" style="padding-top: 2vh; padding-left: 20vw; padding-right: 20vw; font-size: calc(0.3vh + 0.78vw)"></p>
+    </nav>
+    <div style="padding-bottom: 3vh"> </div>
+    <div class="row justify-content-center">
+      <div class="row text-center d-sm-flex d-xl-flex justify-content-center" style="text-align: center; align-items: center; width: 100%">
+        <div class="col-md-6" style="width: 25%; max-width: calc(15vw + 20vh); padding-right: 1px">
+          <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 650 690" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="svg_127_blur" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="0"/>
+              </filter>
+            </defs>
+            <g>
+              <rect x="-1" y="-1" width="610" height="702" id="canvas_background" fill="#17183f"/>
+              <g id="canvasGrid" display="none">
+                <rect id="svg_2" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+              </g>
+            </g>
+            <rect fill="#111" stroke-width="1.5" x="29.136" y="32.413" width="64.193" height="123.425" id="svg_1" stroke="#000" opacity="0.5" style=""/>
+            <ellipse class="ss7_line" fill="#222" stroke="#333" stroke-width="3" stroke-opacity="null" fill-opacity="null" filter="url(#svg_127_blur)" ry="2.321" rx="2.425" cy="143.624" cx="84.676" id="ss7_dp" style=""/>
+            <line class="ss7_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="41.075" y1="95.817" x2="80.71" y2="95.817" id="ss7_g" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss7_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="20.11" y1="72.179" x2="59.189" y2="72.179" id="ss7_f" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 111.828501, 32.529501)"/>
+            <line class="ss7_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="20.11" y1="113.053" x2="59.189" y2="113.053" id="ss7_e" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 152.702501, 73.403502)"/>
+            <line class="ss7_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="41.075" y1="133.21" x2="80.71" y2="133.21" id="ss7_d" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss7_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="62.422" y1="112.707" x2="101.731" y2="112.707" id="ss7_c" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 194.783503, 30.630499)"/>
+            <line class="ss7_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="62.422" y1="71.833" x2="101.732" y2="71.833" id="ss7_b" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 153.910002, -10.244001)"/>
+            <line class="ss7_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="41.075" y1="51.556" x2="80.71" y2="51.556" id="ss7_a" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <rect fill="#111" stroke-width="1.5" x="97.947" y="31.717" width="64.193" height="123.425" id="svg_23" stroke="#000" opacity="0.5" style=""/>
+            <ellipse class="ss6_line" fill="#222" stroke="#333" stroke-width="3" stroke-opacity="null" fill-opacity="null" filter="url(#svg_127_blur)" ry="2.321" rx="2.425" cy="143.624" cx="153.423" id="ss7_dp" style=""/>
+            <line class="ss6_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="110.251" y1="92.42" x2="149.884" y2="92.42" id="ss6_g" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss6_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="89.286" y1="72.262" x2="128.365" y2="72.262" id="ss6_f" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 181.087505, -36.563503)"/>
+            <line class="ss6_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="89.285" y1="113.136" x2="128.364" y2="113.136" id="ss6_e" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 221.960503, 4.311501)"/>
+            <line class="ss6_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="110.251" y1="133.294" x2="149.884" y2="133.294" id="ss6_d" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss6_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="131.598" y1="112.789" x2="170.906" y2="112.789" id="ss6_c" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 264.041008, -38.463005)"/>
+            <line class="ss6_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="131.598" y1="71.916" x2="170.908" y2="71.916" id="ss6_b" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 223.169006, -79.337006)"/>
+            <line class="ss6_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="110.251" y1="50.959" x2="149.884" y2="50.959" id="ss6_a" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <rect fill="#111" stroke-width="1.5" x="167.34" y="32.09" width="64.193" height="123.425" id="svg_79" stroke="#000" opacity="0.5" style=""/>
+            <ellipse class="ss5_line" fill="#222" stroke="#333" stroke-width="3" stroke-opacity="null" fill-opacity="null" filter="url(#svg_127_blur)" ry="2.321" rx="2.425" cy="143.624" cx="222.892" id="ss7_dp" style=""/>
+            <line class="ss5_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="179.645" y1="92.794" x2="219.28" y2="92.794" id="ss5_g" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss5_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="158.68" y1="72.636" x2="197.758" y2="72.636" id="ss5_f" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 250.854996, -105.582993)"/>
+            <line class="ss5_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="158.679" y1="113.51" x2="197.758" y2="113.51" id="ss5_e" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 291.7285, -64.708496)"/>
+            <line class="ss5_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="179.645" y1="133.668" x2="219.28" y2="133.668" id="ss5_d" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss5_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="200.992" y1="113.164" x2="240.3" y2="113.164" id="ss5_c" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 333.810005, -107.482002)"/>
+            <line class="ss5_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="200.992" y1="72.29" x2="240.302" y2="72.29" id="ss5_b" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 292.937004, -148.357002)"/>
+            <line class="ss5_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="179.645" y1="51.333" x2="219.28" y2="51.333" id="ss5_a" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <rect fill="#111" stroke-width="1.5" x="236.39" y="33.132" width="64.193" height="123.425" id="svg_87" stroke="#000" opacity="0.5" style=""/>
+            <ellipse class="ss4_line" fill="#222" stroke="#333" stroke-width="3" stroke-opacity="null" fill-opacity="null" filter="url(#svg_127_blur)" ry="2.321" rx="2.425" cy="143.624" cx="292.486" id="ss7_dp" style=""/>
+            <line class="ss4_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="248.695" y1="93.836" x2="288.328" y2="93.836" id="ss4_g" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss4_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="227.727" y1="73.678" x2="266.805" y2="73.678" id="ss4_f" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 320.944, -173.587997)"/>
+            <line class="ss4_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="227.727" y1="114.552" x2="266.806" y2="114.552" id="ss4_e" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 361.818504, -132.7145)"/>
+            <line class="ss4_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="248.695" y1="134.71" x2="288.328" y2="134.71" id="ss4_d" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss4_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="270.04" y1="114.206" x2="309.349" y2="114.206" id="ss4_c" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 403.900505, -175.488503)"/>
+            <line class="ss4_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="270.042" y1="73.332" x2="309.352" y2="73.332" id="ss4_b" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 363.028992, -216.36499)"/>
+            <line class="ss4_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="248.695" y1="52.376" x2="288.328" y2="52.376" id="ss4_a" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <rect fill="#111" stroke-width="1.5" x="305.373" y="32.793" width="64.193" height="123.425" id="svg_95" stroke="#000" opacity="0.5" style=""/>
+            <ellipse class="ss3_line" fill="#222" stroke="#333" stroke-width="3" stroke-opacity="null" fill-opacity="null" filter="url(#svg_127_blur)" ry="2.321" rx="2.425" cy="143.624" cx="360.951" id="ss7_dp" style=""/>
+            <line class="ss3_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="317.679" y1="93.496" x2="357.313" y2="93.496" id="ss3_g" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss3_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="296.712" y1="73.339" x2="335.791" y2="73.339" id="ss3_f" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 389.590492, -242.912498)"/>
+            <line class="ss3_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="296.711" y1="114.212" x2="335.791" y2="114.212" id="ss3_e" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 430.46299, -202.038994)"/>
+            <line class="ss3_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="317.679" y1="134.371" x2="357.313" y2="134.371" id="ss3_d" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss3_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="339.024" y1="113.866" x2="378.334" y2="113.866" id="ss3_c" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 472.544998, -244.813004)"/>
+            <line class="ss3_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="339.025" y1="72.993" x2="378.335" y2="72.993" id="ss3_b" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 431.672989, -285.686996)"/>
+            <line class="ss3_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="317.679" y1="52.036" x2="357.313" y2="52.036" id="ss3_a" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <rect fill="#111" stroke-width="1.5" x="374.526" y="33.835" width="64.193" height="123.425" id="svg_103" stroke="#000" opacity="0.5" style=""/>
+            <ellipse class="ss2_line" fill="#222" stroke="#333" stroke-width="3" stroke-opacity="null" fill-opacity="null" filter="url(#svg_127_blur)" ry="2.321" rx="2.425" cy="143.624" cx="430.65" id="ss7_dp" style=""/>
+            <line class="ss2_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="386.832" y1="94.539" x2="426.465" y2="94.539" id="ss2_g" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss2_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="365.865" y1="74.381" x2="404.944" y2="74.381" id="ss2_f" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 459.785492, -311.023499)"/>
+            <line class="ss2_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="365.864" y1="115.255" x2="404.944" y2="115.255" id="ss2_e" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 500.659004, -270.14901)"/>
+            <line class="ss2_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="386.832" y1="135.413" x2="426.465" y2="135.413" id="ss2_d" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss2_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="408.484" y1="115.106" x2="446.783" y2="115.106" id="ss2_c" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 542.739502, -312.527496)"/>
+            <line class="ss2_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="408.178" y1="74.035" x2="447.488" y2="74.035" id="ss2_b" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 501.868011, -353.798004)"/>
+            <line class="ss2_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="386.832" y1="53.078" x2="426.465" y2="53.078" id="ss2_a" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <rect fill="#111" stroke-width="1.5" x="443.92" y="33.251" width="64.193" height="123.425" id="svg_111" stroke="#000" opacity="0.5" style=""/>
+            <ellipse class="ss1_line" fill="#222" stroke="#333" stroke-width="3" stroke-opacity="null" fill-opacity="null" filter="url(#svg_127_blur)" ry="2.321" rx="2.425" cy="143.624" cx="500.116" id="ss7_dp" style=""/>
+            <line class="ss1_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="456.227" y1="93.953" x2="495.858" y2="93.953" id="ss1_g" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss1_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="435.258" y1="73.796" x2="474.338" y2="73.796" id="ss1_f" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 528.594002, -381.002007)"/>
+            <line class="ss1_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="435.258" y1="114.669" x2="474.336" y2="114.669" id="ss1_e" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 569.465996, -340.127998)"/>
+            <line class="ss1_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="456.227" y1="134.827" x2="495.858" y2="134.827" id="ss1_d" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss1_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="477.571" y1="114.324" x2="516.88" y2="114.324" id="ss1_c" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 611.549507, -382.901512)"/>
+            <line class="ss1_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="477.571" y1="73.45" x2="516.881" y2="73.45" id="ss1_b" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 570.675995, -423.776001)"/>
+            <line class="ss1_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="456.227" y1="52.493" x2="495.858" y2="52.493" id="ss1_a" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <rect fill="#111" stroke-width="1.5" x="514.077" y="33.333" width="64.193" height="123.425" id="svg_119" stroke="#000" opacity="0.5" style=""/>
+            <ellipse class="ss0_line" fill="#222" stroke="#333" stroke-width="3" stroke-opacity="null" fill-opacity="null" filter="url(#svg_127_blur)" ry="2.321" rx="2.425" cy="143.624" cx="570.817" id="ss7_dp" style=""/>
+            <line class="ss0_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="526.384" y1="94.036" x2="566.017" y2="94.036" id="ss0_g" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss0_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="505.416" y1="73.88" x2="544.495" y2="73.88" id="ss0_f" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 598.835487, -451.075493)"/>
+            <line class="ss0_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="505.415" y1="114.754" x2="544.494" y2="114.754" id="ss0_e" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 639.708511, -410.200516)"/>
+            <line class="ss0_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="526.384" y1="134.91" x2="566.017" y2="134.91" id="ss0_d" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <line class="ss0_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="547.728" y1="114.408" x2="587.038" y2="114.408" id="ss0_c" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 681.791023, -452.975029)"/>
+            <line class="ss0_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="547.728" y1="73.534" x2="587.036" y2="73.534" id="ss0_b" stroke-linejoin="bevel" stroke-linecap="round" style="" transform="matrix(0, 1, -1, 0, 640.916016, -493.848022)"/>
+            <line class="ss0_line" fill="#222" stroke="#333" stroke-width="4" stroke-opacity="null" fill-opacity="null" x1="526.384" y1="52.577" x2="566.017" y2="52.577" id="ss0_a" stroke-linejoin="bevel" stroke-linecap="round" style=""/>
+            <ellipse class="lftred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="254.644" cy="205.429" id="lf_0" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="lftred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="224.291" cy="205.429" id="lf_1" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="lftred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="194.697" cy="205.026" id="lf_2" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="lftred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="164.778" cy="205.026" id="lf_3" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="lftred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="134.74" cy="204.949" id="lf_4" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="lftred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="104.386" cy="204.949" id="lf_5" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="lftred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="74.792" cy="204.545" id="lf_6" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="lftred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="44.873" cy="204.545" id="lf_7" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse id="rgbled" fill="#111" stroke-width="1.25" stroke-opacity="null" cx="303.1" cy="205.429" rx="15" ry="15" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="rgtred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="563.677" cy="205.429" id="rt_0" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="rgtred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="533.323" cy="205.429" id="rt_1" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="rgtred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="503.729" cy="205.026" id="rt_2" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="rgtred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="473.81" cy="205.026" id="rt_3" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="rgtred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="443.772" cy="204.949" id="rt_4" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="rgtred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="413.419" cy="204.949" id="rt_5" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="rgtred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="383.825" cy="204.545" id="rt_6" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <ellipse class="rgtred" fill="#300" stroke-width="1.25" stroke-opacity="null" cx="353.905" cy="204.545" id="rt_7" rx="11.157" ry="11.157" filter="url(#svg_127_blur)" stroke="#000"/>
+            <a onmousedown="javascript:toggle_button (event, 16); return false;" onmouseup="javascript:toggle_button (event, 16); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyW" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="413.129016" y="258.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textW" x="438.129016" y="298.5" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">W</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 17); return false;" onmouseup="javascript:toggle_button (event, 17); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyX" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="318.129016" y="258.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textX" x="344.129016" y="298.5" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">X</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 18); return false;" onmouseup="javascript:toggle_button (event, 18); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyY" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="224.129016" y="258.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textY" x="250.129016" y="298.5" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">Y</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 19); return false;" onmouseup="javascript:toggle_button (event, 19); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyZ" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="130.129016" y="258.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textZ" x="155.129016" y="298.5" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">Z</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 12); return false;" onmouseup="javascript:toggle_button (event, 12); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyC" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="413.129016" y="336.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textC" x="438.129016" y="376.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">C</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 13); return false;" onmouseup="javascript:toggle_button (event, 13); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyD" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="318.129016" y="336.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textD" x="344.129016" y="376.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">D</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 14); return false;" onmouseup="javascript:toggle_button (event, 14); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyE" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="224.129016" y="336.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textE" x="250.129016" y="376.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">E</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 15); return false;" onmouseup="javascript:toggle_button (event, 15); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyF" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="130.129016" y="336.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textF" x="155.129016" y="376.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">F</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 8); return false;" onmouseup="javascript:toggle_button (event, 8); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key8" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="413.129016" y="415.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text8" x="438.129016" y="455.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">8</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 9); return false;" onmouseup="javascript:toggle_button (event, 9); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key9" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="318.129016" y="415.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text9" x="344.129016" y="455.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">9</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 10); return false;" onmouseup="javascript:toggle_button (event, 10); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyA" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="224.129016" y="415.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textA" x="250.129016" y="455.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">A</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 11); return false;" onmouseup="javascript:toggle_button (event, 11); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="KeyB" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="130.129016" y="415.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="textB" x="155.129016" y="455.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">B</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 4); return false;" onmouseup="javascript:toggle_button (event, 4); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key4" stroke="#000" fill="#333666" text="0" stroke-width="1.25" stroke-opacity="null" x="413.129016" y="495.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text4" x="438.129016" y="535.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">4</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 5); return false;" onmouseup="javascript:toggle_button (event, 5); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key5" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="318.129016" y="495.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text5" x="344.129016" y="535.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">5</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 6); return false;" onmouseup="javascript:toggle_button (event, 6); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key6" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="224.129016" y="495.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text6" x="250.129016" y="535.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">6</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 7); return false;" onmouseup="javascript:toggle_button (event, 7); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key7" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="130.129016" y="495.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text7" x="155.129016" y="535.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">7</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 0); return false;" onmouseup="javascript:toggle_button (event, 0); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key0" stroke="#000" fill="#333666" text="0" stroke-width="1.25" stroke-opacity="null" x="413.129016" y="575.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text0" x="438.129016" y="615.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">0</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 1); return false;" onmouseup="javascript:toggle_button (event, 1); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key1" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="318.129016" y="575.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text1" x="344.129016" y="615.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">1</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 2); return false;" onmouseup="javascript:toggle_button (event, 2); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key2" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="224.129016" y="575.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text2" x="250.129016" y="615.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">2</text>
+              </g>
+            </a>
+            <a onmousedown="javascript:toggle_button (event, 3); return false;" onmouseup="javascript:toggle_button (event, 3); return false;" style="text-decoration: none">
+              <g>
+                <rect class="inputbutton" pressed="false" id="key3" stroke="#000" fill="#333666" stroke-width="1.25" stroke-opacity="null" x="130.129016" y="575.129053" width="64.838718" height="65.483867" style="cursor: pointer" rx="5"/>
+                <text class="svg_text" id="text3" x="155.129016" y="615.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">3</text>
+              </g>
+            </a>
+          </svg>
+          <div class="col align-self-center">
+            <div class="d-xl-flex justify-content-xl-center">
+              <div class="row justify-content-xl-center" style="padding-top: 30px;font-size: 32px;">
+                <button class="btn btn-info btn-bevel btn-filter" id="btn-load"  type="button" style="vertical-align: middle; width: 10vw; margin-right: 15px; margin-bottom: 4px; font-size: 1vw;" onclick="javascript:load_template(event)">Reopen Code</button>
+                <button class="btn btn-primary btn-bevel btn-filter"             type="button" style="vertical-align: middle; width: 10vw; margin-right: 15px; margin-bottom: 4px; font-size: 1vw;" onclick="javascript:ice40hx8k_handler();">Simulate</button>
+              </div>
+            </div>
+            <div class="d-xl-flex justify-content-xl-center">
+              <div class="row justify-content-xl-center" style="padding-top: 10px;font-size: 32px;padding-bottom: 50px;">
+                <button class="btn btn-dark btn-bevel btn-filter"    type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:demo_handler()">Demo</button>
+                <button class="btn btn-warning btn-bevel btn-filter" type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:stop_handler()">Freeze</button>
+                <button class="btn btn-danger btn-bevel btn-filter" type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:reset_handler()">Stop</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="editor-workspace" style="min-width: 20%; max-width: 65%; width: 65%; height: 100%; display: flex; flex-direction: column;">
+          <div id="editor-tab-header">
+            <div class="editor-tab" id="editor-tab-add"><label class="tab-label" id="tab-add">+</label></div>
+          </div>
+          <div id="codemirror_box" style="width: 100%; top: 0; bottom: 0; left: 0; right: 0; z-index: 0"></div>
+          <div id="terminal" style="display: none"></div>
+          <textarea id="outputview" readonly style="display: none">No output has been produced from a simulation yet.</textarea>
+          <script src="assets/js/ace-builds/src-noconflict/ext-language_tools.js"></script>
+          <script>
+            ace.require("ace/ext/language_tools");
+            var editor = ace.edit ("codemirror_box")
+            if (!localStorage.codeAutocomplete || localStorage.codeAutocomplete == "true") {
+              editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: true
+              });
+              if (!localStorage.codeAutocomplete)
+                localStorage.codeAutocomplete = "true"
+            }
+            var EditSession = ace.require ("ace/edit_session").EditSession
+            editor.setTheme ("ace/theme/chrome")
+            editor.session.setMode("ace/mode/verilog")
+            editor.session.setTabSize(2)
+            document.getElementById('codemirror_box').style.fontSize='14px';
+            load_button = document.getElementById ("btn-load")
+            var load_btn_text = ""
+            if (window.localStorage.lastSavedCode)
+            {
+              editor.setValue (window.localStorage.lastSavedCode, -1);
+              load_btn_text = "Reload Template"
+            }
+            else
+            {
+              load_btn_text = "Reload Template"
+            }
+            editor.setShowPrintMargin(false);
+            var Range = ace.require('ace/range').Range;
+          </script>
+          <div id="uart_view" style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+            <button class="btn btn-bevel btn-view btn-view-active" id="view_code" onclick="switchView(0)">Code View</button>
+            <button class="btn btn-bevel btn-view" id="view_output" onclick="switchView(2)">Tool Output</button>
+            <button class="btn btn-bevel btn-view" id="view_terminal" onclick="switchView(1)">Terminal View</button>
+          </div>
+        </div>
+        <div id="resize-editor" style="height: 20%; width: 1%; cursor: w-resize; background-color:transparent; border-left: 3px solid var(--display-4-color)" draggable="true"></div>
+      </div>
+    </div>
+  </div>
+  <div class="overlay align-items-center justify-content-center" id="overlay">
+    <div class="inner_overlay" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 60%">
+      <div style="margin-top: 1vh; display: flex; align-items: center; justify-content: flex-end; width: 95%">
+        <div style="width: calc(1vw + 1vh); float: right; cursor: pointer" onclick="javascript:closeOverlay(); closeSettings()">
+          <svg viewBox="0 0 512 512" style="color: white">
+            <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
+            <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
+          </svg>
+        </div>
+      </div>
+      <h4 class="display-4 text-muted" style="filter: blur(0); font-size: 2vh">These are the files stored in your browser's localStorage. Double-click to open one: </h4>
+      <div class="align-items-center" style="padding-left: 17%; padding-right: 20%; width: 100%; height: 100%">
+      <select name="project_list" multiple style="text-align: center; margin-top: 10px; width: calc(30vw + 2vh); height: 80%; font-size: calc(0.25vh + 0.75vw)"></select>
+        <div id="open_dialog_icon" style="padding-top: 0.8vh; width: calc(30vw + 2vh); height: 4vh">
+          <i class="fal fa-play " id="btnload" style="width: 1.5vh; margin-right: 15px; cursor: pointer" onclick="javascript:loadVerilog()"></i>
+          <i class="fal fa-times" id="btndel"  style="width: 1.5vh; margin-right: 15px; cursor: pointer" onclick="javascript:clearItem()"></i>
+        </div>
+      </div>
+    </div>
+      <!-- </hr> -->
+  </div>
+  <div class="overlay align-items-center justify-content-center" id="overlay_2">
+    <div class="container inner_overlay">
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h4 class="display-4 text-muted" style="width: 100%; font-size: 2.5vh">Settings</h4>
+        <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:closeOverlay(); closeSettings()">
+          <svg viewBox="0 0 512 512" style="color: white">
+            <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
+            <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
+          </svg>
+        </div>
+      </div>
+      <div style="width: 100%;">
+        <h4 class="display-4 text-muted" style="float: left; font-size: 2vh; margin-top: 10px">Dark Mode</h4>
+        <div style="float: right; width: 3.125vw; cursor: pointer">
+          <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40" >
+            <g>
+              <rect x="-1" y="-1" width="62" height="42" id="canvas_background_2" fill="#fff"/>
+              <g id="canvasGrid" display="none">
+                <rect id="svg_1" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+              </g>
+            </g>
+            <g>
+              <rect onclick="javascript:toggleDarkMode()" id="settingsButtonOuter" fill="#fff" stroke-width="0.5" x="2.35782" y="3.97817" width="55.22964" height="31.60169" id="svg_2" rx="19" stroke="#000"/>
+              <ellipse onclick="javascript:toggleDarkMode()" id="settingsButtonInner" fill="#444" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636" id="svg_3" rx="12" ry="12.33765" stroke="#000"/>
+              <!-- <rect fill="#0aada5" stroke-width="0.5" x="23.64628" y="52.76076" width="55.22964" height="31.60169" id="svg_6" rx="19" stroke="#000"/>
+              <ellipse fill="#eee" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="64.53441" cy="68.42894" id="svg_7" rx="12" ry="12.33765" stroke="#000"/> -->
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; width: 100%">
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+          <h4 class="display-4 text-muted" style="font-size: 2vh;">Simulate-upon-Save</h4>
+          <div style="width: 3.125vw; margin-top: auto; margin-bottom: auto; float: right; cursor: pointer; height: 100%">
+            <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40" >
+              <g>
+                <rect x="-1" y="-1" width="62" height="42" id="canvas_background_3" fill="#fff"/>
+                <g id="canvasGrid" display="none">
+                  <rect id="svg_1" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+                </g>
+              </g>
+              <g>
+                <rect onclick="javascript:toggleInstantSim()" id="settingsButtonOuter2" fill="#fff" stroke-width="0.5" x="2.35782" y="3.97817" width="55.22964" height="31.60169" id="svg_2" rx="19" stroke="#000"/>
+                <ellipse onclick="javascript:toggleInstantSim()" id="settingsButtonInner2" fill="#444" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636" id="svg_3" rx="12" ry="12.33765" stroke="#000"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh;">The Ctrl+S shortcut, when used inside the editor, will both save and simulate the code you've written. If you only want it to save, click the slider to disable it.</h4>
+      </div>
+      <div style="display: flex; flex-direction: column; width: 100%">
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+          <h4 class="display-4 text-muted" style="float: left; font-size: 2vh">Toggle Autocomplete</h4>
+          <div style="float: right; width: 3.125vw; cursor: pointer">
+            <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40" >
+              <g>
+                <rect x="-1" y="-1" width="62" height="42" id="canvas_background_2" fill="#fff"/>
+                <g id="canvasGrid" display="none">
+                  <rect id="svg_1" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+                </g>
+              </g>
+              <g>
+                <rect onclick="javascript:toggleAutocomplete()" id="autocompleteOuter" fill="#fff" stroke-width="0.5" x="2.35782" y="3.97817" width="55.22964" height="31.60169" id="svg_2" rx="19" stroke="#000"/>
+                <ellipse onclick="javascript:toggleAutocomplete()" id="autocompleteInner" fill="#444" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636" id="svg_3" rx="12" ry="12.33765" stroke="#000"/>
+                <!-- <rect fill="#0aada5" stroke-width="0.5" x="23.64628" y="52.76076" width="55.22964" height="31.60169" id="svg_6" rx="19" stroke="#000"/>
+                <ellipse fill="#eee" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="64.53441" cy="68.42894" id="svg_7" rx="12" ry="12.33765" stroke="#000"/> -->
+              </g>
+            </svg>
+          </div>
+        </div>
+        <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh;">If the editor autocomplete feature annoys you while you're typing, you can disable it here.</h4>
+      </div>
+      <div style="width: 100%; height: 6vh; float: left; margin-top: 0.5vh; margin-bottom: 5px;">
+        <h4 class="display-4 text-muted" style="float: left; font-size: 2vh;">Change Evaluation Board Theme</h4>
+        <div style="max-width: 100%; height: 5vh; float: right">
+          <select id="evalthemeselector" onchange="changeBoardTheme(document.getElementById ('evalthemeselector').value)" style="height: 3.5vh; width: 6.5vw; border-radius: 5px">
+            <option value="Modern">Modern</option>
+            <option value="Original">Original</option>
+            <!-- <option value="Dark Original">Dark Original</option> -->
+          </select>
+        </div>
+        <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh; padding-bottom: 15px">Do you also wonder, like Rick, why the simulator board is blue? Change the color scheme here!</h4>
+      </div>
+    </div>
+  </div>
+  <div class="overlay align-items-center justify-content-center" id="overlay_3">
+    <div class="inner_overlay" style="display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; height: 55%">
+        <div style="display: flex; flex-direction: row; justify-content: space-around; width: 95%">
+          <h4 class="display-4 text-muted" style="font-size: 2.75vh; width: 100%">FPGA Communication Terminal</h4>
+          <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:closeUART()">
+            <svg viewBox="0 0 512 512" style="color: white">
+              <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
+              <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
+            </svg>
+          </div>
+        </div>
+        <h4 class="display-4 text-muted" style="float: left; text-align: left; width: 100%; font-size: 1.8vh; padding-right: 1vw">
+          In your lab sessions towards the end of the semester, you will start working on Verilog designs involving the implementation of a simple computer on the FPGA/simulator.
+          <br>
+          <br>
+          For the last few labs, we would have had you use the UART communication port on the FPGA to add the capability of communicating with your FPGA with the help of a virtual terminal.  However, since we're doing this online, we will be using a terminal to communicate with your simulations instead.
+          <br>
+          <br>
+          The purpose of the communication could be to send commands to the FPGA with the help of the terminal to display things on the LEDs and SS displays, or to read the values of certain registers by outputting them to the terminal.  We will have you implement something similar in these last two labs.
+        </h4>
+        <div style="display: flex; flex-direction: column; align-items: flex-start">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; width: 98%">
+            <h4 class="display-4 text-muted" style="font-size: 2.25vh">Auto-switch to Terminal</h4>
+            <div style="float: right; width: 3.125vw; cursor: pointer">
+              <svg id="enableAutoTerminalSwitch" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40" >
+                <g>
+                  <rect x="-1" y="-1" width="62" height="42" id="canvas_background_2" fill="#fff"/>
+                  <g id="canvasGrid" display="none">
+                    <rect id="svg_1" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+                  </g>
+                </g>
+                <g>
+                  <rect onclick="javascript:toggleAutoTerminal()" id="autoTerminalButtonOuter" fill="#fff" stroke-width="0.5" x="2.35782" y="3.97817" width="55.22964" height="31.60169" id="svg_2" rx="19" stroke="#000"/>
+                  <ellipse onclick="javascript:toggleAutoTerminal()" id="autoTerminalButtonInner" fill="#444" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636" id="svg_3" rx="12" ry="12.33765" stroke="#000"/>
+                  <!-- <rect fill="#0aada5" stroke-width="0.5" x="23.64628" y="52.76076" width="55.22964" height="31.60169" id="svg_6" rx="19" stroke="#000"/>
+                  <ellipse fill="#eee" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="64.53441" cy="68.42894" id="svg_7" rx="12" ry="12.33765" stroke="#000"/> -->
+                </g>
+              </svg>
+            </div>
+          </div>
+          <h4 class="display-4 text-muted" style="float: left; text-align: left; width: 85%; font-size: 1.75vh;">If this option is enabled when the simulation starts, the view immediately changes to the terminal.  Disable if you want to keep the code in view when the simulation starts.</h4>
+        </div>
+    </div>
+  </div>
+  <div class="overlay align-items-center justify-content-center" id="overlay_4">
+    <div class="inner_overlay" style="width: 65%; padding: 2vh 2vw 2vh 2vw">
+      <div style="display: flex; flex-direction: column">
+        <div style="display: flex; flex-direction: row; justify-content: flex-end; width: 100%">
+          <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:toggleProfile()">
+            <svg viewBox="0 0 512 512" style="color: white">
+              <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
+              <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
+            </svg>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: space-around; width: 95%">
+          <h4 class="display-4 text-muted" style="font-size: 2.75vh; width: 100%; margin-bottom: 2vh">Your User Profile</h4>
+        </div>
+        <h4 class="display-4 text-muted" id="loading" style="font-size: 2.25vh;">Loading profile data... (this can take a while if you've been using the simulator extensively.)</h4>
+        <h4 class="display-4 text-muted profile_data" id="profile_visit" style="font-size: 2vh;">You have visited this site VISIT time(s).</h4>
+        <h4 class="display-4 text-muted profile_data" id="profile_sim" style="font-size: 2vh;">You have simulated code SIM time(s).</h4>
+        <h4 class="display-4 text-muted profile_data" id="profile_dem" style="font-size: 2vh;">You have tried out the demo DEM time(s).</h4>
+        <h4 class="display-4 text-muted profile_data" id="profile_err" style="font-size: 2vh;">You have made ERR error(s) while testing your code.</h4>
+        <h4 class="display-4 text-muted profile_data" style="font-size: 1.5vh;">(Remember, more errors does not necessarily mean you are doing badly!)</h4>
+        <!-- <h4 class="display-4 text-muted profile_data" style="font-size: 2.25vh; margin-top: 2vh">Errors made over time</h4> -->
+        <div class="profile_data" id="error_graph"></div>
+        <h4 class="display-4 text-muted profile_data" id="profile_json" style="text-align: center; font-size: 1.75vh;">To get the full details of all the errors you have made on the simulator, <a style="cursor: pointer" onclick="downloadJSON()">click here to download the raw JSON data.</a></h4>
+      </div>
+    </div>
+  </div>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="assets/js/xterm.js"></script>
+  <script src="assets/js/simulator_backend_uart.js"></script>
+  <script src="assets/js/plotly-latest.min.js"></script>
+  <script src="assets/js/theme.js"></script>
+</body>
+</html>
