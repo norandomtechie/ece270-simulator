@@ -12,25 +12,26 @@
 #include <sys/wait.h> 
 
 // Can we catch SIGTERM, Ctrl+C in CVC?
-#include  <signal.h>
+// #include  <signal.h>  // apparently not because no signals were getting caught (3/17/2020)
 
 // For timer
 #include <time.h>
 #include <math.h>
 
-extern void svdpi_read(int, int);    // Imported from SystemVerilog
+extern void svdpi_read();    // Imported from SystemVerilog
 // extern void svdpi_write(void);    // Imported from SystemVerilog
 
 
 void svdpi_setup (void);
-void in_read (void);
-void retrieve_inputs (void);
+void in_process_and_read (void);
+void process_inputs (void);
 void get_input (void);
 int input_timeout (int filedes, unsigned int seconds);
 int return_input (const int a);
-void out_write (const int, const int, const int, const int, const int, const int, 
-                const int, const int, const int, const int, const int, const int, 
-                const int);
+void out_write (const int, const int, const int, const int,  
+                const int, const int, const int, const int,  
+                const int, const int, const int, const int,
+                const int, const int, const int, const int);
 
 static int init_pipes();
 
@@ -39,7 +40,10 @@ static int wpipe;
 
 static int hz100 = -1;
 static int pb = -1;
-static char input [21] = "\0";
+static int txready = -1;
+static int rxready = -1;
+static int txdata = -1;
+static char input [31] = "\0";
 
 static int ss7;
 static int ss6;
@@ -54,6 +58,9 @@ static int right;
 static int red;
 static int green;
 static int blue;
+static int txclk;
+static int rxclk;
+static int rxdata;
 
 static time_t start_time;
 
@@ -82,14 +89,12 @@ static int init_pipes()
   return (0);
 }
 
-void caught_signal (int sig) {
-  printf ("Signal caught: %d", sig);
-}
+// void caught_signal (int sig) {
+//   printf ("Signal caught: %d", sig);
+// }    // nope, never gets called
 
 void svdpi_setup (void)
 {
-    signal (SIGTERM, caught_signal);
-    signal (SIGINT, caught_signal);
     if (init_pipes() == 1)
       exit (0);
     get_input();
@@ -123,7 +128,8 @@ int input_timeout (int filedes, unsigned int seconds)
 void get_input (void)
 {
     char newinput [1024];
-    //ffffffffffffffffffff
+    //ffffffffffffffffffff - for pb, 20
+    //ffffffffff -           for {rxdata, rxready, txready}, 10
     while (strcmp (input, "\0") == 0 || input_timeout (rpipe, 0))
     {
         read (rpipe, newinput, 128);
@@ -131,32 +137,33 @@ void get_input (void)
         {
           exit(0);
         }
-        for (int i = 19; i >= 0; i--)
-            input [i] = newinput [19 - i];
+        for (int i = 29; i >= 0; i--)
+            input [i] = newinput [29 - i];
     }
 }
 
 void timer_watch (void)
 {
   time_t now;
-        now = time (NULL);
-        if (now - start_time > 300)
-        {
-          char buffer [100];
-          snprintf (buffer, 100, "\nTime limit of 10 minutes exceeded! Stopping simulation.\n");
-          write(wpipe, buffer, strlen(buffer) + 1);
-          exit(1);
-        }
+  now = time (NULL);
+  if (now - start_time > 600)
+  {
+    char buffer [100];
+    snprintf (buffer, 100, "\nTime limit of 5 minutes exceeded! Stopping simulation.\n");
+    write(wpipe, buffer, strlen(buffer) + 1);
+    exit(1);
+  }
 }
 
-void out_write (const int p_ss7,  const int p_ss6,   const int p_ss5, const int p_ss4,
-                const int p_ss3,  const int p_ss2,   const int p_ss1, const int p_ss0,
-                const int p_left, const int p_right, const int p_red, const int p_green, 
-                const int p_blue)
+void out_write (const int p_ss7,  const int p_ss6,   const int p_ss5,   const int p_ss4,
+                const int p_ss3,  const int p_ss2,   const int p_ss1,   const int p_ss0,
+                const int p_left, const int p_right, const int p_red,   const int p_green, 
+                const int p_blue, const int p_txclk, const int p_rxclk, const int p_txdata)
 {  
   if (ss7 != p_ss7 || ss6 != p_ss6 || ss5 != p_ss5 || ss4 != p_ss4 || ss3 != p_ss3 || 
         ss2 != p_ss2 || ss1 != p_ss1 || ss0 != p_ss0 || left != p_left || right != p_right || 
-        red != p_red || green != p_green || blue != p_blue)
+        red != p_red || green != p_green || blue != p_blue || txclk != p_txclk || rxclk != p_rxclk ||
+        txdata != p_txdata)
     {
         ss7 = p_ss7;
         ss6 = p_ss6;
@@ -171,27 +178,33 @@ void out_write (const int p_ss7,  const int p_ss6,   const int p_ss5, const int 
         red = p_red;
         green = p_green;
         blue = p_blue;
+        txclk = p_txclk;
+        rxclk = p_rxclk;
+        txdata = p_txdata;
 
         char buffer [500];
-        snprintf (buffer, 200, "{\"LFTRED\":%d,\"RGTRED\":%d,\"REDLED\":%d,\"GRNLED\":%d,\"BLULED\":%d,\"SS7\":%d,\"SS6\":%d,\"SS5\":%d,\"SS4\":%d,\"SS3\":%d,\"SS2\":%d,\"SS1\":%d,\"SS0\":%d}\n",
-                                left, right, red, green, blue, ss7, ss6, ss5, ss4, ss3, ss2, ss1, ss0);
+        snprintf (buffer, 300, "{\"LFTRED\":%d,\"RGTRED\":%d,\"REDLED\":%d,\"GRNLED\":%d,\"BLULED\":%d,\"SS7\":%d,\"SS6\":%d,\"SS5\":%d,\"SS4\":%d,\"SS3\":%d,\"SS2\":%d,\"SS1\":%d,\"SS0\":%d,\"TXCLK\":%d,\"RXCLK\":%d,\"TXDATA\":%d}\n",
+                                left, right, red, green, blue, ss7, ss6, ss5, ss4, ss3, ss2, ss1, ss0, txclk, rxclk, txdata);
         write(wpipe, buffer, strlen(buffer) + 1);
     } 
     return;
 }
 
-void in_read(void)
+void in_process_and_read(void)
 {  
-    retrieve_inputs();
-    svdpi_read (pb, hz100);
+    process_inputs();
+    svdpi_read ();
 }
 
 int return_input (const int a)
 {
-  return a ? hz100 : pb;
+  return a == 0 ? hz100 : 
+         a == 1 ? pb : 
+         a == 2 ? rxdata :
+         a == 3 ? rxready : txready;
 }
 
-void retrieve_inputs()
+void process_inputs()
 {
     get_input();
     pb = 0;
@@ -199,6 +212,12 @@ void retrieve_inputs()
     {
         pb = (pb << 1) | (input [i] == 'f' ? 0 : 1);
     }
+    for (int i = 27; i >= 20; i--)
+    {
+        rxdata = (rxdata << 1) | (input [i] == 'f' ? 0 : 1);
+    }
+    rxready = input[28] == 'f' ? 0 : 1;
+    txready = input[29] == 'f' ? 0 : 1;
     hz100 = hz100 == 0 ? 1 : 0;
 }
 
