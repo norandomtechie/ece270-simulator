@@ -79,6 +79,9 @@ do
 done
 
 
+cd ..
+echo "Installing node modules..."
+npm i
 echo "Starting node server..."
 node index.js > serverlog 2>&1 &
 if [ "$(cat serverlog)" == "" ]
