@@ -41,7 +41,8 @@ do
             ./configure
             echo "Verilator will be installed in 5 seconds using all available cores on your system.  If you wish to change the number of cores used, press Ctrl+C twice and change the \$(nproc) argument on the corresponding make command to your preferred number of cores."
             sleep 5
-            make -j$(nproc) install || (echo "Compiling verilator failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
+            make -j$(nproc) || (echo "Compiling verilator failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
+            make install
             cd -
             rm -rf verilator
             ;;
@@ -52,7 +53,10 @@ do
             graphviz xdot pkg-config python3 libboost-system-dev \
             libboost-python-dev libboost-filesystem-dev zlib1g-dev
             make config-gcc
-            make -j$(nproc) install || (echo "Compiling yosys failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
+            echo "yosys will be installed in 5 seconds using all available cores on your system.  If you wish to change the number of cores used, press Ctrl+C twice and change the \$(nproc) argument on the corresponding make command to your preferred number of cores."
+            sleep 5
+            make -j$(nproc) || (echo "Compiling yosys failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
+            make install
             cd -
             rm -rf yosys
             ;;
