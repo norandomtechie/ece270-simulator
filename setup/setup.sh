@@ -82,6 +82,7 @@ done
 cd ..
 echo "Installing node modules..."
 npm i
+mkdir -p /tmp/tmpcode
 echo "Starting node server..."
 node cluster.js > serverlog 2>&1 &
 sleep 3
