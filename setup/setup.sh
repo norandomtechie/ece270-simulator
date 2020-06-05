@@ -7,6 +7,8 @@ printf "ECE 270 simulator setup\n\n"
 
 declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["yosys"]="https://github.com/YosysHQ/yosys" ["cvc64"]="https://github.com/CambridgeHackers/open-src-cvc" )
 
+declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["cvc64"]="open-src-cvc" )
+
 echo "Setting up folders..."
 for folder in analytics logging error_log
 do
@@ -24,12 +26,16 @@ do
             echo "This script needs to install dependencies for $command.  Rerun as root."
             exit 1
         fi
-        git clone "${gitlinks["$command"]}"
+        apt-get update
+        if [ ! -d "${foldernames["$command"]}" ]
+        then
+            git clone "${gitlinks["$command"]}"
+        fi
         
         case "$command" in
         "verilator")
             cd verilator
-            apt-get install perl python3 make g++ libfl2 libfl-dev zlib1g zlib1g-dev autoconf flex bison
+            apt-get -y install perl python3 make g++ libfl2 libfl-dev zlib1g zlib1g-dev autoconf flex bison
             git checkout stable
             autoconf
             ./configure
@@ -41,7 +47,7 @@ do
             ;;
         "yosys")
             cd yosys/
-            apt-get install build-essential clang bison flex \
+            apt-get -y install build-essential clang bison flex \
             libreadline-dev gawk tcl-dev libffi-dev git \
             graphviz xdot pkg-config python3 libboost-system-dev \
             libboost-python-dev libboost-filesystem-dev zlib1g-dev
@@ -59,7 +65,7 @@ do
             ;;
         "node")
             curl -sL https://deb.nodesource.com/setup_12.x | bash -
-            apt install nodejs
+            apt-get -y install nodejs
             ;;
         *)
             echo "wait... what?  You modified this script, didn't you!?"
