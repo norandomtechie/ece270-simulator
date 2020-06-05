@@ -1,4 +1,4 @@
-Worked on Ubuntu 18.04 LTS (WSL).  Run the following commands in ~ (your home directory):
+Worked on Ubuntu 18.04 LTS (WSL 1/2), and Ubuntu 20.04 LTS (WSL 2 only).  Run the following commands in ~ (your home directory):
 
 ```
 git clone https://github.com/norandomtechie/ece270-simulator
