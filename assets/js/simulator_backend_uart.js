@@ -444,7 +444,7 @@ function ice40hx8k_handler() {
 			"SS5": 0, "SS4": 0, "SS3": 0, "SS2": 0, "SS1": 0, "SS0": 0
 		})
 	}
-	ws = new WebSocket("wss://" + window.location.hostname)
+	ws = new WebSocket((window.location.protocol == "http:" ? "ws://" : "wss://") + window.location.hostname + ((window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1") ? ":4500/" : "/"))
 	update_status("CONNECTING", "Status: Connecting...")
 	var messages = ""
 	var synthesis_interval = ""
@@ -847,7 +847,7 @@ function demo_handler() {
 		})
 	}
 
-	ws = new WebSocket("wss://" + window.location.hostname + "/")
+	ws = new WebSocket((window.location.protocol == "http:" ? "ws://" : "wss://") + window.location.hostname + ((window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1") ? ":4500/" : "/"))
 	update_status("CONNECTING", "Status: Connecting...")
 	var synthesis_interval = ""
 	ws.onmessage = function (event) {
