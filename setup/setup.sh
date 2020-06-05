@@ -29,7 +29,7 @@ do
         case "$command" in
         "verilator")
             cd verilator
-            apt-get install perl python3 make g++ libfl2 libfl-dev zlibc zlib1g zlib1g-dev autoconf flex bison
+            apt-get install perl python3 make g++ libfl2 libfl-dev zlib1g zlib1g-dev autoconf flex bison
             git checkout stable
             autoconf
             ./configure
