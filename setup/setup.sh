@@ -22,6 +22,7 @@ do
         if [[ "$EUID" -ne 0 ]]
         then
             echo "This script needs to install dependencies for $command.  Rerun as root."
+            exit 1
         fi
         git clone echo "${gitlinks["$command"]}"
         
