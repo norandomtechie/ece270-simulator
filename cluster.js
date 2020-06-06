@@ -66,14 +66,6 @@ else {
         });
     });
     server.listen (4500, '0.0.0.0', null, function() {
-        try {
-            process.setgid('users');
-            process.setuid(process.cwd().match ('/home/([^/]+)/')[1]);
-            console.log ("Simulator started and running on port 4500.")
-        }
-        catch (err) {
-            console.log('Unable to launch as non-root user.');
-            process.exit(1);
-        }
+        console.log ("Simulator started and running on port 4500.")
     });
 }

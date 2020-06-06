@@ -88,7 +88,7 @@ echo "Installing node modules..."
 npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
 mkdir -p /tmp/tmpcode
 echo "Starting node server..."
-node cluster.js > serverlog 2>&1 &
+runuser -l $SUDO_USER -c 'node cluster.js > serverlog 2>&1 &'
 sleep 3
 if [ "$(cat serverlog)" == "Simulator started and running on port 4500." ]
 then
