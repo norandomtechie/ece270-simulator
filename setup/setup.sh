@@ -10,13 +10,10 @@ declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["y
 declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["cvc64"]="open-src-cvc" )
 
 echo "Setting up folders..."
-for folder in ../analytics ../logging ../error_log /tmp/tmpcode
+for folder in ../error_log /tmp/tmpcode
 do
     mkdir -p $folder && chown $SUDO_USER:$SUDO_USER $folder
 done
-
-touch ../analytics/simulation.log
-chown $SUDO_USER:$SUDO_USER ../analytics/simulation.log
 
 echo "Checking for dependencies..."
 for command in "verilator" "yosys" "cvc64" "node"
@@ -88,7 +85,7 @@ echo "Installing node modules..."
 npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
 mkdir -p /tmp/tmpcode
 echo "Starting node server..."
-runuser -l $SUDO_USER -c 'node cluster.js > serverlog 2>&1 &'
+runuser -l $SUDO_USER -c "node $(pwd)/cluster.js > $(pwd)/serverlog 2>&1 &"
 sleep 3
 if [ "$(cat serverlog)" == "Simulator started and running on port 4500." ]
 then

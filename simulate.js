@@ -107,12 +107,6 @@ function getTime() {
     return (date + ' ' + time);
 }
 
-function writeAnalytics(data, file) {
-    fs.appendFileSync(file, getTime() + ": " + data + '\n', (err) => {
-        if (err) throw err;
-    })
-}
-
 function connection(ws, request) {
     ws.currentState = "INIT";
     username = "demouser"
@@ -122,19 +116,16 @@ function connection(ws, request) {
             case "INIT":
                 code = message
                 if (code.includes("give us a demo please")) {
-                    writeAnalytics(request.connection.remoteAddress + " ---> 200 Demo simulation requested | Username: " + username, 'analytics/simulation.log')
                     ws.verilogCode = fs.readFileSync(__dirname + '/sim_modules/fpgademo.v', 'utf8', function (err, data) {
                         if (err) throw err;
                     });
                 }
                 else if (code == "") {
-                    writeAnalytics(request.connection.remoteAddress + " ---> 200 Empty file/no Verilog detected | Username: " + username, 'analytics/simulation.log')
                     ws.send("Error: no code found.")
                     ws.close()
                     return
                 }
                 else if (code.match("module") && !code.match(/(module top ?[^\)]+)/)) {
-                    writeAnalytics(request.connection.remoteAddress + " ---> 200 Empty file/no Verilog detected | Username: " + username, 'analytics/simulation.log')
                     ws.send("Compilation failed with the following error:\nLine 1: There appears to be Verilog, but the top module couldn't be found. Please make sure that you're starting your code within the template!")
                     ws.close()
                     return
@@ -143,7 +134,6 @@ function connection(ws, request) {
                     ws.verilogCode = fs.readFileSync(code + '.v').toString()
                 }
                 else {
-                    writeAnalytics(request.connection.remoteAddress + " ---> 200 Simulation requested | Username: " + username, 'analytics/simulation.log')
                     ws.verilogCode = code
                 }
 
@@ -223,7 +213,6 @@ function connection(ws, request) {
                 }
                 catch (ex) {
                     if (ex.errno == 'ETIMEDOUT') {
-                        writeAnalytics("200 Yosys compile took too long! | Username: " + username, 'analytics/simulation.log')
                         // Can't kill Yosys by PID since it changes after execSync for some weird reason
                         // So we gotta use ps and find it
                         psy = cp.execSync ("ps -eo pcpu,pid,args | sort -k1 -r -n | grep yosys").toString().split ("\n")
@@ -240,7 +229,6 @@ function connection(ws, request) {
                             pid = parseInt (proc.slice (0, proc.indexOf (" "))); args = proc.slice (proc.indexOf (" ") + 1)
                             if (parseFloat (pcpu) > 90 && args.includes ("yosys") && args.includes (ws.unique_client)) {
                                 process.kill (pid)
-                                writeAnalytics("Killed Yosys for " + ws.unique_client +  " | Username: " + username, 'analytics/simulation.log')
                             }
                         })
                         ws.send ("YOSYS HUNG: " + ex.output.toString())
@@ -265,8 +253,6 @@ function connection(ws, request) {
                             catch (ex) {
                                 debugLog('indexOfReg failed')
                                 debugLog(arr)
-                                writeAnalytics("200 Error matching failed | Username: " + username, 'analytics/simulation.log')
-                                writeAnalytics(arr.toString(), 'analytics/simulation.log')
                                 d = new Object();
                                 d.message = "[ERROR] Internal server error. Please try again later."
                                 d.lineno = 1
@@ -280,7 +266,6 @@ function connection(ws, request) {
 
                     if (error_msg && error_msg.message.includes("server error")) {
                         debugLog("FATAL: Yosys encountered an unknown error unrelated to code.")
-                        writeAnalytics(request.connection.remoteAddress + " ---> 200 Unknown Yosys issue` | Username: " + username + "\nYosys output recorded: \n" + yosys_out.toString(), 'analytics/simulation.log')
                     }
                     else  // Is a mapping error
                     {
@@ -483,10 +468,8 @@ function connection(ws, request) {
                                         "\nOutput: " + params[2].replaceAll('\\', '') +
                                         "\nReset: " + params[3].replaceAll('\\', '') + "\n"
                                     )
-                                    writeAnalytics(request.connection.remoteAddress + " ---> 200 FF Timing Violation | Username: " + username, 'analytics/simulation.log')
                                 }
                                 catch (ex) {
-                                    writeAnalytics(request.connection.remoteAddress + " ---> 200 Uncaught FF Timing | Username: " + username, 'analytics/simulation.log')
                                     debugLog(data)
                                     ws.send("There was a timing violation, but some details could not be retrieved due to a Regex parsing error. Please contact course staff with a copy of your code.")
                                 }
