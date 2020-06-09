@@ -167,16 +167,19 @@ function connection(ws, request) {
                 catch (e) {
                     if (e) {
                         var errors = []
-                        e.message.match (err_regex).forEach (elm => {
-                            if (errors.length - 1 >= 0 && (errors[errors.length - 1].line == elm.match (err_regex_single)[1]))
-                                errors[errors.length - 1].error = errors[errors.length - 1].error + "\n" + elm.match (err_regex_single)[2]
-                            else {
-                                errors.push ({
-                                    line: elm.match (err_regex_single)[1],
-                                    error: elm.match (err_regex_single)[2]
-                                })
-                            }
-                        })
+                        ws.verilatorLog = e.message
+                        if (e.message.match (err_regex)) {
+                            e.message.match (err_regex).forEach (elm => {
+                                if (errors.length - 1 >= 0 && (errors[errors.length - 1].line == elm.match (err_regex_single)[1]))
+                                    errors[errors.length - 1].error = errors[errors.length - 1].error + "\n" + elm.match (err_regex_single)[2]
+                                else {
+                                    errors.push ({
+                                        line: elm.match (err_regex_single)[1],
+                                        error: elm.match (err_regex_single)[2]
+                                    })
+                                }
+                            })
+                        }
                         error_line = errors
                     }
                     else {
@@ -195,7 +198,7 @@ function connection(ws, request) {
                         })
                     }
                     fs.moveSync("/tmp/tmpcode/" + ws.unique_client, "error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
-                    ws.send("Yosys did not run." + "\nCompilation failed with the following error:\n" + modded_error.join('\n'))
+                    ws.send(ws.verilatorLog + "\nYosys did not run." + "\nCompilation failed with the following error:\n" + modded_error.join('\n'))
                     ws.close()
                     return
                 }
@@ -407,14 +410,12 @@ function connection(ws, request) {
                         }
                         catch (ex) {
                             debugLog("Cannot parse this error: " + element)
-                            debugLog("CVC log was: ")
-                            debugLog(ws.comStatus)
                             num = 1
                         }
                     }
                     )
                     if (modded_error.length != '0') {
-                        ws.send("CVC log:\n" + ws.comStatus + "Yosys log:\n" + yosys_out + "\nCompilation failed with the following error:\n" + modded_error.join('\n'))
+                        ws.send("Verilator log:\n" + ws.verilatorLog + "Yosys log:\n" + yosys_out + "\nCompilation failed with the following error:\n" + modded_error.join('\n'))
                         ws.close()
                     }
                 }
@@ -438,7 +439,7 @@ function connection(ws, request) {
 
                     ws.simulator_object = cp.spawn('cvc64', args, { env: env, cwd: __dirname });
 
-                    ws.send("Simulation successfully started!\nCVC log:\n" + ws.comStatus + "Yosys log:\n" + yosys_out)
+                    ws.send("Simulation successfully started!\nVerilator log:\n" + ws.verilatorLog + "\nYosys log:\n" + yosys_out)
                     ws.cvcTimeout = false
                     ws.error_caught = false
 

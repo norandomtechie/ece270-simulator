@@ -385,7 +385,7 @@ function set_outputs(json_out) {
 	saved_txclk = json_out ['TXCLK']
 }
 
-function ice40hx8k_handler() {
+function ice40hx8k_handler(opt=1) {
 	time = new Date().getTime() / 1000
 
 	var uart_present_in_header = editor.session.getValue().split ("\n")
@@ -410,27 +410,30 @@ function ice40hx8k_handler() {
 		}
 	}
 
+	
 	if (!uart_present_in_header) {
 		alert ("Starting this semester, UART ports are now required by default.  Load a new template by pressing the + button to add a new tab, " + 
 				"then merge the header into your code in the previous tab.")
 		return
 	}
 
-	if (editor.session.getValue().includes("’")) {
-		// alert("Copying code from the notes without typing it out? Tsk tsk...\n" +
-		// 	"The code you copied intentionally has special characters that " +
-		// 	"cannot be parsed by Yosys or CVC. We highly recommend that you " +
-		// 	"type out the entire code segment you are trying to use.\n" +
-		// 	"If you really did type it out, and you're still seeing this message, " +
-		// 	"contact the head TA.")
-		// return
-		alert ("We found special characters in your code that indicate you copied it.  Considering that there is quite a lot of provided code, " + 
-			   "we will permit it for Lab 13.  These characters will be automatically removed from your code before it is sent for simulation.")
-		editor.setValue (editor.getValue().replace (/’/g, "'"))
-	}
-	if (editor.session.getValue().match(/\/\/ ?module top|(\/\* ?\n?)module top/)) {
-		alert("It seems like you have commented out or removed the top module. Your code will not compile!")
-		return
+	if (opt == 0) {
+		if (editor.session.getValue().includes("’")) {
+			// alert("Copying code from the notes without typing it out? Tsk tsk...\n" +
+			// 	"The code you copied intentionally has special characters that " +
+			// 	"cannot be parsed by Yosys or CVC. We highly recommend that you " +
+			// 	"type out the entire code segment you are trying to use.\n" +
+			// 	"If you really did type it out, and you're still seeing this message, " +
+			// 	"contact the head TA.")
+			// return
+			alert ("We found special characters in your code that indicate you copied it.  Considering that there is quite a lot of provided code, " + 
+				   "we will permit it for Lab 13.  These characters will be automatically removed from your code before it is sent for simulation.")
+			editor.setValue (editor.getValue().replace (/’/g, "'"))
+		}
+		if (editor.session.getValue().match(/\/\/ ?module top|(\/\* ?\n?)module top/)) {
+			alert("It seems like you have commented out or removed the top module. Your code will not compile!")
+			return
+		}
 	}
 
 	update_status("STATUS_READY", "Status: Ready")
@@ -574,7 +577,12 @@ function ice40hx8k_handler() {
 	}
 	ws.onopen = function () {
 		if (ws.readyState == 1) {
-			ws.send(editor.getValue())
+			if (opt == 1) {
+				ws.send("give us a demo please")
+			}
+			else if (opt == 0) {
+				ws.send(editor.getValue())
+			}
 		}
 	}
 	ws.onclose = function (evt) {
@@ -839,90 +847,6 @@ function reset_handler() {
 		"LFTRED": 0, "RGTRED": 0, "RGBLED": 0, "SS7": 0, "SS6": 0,
 		"SS5": 0, "SS4": 0, "SS3": 0, "SS2": 0, "SS1": 0, "SS0": 0
 	})
-}
-
-function demo_handler() {
-	if (typeof ws != "undefined" && ws.readyState == ws.OPEN) {
-		ws.onmessage = function () { }
-		ws.onclose = function () { }
-		ws.close()
-		set_outputs({
-			"LFTRED": 0, "RGTRED": 0, "RGBLED": 0, "SS7": 0, "SS6": 0,
-			"SS5": 0, "SS4": 0, "SS3": 0, "SS2": 0, "SS1": 0, "SS0": 0
-		})
-	}
-
-	ws = new WebSocket((window.location.protocol == "http:" ? "ws://" : "wss://") + window.location.hostname + ((window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1") ? ":4500/" : "/"))
-	update_status("CONNECTING", "Status: Connecting...")
-	var synthesis_interval = ""
-	ws.onmessage = function (event) {
-
-		if (event.data == "Processing Verilog code...") {
-			synth_status = [
-				"Status: Synthesizing...",
-				"Status: Synthesizing..",
-				"Status: Synthesizing.",
-				"Status: Synthesizing"
-			]
-
-			update_status("SYNTHESIS", synth_status[0])
-			messages = event.data + "\n"
-			synthesis_interval = setInterval(function () {
-				synth_status.push(synth_status.shift())
-				update_status("SYNTHESIS", synth_status[0])
-			}, 500)
-		}
-
-		else if (event.data == "Simulation successfully started!") {
-			$("#outputview").val ("Output produced:\r\n" + (event.data.split ("\n").slice (1).join ('\n')))
-			clearInterval(synthesis_interval)
-			messages += event.data
-			messages = ""
-			update_status("DEMO_RUNNING", "Status: Running demo simulation")
-		}
-		else if (event.data == "Error: no code found." || event.data.includes("failed") || event.data.includes("warning")) {
-			alert("Something went wrong trying to run the demo simulation. Please contact course staff.")
-			update_status("DEMO_RUNNING", "Status: Running demo simulation")
-		}
-		else if (event.data.includes("Unauthorized WebSocket")) {
-			update_status("CODE_ERROR", "Status: Unauthorized simulation")
-			alert("This window has been open for longer than 1.5 hours. Please refresh the page to start a new session.")
-		}
-		else {
-			try {
-				set_outputs(JSON.parse(event.data))
-			}
-			catch {
-				if (typeof event.data == "string" && event.data.includes("timing violation")) {
-					alert(event.data)
-					update_status("CODE_ERROR", "Status: FF Timing Violation")
-				}
-				else if (typeof event.data == "string" && event.data.includes("TIME LIMIT EXCEEDED")) {
-					update_status("CODE_ERROR", "Status: Simulation timeout")
-				}
-				else {
-					console.log(event.data)
-				}
-			}
-		}
-	}
-	ws.onopen = function () {
-		editor.getSession().clearAnnotations()
-		for (var id in error_id) {
-			editor.session.removeMarker(error_id[id])
-		}
-		if (ws.readyState == 1) {
-			ws.send("give us a demo please")
-		}
-	}
-	ws.onclose = function (evt) {
-		if (evt.code == 1006) {
-			console.log(evt.code)
-			update_status("SERVER_DOWN", "Status: Server is down")
-		}
-		this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
-	}
-	return false
 }
 
 /* ********************************************************************************* */
