@@ -159,8 +159,9 @@ function connection(ws, request) {
                     const VERILATOR = "verilator"
                     const VFLAGS    = "--lint-only -Wno-width"
                     const FILE      = path.resolve('/tmp/tmpcode', ws.unique_client, 'code.v')
-                    var err_regex = new RegExp ("%Error(?:\-[A-Z0-9]+)?: " + FILE + ":([0-9]+):[0-9]+: (.+)", "g")
-                    var err_regex_single = new RegExp ("%Error(?:\-[A-Z0-9]+)?: " + FILE + ":([0-9]+):[0-9]+: (.+)")
+		    const WARNINGS  = ['%Warning-IMPLICIT']
+                    var err_regex = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + FILE + ":([0-9]+):[0-9]+: (.+)", "g")
+                    var err_regex_single = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + FILE + ":([0-9]+):[0-9]+: (.+)")
 
                     cp.execSync ([VERILATOR, VFLAGS, FILE].join (" "), { cwd: __dirname })
                 }
