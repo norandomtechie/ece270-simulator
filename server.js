@@ -13,24 +13,20 @@
 
 const fs = require('fs-extra'),
       path = require('path'),
-      cp = require('child_process'),
       process = require('process'),
       express = require ('express'),
       app = express(),
       cors = require ('cors'),
-      session = require('express-session'),
       expressSanitizer = require('express-sanitizer'),
-      favicon = require('serve-favicon'), 
-      os = require ('os'), 
-      hostname = os.hostname();
+      favicon = require('serve-favicon');
 
 app.use (expressSanitizer());
 app.use (express.json());
 // eslint-disable-next-line no-undef
 app.use (favicon(path.join(__dirname, 'favicon.ico')));
 app.use (cors(['https://verilog.ecn.purdue.edu', 'https://engineering.purdue.edu']));
-app.use ('/assets', express.static('assets'));
-app.use ('/md', express.static('md'));
+app.use ('/assets', express.static(path.join(__dirname, '/assets')));
+app.use ('/md', express.static(path.join(__dirname, '/md')));
 
 app.get ('/', async function (req, res) {
     res.sendFile (__dirname + '/index.html');

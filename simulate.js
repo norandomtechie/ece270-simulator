@@ -131,7 +131,7 @@ function connection(ws, request) {
                 });
                 workspace.forEach (file => {
                     if (file.code.includes("give us a demo please")) {
-                        file.code = fs.readFileSync('sim_modules/fpgademo.v', 'utf8', function (err, data) {
+                        file.code = fs.readFileSync(`${__dirname}/sim_modules/fpgademo.v`, 'utf8', function (err, data) {
                             if (err) throw err;
                         });
                     }
@@ -466,10 +466,10 @@ function connection(ws, request) {
 
                     debugLog("Starting " + ws.unique_client)
 
-                    var args = ('+interp sim_modules/tb_ice40.sv sim_modules/reset.v ' +
-                        'sim_modules/cells_sim_timing.v ' +
-                        'sim_modules/cells_map_timing.v ' +
-                        '/tmp/tmpcode/' + ws.unique_client + '/struct_code.v -sv_lib sim_modules/svdpi.so').split(" ")
+                    var args = (`+interp ${__dirname}/sim_modules/tb_ice40.sv ${__dirname}/sim_modules/reset.v ` +
+                        `${__dirname}/sim_modules/cells_sim_timing.v ` +
+                        `${__dirname}/sim_modules/cells_map_timing.v ` +
+                        `/tmp/tmpcode/${ws.unique_client}/struct_code.v -sv_lib ${__dirname}/sim_modules/svdpi.so`).split(" ")
 
                     env.SVDPI_TO_PIPE = '1';
                     env.SVDPI_FROM_PIPE = '0';

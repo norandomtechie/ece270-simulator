@@ -381,7 +381,7 @@ function ice40hx8k_handler() {
 			"SS5": 0, "SS4": 0, "SS3": 0, "SS2": 0, "SS1": 0, "SS0": 0
 		})
 	}
-	ws = new WebSocket("ws://" + window.location.host + "/")
+	ws = new WebSocket(window.location.protocol.replace ('http', 'ws') + "//" + window.location.host + "/")
 	ws.currentWorkspace = window.active_tab.getAttribute ('workspace')
 	Array.from ($('.editor-tab')).forEach (e => e.removeAttribute ('errors'))
 
@@ -825,7 +825,7 @@ function demo_handler() {
 		})
 	}
 
-	ws = new WebSocket("ws://" + window.location.host + "/")
+	ws = new WebSocket(window.location.protocol.replace ('http', 'ws') + "//" + window.location.host + "/")
 	update_status("CONNECTING", "Status: Connecting...")
 	var synthesis_interval = ""
 	ws.onmessage = function (event) {
