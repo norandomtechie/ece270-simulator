@@ -28,6 +28,8 @@ do
             exit 1
         fi
         apt-get update
+        # if repository was already downloaded, 
+        # no need to clone again
         if [ ! -d "${foldernames["$command"]}" ]
         then
             git clone "${gitlinks["$command"]}"

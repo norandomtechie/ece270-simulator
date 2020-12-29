@@ -1,3 +1,6 @@
-*verilog.log
+**verilog.log
 node_modules/
 serverlog
+analytics/simulation.log
+**/svdpi.o
+**/ignore/

@@ -4,18 +4,45 @@
     First creation date: 7/20/19
 
     Description: 
-    Entry point for simulator application. Run as sudo to grab the
-    certificates for the domain name to run an HTTPS server on port 443.
+    Entry point for simulator application.
     
     Sets up and configures the Express app which will handle the regular
     HTTP routes, including features for login, signup, password reset,
     session handling, landing pages, static content, etc.
-    The routes themselves are in route.js.
-
-    Configures entry point for WebSocket handling. When the server object
-    receives an Upgrade request, it first checks for session data to
-    check if it was validated, then calls the WS handler from simulate.js.
 */
+
+const fs = require('fs-extra'),
+      path = require('path'),
+      cp = require('child_process'),
+      process = require('process'),
+      express = require ('express'),
+      app = express(),
+      cors = require ('cors'),
+      session = require('express-session'),
+      expressSanitizer = require('express-sanitizer'),
+      favicon = require('serve-favicon'), 
+      os = require ('os'), 
+      hostname = os.hostname();
+
+app.use (expressSanitizer());
+app.use (express.json());
+// eslint-disable-next-line no-undef
+app.use (favicon(path.join(__dirname, 'favicon.ico')));
+app.use (cors(['https://verilog.ecn.purdue.edu', 'https://engineering.purdue.edu']));
+app.use ('/assets', express.static('assets'));
+app.use ('/md', express.static('md'));
+
+app.get ('/', async function (req, res) {
+    res.sendFile (__dirname + '/index.html');
+});
+
+app.get ('/help', function (req, res) {
+    res.send (fs.readFileSync ('manual.html').toString())
+});
+
+app.get ('/help/*', function (req, res) {
+    res.sendFile (__dirname + '/md/' + req.url.replace ('/help/', ''))
+});
 
 function debugLog (message) {
     console.log (getTime() + ": " + message)
@@ -26,27 +53,30 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
-const fs = require('fs-extra'),
-      path = require('path'),
-      process = require('process'),
-      express = require ('express'),
-      app = express(),
-      expressSanitizer = require('express-sanitizer'),
-      favicon = require('serve-favicon');
+function exitHandler (options) {
+    if (options.cleanup) debugLog ("Fatal SIGINT occurred")
+    if (options.exit) process.exit()
+}
 
-app.use (expressSanitizer());
-app.use (express.json());
-// eslint-disable-next-line no-undef
-app.use (favicon(path.join(__dirname, 'favicon.ico')));
-app.use ('/assets', express.static(__dirname + '/assets'));
-app.use ('/md', express.static(__dirname + '/md'));
+process.on ('SIGTERM', function () {
+    debugLog ("Simulator main process was SIGTERM'ed! Exiting!")
+    process.exit()
+})
 
-app.get ('/', function (req, res) {
-    res.sendFile (__dirname + '/index.html')
-});
+process.on ('SIGINT', exitHandler.bind (null, {exit: true}))
+process.on ('uncaughtException', function (err) {
+    debugLog ('uncaughtException! Details: \n')
+    console.error (err)
+})
 
-app.get ('/help', function (req, res) {
-    res.send (fs.readFileSync ('manual.html').toString())
-});
+function getTime()
+{
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var min = (today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes())
+    var sec = (today.getSeconds() < 10 ? '0' + today.getSeconds() : today.getSeconds())
+    var time = today.getHours() + ":" + min + ":" + sec;
+    return (date + ' ' + time);
+}
 
 module.exports = app

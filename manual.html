@@ -46,6 +46,9 @@
         code {
             color: var(--text-color);
         }
+        pre > code {
+            color: #fff;
+        }
         .restricted {
             color: #a44;
         }
@@ -85,6 +88,7 @@
             <a href="#" onclick='displayPage ("md/intro.md")'><p class="subitem">Introduction</p></a>
             <a href="#" onclick='displayPage ("md/firsttime.md")'><p class="subitem">Quick Start</p></a>
             <a href="#" onclick='displayPage ("md/tipstricks.md")'><p class="subitem">Tips and Tricks</p></a>
+            <a href="#" onclick='displayPage ("md/workspaces.md")'><p class="subitem" style="font-size: 16px">&nbsp;&nbsp;&nbsp;&nbsp;Workspaces</p></a>
             <a href="#" onclick='displayPage ("md/featurelist.md")'><p class="subitem">Feature List</p></a>
             <a href="#" onclick='displayPage ("md/changelog.md")'><p class="subitem">Changelog</p></a>
         </div>
@@ -110,7 +114,12 @@
         else if (localStorage.ice40DarkMode == "false")
             document.documentElement.setAttribute ("data-theme", "light")
         $("#all").animate ({'opacity': 1}, 1000)
-        displayPage ("md/intro.md")
+        if (window.location.search.match (/\?md=([a-z0-9]+)/)) {
+            displayPage ("md/" + window.location.search.match (/\?md=([a-z0-9]+)/)[1] + ".md")
+        }
+        else {
+            displayPage ("md/intro.md")
+        }
     }
 </script>
 </html> 

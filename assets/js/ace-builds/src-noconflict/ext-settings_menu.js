@@ -65,6 +65,7 @@ dom.importCssString(cssText);
 
 module.exports.overlayPage = function overlayPage(editor, contentElement, callback) {
     var closer = document.createElement('div');
+    var ignoreFocusOut = false;
 
     function documentEscListener(e) {
         if (e.keyCode === 27) {
@@ -72,22 +73,32 @@ module.exports.overlayPage = function overlayPage(editor, contentElement, callba
         }
     }
 
-    async function close() {
+    function close() {
         if (!closer) return;
-        await blurMainView(1)
         document.removeEventListener('keydown', documentEscListener);
         closer.parentNode.removeChild(closer);
-        editor.focus();
+        if (editor) {
+            editor.focus();
+        }
         closer = null;
         callback && callback();
+    }
+    function setIgnoreFocusOut(ignore) {
+        ignoreFocusOut = ignore;
+        if (ignore) {
+            closer.style.pointerEvents = "none";
+            contentElement.style.pointerEvents = "auto";
+        }
     }
 
     closer.style.cssText = 'margin: 0; padding: 0; ' +
         'position: fixed; top:0; bottom:0; left:0; right:0;' +
         'z-index: 9990; ' +
-        'background-color: rgba(0, 0, 0, 0.3);';
-    closer.addEventListener('click', function() {
-        close();
+        (editor ? 'background-color: rgba(0, 0, 0, 0.3);' : '');
+    closer.addEventListener('click', function(e) {
+        if (!ignoreFocusOut) {
+            close();
+        }
     });
     document.addEventListener('keydown', documentEscListener);
 
@@ -97,9 +108,12 @@ module.exports.overlayPage = function overlayPage(editor, contentElement, callba
 
     closer.appendChild(contentElement);
     document.body.appendChild(closer);
-    editor.blur();
+    if (editor) {
+        editor.blur();
+    }
     return {
-        close: close
+        close: close,
+        setIgnoreFocusOut: setIgnoreFocusOut
     };
 };
 
@@ -146,22 +160,23 @@ var supportedModes = {
     ABC:         ["abc"],
     ActionScript:["as"],
     ADA:         ["ada|adb"],
+    Alda:        ["alda"],
     Apache_Conf: ["^htaccess|^htgroups|^htpasswd|^conf|htaccess|htgroups|htpasswd"],
+    Apex:        ["apex|cls|trigger|tgr"],
+    AQL:         ["aql"],
     AsciiDoc:    ["asciidoc|adoc"],
     ASL:         ["dsl|asl"],
     Assembly_x86:["asm|a"],
     AutoHotKey:  ["ahk"],
-    Apex:        ["apex|cls|trigger|tgr"],
-    AQL:         ["aql"],
     BatchFile:   ["bat|cmd"],
     C_Cpp:       ["cpp|c|cc|cxx|h|hh|hpp|ino"],
     C9Search:    ["c9search_results"],
-    Crystal:     ["cr"],
     Cirru:       ["cirru|cr"],
     Clojure:     ["clj|cljs"],
     Cobol:       ["CBL|COB"],
     coffee:      ["coffee|cf|cson|^Cakefile"],
     ColdFusion:  ["cfm"],
+    Crystal:     ["cr"],
     CSharp:      ["cs"],
     Csound_Document: ["csd"],
     Csound_Orchestra: ["orc"],
@@ -209,6 +224,7 @@ var supportedModes = {
     Java:        ["java"],
     JavaScript:  ["js|jsm|jsx"],
     JSON:        ["json"],
+    JSON5:       ["json5"],
     JSONiq:      ["jq"],
     JSP:         ["jsp"],
     JSSM:        ["jssm|jssm_state"],
@@ -230,30 +246,35 @@ var supportedModes = {
     Mask:        ["mask"],
     MATLAB:      ["matlab"],
     Maze:        ["mz"],
+    MediaWiki:   ["wiki|mediawiki"],
     MEL:         ["mel"],
+    MIPS:        ["s|asm"],
     MIXAL:       ["mixal"],
     MUSHCode:    ["mc|mush"],
     MySQL:       ["mysql"],
     Nginx:       ["nginx|conf"],
-    Nix:         ["nix"],
     Nim:         ["nim"],
+    Nix:         ["nix"],
     NSIS:        ["nsi|nsh"],
+    Nunjucks:    ["nunjucks|nunjs|nj|njk"],
     ObjectiveC:  ["m|mm"],
     OCaml:       ["ml|mli"],
     Pascal:      ["pas|p"],
     Perl:        ["pl|pm"],
     Perl6:       ["p6|pl6|pm6"],
     pgSQL:       ["pgsql"],
-    PHP_Laravel_blade: ["blade.php"],
     PHP:         ["php|inc|phtml|shtml|php3|php4|php5|phps|phpt|aw|ctp|module"],
-    Puppet:      ["epp|pp"],
+    PHP_Laravel_blade: ["blade.php"],
     Pig:         ["pig"],
     Powershell:  ["ps1"],
     Praat:       ["praat|praatscript|psc|proc"],
+    Prisma:      ["prisma"],
     Prolog:      ["plg|prolog"],
     Properties:  ["properties"],
     Protobuf:    ["proto"],
+    Puppet:      ["epp|pp"],
     Python:      ["py"],
+    QML:         ["qml"],
     R:           ["r"],
     Razor:       ["cshtml|asp"],
     RDoc:        ["Rd"],
@@ -271,6 +292,7 @@ var supportedModes = {
     SJS:         ["sjs"],
     Slim:        ["slim|skim"],
     Smarty:      ["smarty|tpl"],
+    Smithy:      ["smithy"],
     snippets:    ["snippets"],
     Soy_Template:["soy"],
     Space:       ["space"],
@@ -351,7 +373,7 @@ var themeData = [
     ["Solarized Light"],
     ["TextMate"       ],
     ["Tomorrow"       ],
-    ["XCode"          ],
+    ["Xcode"          ],
     ["Kuroir"],
     ["KatzenMilch"],
     ["SQL Server"           ,"sqlserver"               , "light"],
@@ -368,6 +390,7 @@ var themeData = [
     ["Merbivore Soft"       ,"merbivore_soft"          ,  "dark"],
     ["Mono Industrial"      ,"mono_industrial"         ,  "dark"],
     ["Monokai"              ,"monokai"                 ,  "dark"],
+    ["Nord Dark"            ,"nord_dark"               ,  "dark"],
     ["Pastel on dark"       ,"pastel_on_dark"          ,  "dark"],
     ["Solarized Dark"       ,"solarized_dark"          ,  "dark"],
     ["Terminal"             ,"terminal"                ,  "dark"],
@@ -397,9 +420,9 @@ exports.themes = themeData.map(function(data) {
 
 ace.define("ace/ext/options",["require","exports","module","ace/ext/menu_tools/overlay_page","ace/lib/dom","ace/lib/oop","ace/config","ace/lib/event_emitter","ace/ext/modelist","ace/ext/themelist"], function(require, exports, module) {
 "use strict";
-var overlayPage = require('./menu_tools/overlay_page').overlayPage;
 
- 
+require("./menu_tools/overlay_page");
+
 var dom = require("../lib/dom");
 var oop = require("../lib/oop");
 var config = require("../config");
@@ -438,7 +461,8 @@ var optionGroups = {
                 { caption : "Ace", value : null },
                 { caption : "Vim", value : "ace/keyboard/vim" },
                 { caption : "Emacs", value : "ace/keyboard/emacs" },
-                { caption : "Sublime", value : "ace/keyboard/sublime" }
+                { caption : "Sublime", value : "ace/keyboard/sublime" },
+                { caption : "VSCode", value : "ace/keyboard/vscode" }
             ]
         },
         "Font Size": {
@@ -481,6 +505,7 @@ var optionGroups = {
         "Soft Tabs": [{
             path: "useSoftTabs"
         }, {
+            ariaLabel: "Tab Size",
             path: "tabSize",
             type: "number",
             values: [2, 3, 4, 8, 16]
@@ -502,6 +527,12 @@ var optionGroups = {
         "Enable Behaviours": {
             path: "behavioursEnabled"
         },
+        "Wrap with quotes": {
+            path: "wrapBehavioursEnabled"
+        },
+        "Enable Auto Indent": {
+            path: "enableAutoIndent"
+        },
         "Full Line Selection": {
             type: "checkbox",
             values: "text|line",
@@ -516,11 +547,12 @@ var optionGroups = {
         "Show Indent Guides": {
             path: "displayIndentGuides"
         },
-        "Persistent Scrollbar": [{
+        "Persistent HScrollbar": {
             path: "hScrollBarAlwaysVisible"
-        }, {
+        },
+        "Persistent VScrollbar": {
             path: "vScrollBarAlwaysVisible"
-        }],
+        },
         "Animate scrolling": {
             path: "animatedScroll"
         },
@@ -539,6 +571,7 @@ var optionGroups = {
         "Show Print Margin": [{
             path: "showPrintMargin"
         }, {
+            ariaLabel: "Print Margin",
             type: "number",
             path: "printMarginColumn"
         }],
@@ -601,10 +634,10 @@ var OptionPanel = function(editor, element) {
     
     this.render = function() {
         this.container.innerHTML = "";
-        buildDom(["table", {id: "controls"}, 
+        buildDom(["table", {role: "presentation", id: "controls"}, 
             this.renderOptionGroup(optionGroups.Main),
             ["tr", null, ["td", {colspan: 2},
-                ["table", {id: "more-controls"}, 
+                ["table", {role: "presentation", id: "more-controls"}, 
                     this.renderOptionGroup(optionGroups.More)
                 ]
             ]],
@@ -647,17 +680,20 @@ var OptionPanel = function(editor, element) {
         }
         
         if (option.type == "buttonBar") {
-            control = ["div", option.items.map(function(item) {
+            control = ["div", {role: "group", "aria-labelledby": option.path + "-label"}, option.items.map(function(item) {
                 return ["button", { 
                     value: item.value, 
                     ace_selected_button: value == item.value, 
+                    'aria-pressed': value == item.value, 
                     onclick: function() {
                         self.setOption(option, item.value);
                         var nodes = this.parentNode.querySelectorAll("[ace_selected_button]");
                         for (var i = 0; i < nodes.length; i++) {
                             nodes[i].removeAttribute("ace_selected_button");
+                            nodes[i].setAttribute("aria-pressed", false);
                         }
                         this.setAttribute("ace_selected_button", true);
+                        this.setAttribute("aria-pressed", true);
                     } 
                 }, item.desc || item.caption || item.name];
             })];
@@ -665,6 +701,11 @@ var OptionPanel = function(editor, element) {
             control = ["input", {type: "number", value: value || option.defaultValue, style:"width:3em", oninput: function() {
                 self.setOption(option, parseInt(this.value));
             }}];
+            if (option.ariaLabel) {
+                control[1]["aria-label"] = option.ariaLabel;
+            } else {
+                control[1].id = key;
+            }
             if (option.defaults) {
                 control = [control, option.defaults.map(function(item) {
                     return ["button", {onclick: function() {
@@ -708,11 +749,13 @@ var OptionPanel = function(editor, element) {
     this.renderOption = function(key, option) {
         if (option.path && !option.onchange && !this.editor.$options[option.path])
             return;
-        this.options[option.path] = option;
-        var safeKey = "-" + option.path;
+        var path = Array.isArray(option) ? option[0].path : option.path;
+        this.options[path] = option;
+        var safeKey = "-" + path;
+        var safeId = path + "-label";
         var control = this.renderOptionControl(safeKey, option);
         return ["tr", {class: "ace_optionsMenuEntry"}, ["td",
-            ["label", {for: safeKey}, key]
+            ["label", {for: safeKey, id: safeId}, key]
         ], ["td", control]];
     };
     
@@ -748,12 +791,11 @@ ace.define("ace/ext/settings_menu",["require","exports","module","ace/ext/option
 "use strict";
 var OptionPanel = require("./options").OptionPanel;
 var overlayPage = require('./menu_tools/overlay_page').overlayPage;
-async function showSettingsMenu(editor) {
+function showSettingsMenu(editor) {
     if (!document.getElementById('ace_settingsmenu')) {
         var options = new OptionPanel(editor);
         options.render();
         options.container.id = "ace_settingsmenu";
-        await blurMainView(0)
         overlayPage(editor, options.container);
         options.container.querySelector("select,input,button,checkbox").focus();
     }

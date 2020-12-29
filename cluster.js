@@ -2,14 +2,14 @@
     cluster.js
     Author: Niraj Menon
     First creation date: 1/9/20
+    Last modified: 12/28/2020
 
     Description: 
     Instantiates the WebSocket server and related methods, and spawns
     eight instances of the server code given in server.js.
 
-    Technically, the entry point is in server.js, but cluster.js is
-    the top level file since it sits on top of the eight server.js
-    instances.
+    If this is from the public ece270-simulator repo, it only runs a 
+    single instance of server.js.
 */
 
 const http = require("http")
@@ -18,9 +18,10 @@ const fs = require('fs')
 const cp = require('child_process')
 const hostname = os.hostname() // needs the thing for checking which server we're using
 const url = require('url')
-const app = require ('./server')
 
+const app = require ('./server')
 const server = http.createServer(app)
+
 const WebSocket = require('ws')
 const wss = new WebSocket.Server ({ clientTracking: true, noServer: true })
 
@@ -65,7 +66,7 @@ else {
             wss.emit ('simulate', ws, request);
         });
     });
-    server.listen (4500, '0.0.0.0', null, function() {
+    server.listen (4500, '127.0.0.1', null, function() {
         console.log ("Simulator started and running on port 4500.")
     });
 }

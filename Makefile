@@ -22,6 +22,7 @@ svdpi.o: $(FILES)
 svdpi.so: $(FILEPATH)/svdpi.o
 	$(LD) $(LFLAGS) $(FILEPATH)/svdpi.o -o $(OBJPATH)/svdpi.so
 
+# this is for testing the SVDPI library directly by just typing the inputs in via stdin
 run: $(OBJPATH)/svdpi.so
 	$(CVC) +interp $(OBJPATH)/tb_ice40.sv $(FILEPATH)/example.v $(OBJPATH)/reset.v -sv_lib $(OBJPATH)/svdpi.so
 

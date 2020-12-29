@@ -24,7 +24,7 @@ const os = require('os');
 const cp = require('child_process');
 const crypto = require('crypto');
 const path = require('path');
-const rimraf = require('rimraf');
+const rimraf = require('rimraf'), hostname = os.hostname();
 
 /* 
     https://stackoverflow.com/questions/18052762/remove-directory-which-is-not-empty
@@ -114,69 +114,67 @@ function connection(ws, request) {
     ws.on('message', function incoming(message) {
         switch (ws.currentState) {
             case "INIT":
-                code = message
-                if (code.includes("give us a demo please")) {
-                    ws.verilogCode = fs.readFileSync(__dirname + '/sim_modules/fpgademo.v', 'utf8', function (err, data) {
-                        if (err) throw err;
-                    });
-                }
-                else if (code == "") {
-                    ws.send("Error: no code found.")
-                    ws.close()
-                    return
-                }
-                else if (code.match("module") && !code.match(/(module top ?[^\)]+)/)) {
-                    ws.send("Compilation failed with the following error:\nLine 1: There appears to be Verilog, but the top module couldn't be found. Please make sure that you're starting your code within the template!")
-                    ws.close()
-                    return
-                }
-                else if (code.match("run/")) {
-                    ws.verilogCode = fs.readFileSync(code + '.v').toString()
-                }
-                else {
-                    ws.verilogCode = code
-                }
+                var workspace = JSON.parse (message);
+                ws.codelist = [];
+                var hash = crypto.createHash('sha256');
 
-                var hash = crypto.createHash('sha256')
-
-                hash.update(ws.verilogCode + (new Date().getTime()).toString())
-                ws.unique_client = hash.digest('hex')
-                ws.simulator_object = null
-
+                workspace.forEach (file => { hash.update(file.code) });
+                
+                hash.update ((new Date().getTime()).toString());
+                hash.update (username);
+                ws.unique_client = hash.digest('hex');
+                ws.simulator_object = null;
+                ws.filenames = [];
+                
                 fs.mkdirSync(path.resolve('/tmp/tmpcode', ws.unique_client), (err) => {
                     if (err) { throw err; }
-                })
-                fs.writeFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'code.v'), ws.verilogCode, 'utf8', function (err) {
-                    if (err) { throw err; }
-                })
+                });
+                workspace.forEach (file => {
+                    if (file.code.includes("give us a demo please")) {
+                        file.code = fs.readFileSync('sim_modules/fpgademo.v', 'utf8', function (err, data) {
+                            if (err) throw err;
+                        });
+                    }
+                    fs.writeFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, file.name), file.code, 'utf8', function (err) {
+                        if (err) { throw err; }
+                    });
+                    ws.filenames.push (file.name);
+                    ws.codelist.push (file.code);
+                });
 
                 // Triggering "Synthesizing..." on webpage
                 ws.send("Processing Verilog code...")
 
                 var error = [], modded_error = [], error_line = []
-                
+                var FILES;
                 try {
                     const VERILATOR = "verilator"
-                    const VFLAGS    = "--lint-only -Wno-width"
-                    const FILE      = path.resolve('/tmp/tmpcode', ws.unique_client, 'code.v')
-		    const WARNINGS  = ['%Warning-IMPLICIT']
-                    var err_regex = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + FILE + ":([0-9]+):[0-9]+: (.+)", "g")
-                    var err_regex_single = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + FILE + ":([0-9]+):[0-9]+: (.+)")
-
-                    cp.execSync ([VERILATOR, VFLAGS, FILE].join (" "), { cwd: __dirname })
+                    const VFLAGS    = "--lint-only --top-module top"
+                          FILES     = `${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `
+                          FILES     += ws.filenames.filter (f => f.endsWith ('.sv')).map (f => path.resolve ('/tmp/tmpcode', ws.unique_client, f)).join (' ')
+                    const WARNINGS  = ['%Warning-WIDTH']
+                    var err_regex = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)", "g")
+                    var err_regex_single = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)")
+                    var ignore_err_rgx = /(This may be because there\'s no search path specified with)/
+                    
+                    cp.execSync ([VERILATOR, VFLAGS, FILES].join (" "), { cwd: __dirname })
                 }
                 catch (e) {
                     if (e) {
+                        console.error (e.stderr.toString())
                         var errors = []
                         ws.verilatorLog = e.message
                         if (e.message.match (err_regex)) {
                             e.message.match (err_regex).forEach (elm => {
-                                if (errors.length - 1 >= 0 && (errors[errors.length - 1].line == elm.match (err_regex_single)[1]))
-                                    errors[errors.length - 1].error = errors[errors.length - 1].error + "\n" + elm.match (err_regex_single)[2]
-                                else {
+                                var json_ignore = elm.includes ('Cannot find file containing module') && ws.filenames.filter (f => f.endsWith ('.json')).length > 0
+                                var ignore_errors = ignore_err_rgx.test (elm)
+                                if (errors.length - 1 >= 0 && (errors[errors.length - 1].line == elm.match (err_regex_single)[2]) && !json_ignore && !ignore_errors)
+                                    errors[errors.length - 1].error = errors[errors.length - 1].error + "\n" + elm.match (err_regex_single)[3]
+                                else if (!json_ignore && !ignore_errors) {
                                     errors.push ({
-                                        line: elm.match (err_regex_single)[1],
-                                        error: elm.match (err_regex_single)[2]
+                                        name: elm.match (err_regex_single)[1],
+                                        line: elm.match (err_regex_single)[2],
+                                        error: elm.match (err_regex_single)[3]
                                     })
                                 }
                             })
@@ -187,9 +185,9 @@ function connection(ws, request) {
                         error_line = []
                     }
                 }
-                
+
                 error_line.forEach (err => {
-                    modded_error.push ("Line " + err.line + ": Verilator - " + err.error)
+                    modded_error.push (err.name + ": Line " + err.line + ": Verilator - " + err.error)
                 })
 
                 if (modded_error.length > 0) {
@@ -204,21 +202,27 @@ function connection(ws, request) {
                     return
                 }
 
+                // remove yosys files from list
+                FILES = FILES.replace (`${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `, '')
+                JSONS = ws.filenames.filter (f => f.endsWith ('.json'))
 
                 try {
                     yosys_out = cp.execSync('yosys -p ' + 
-                                            '"read_verilog -sv ' + __dirname + '/sim_modules/support.v;' + 
-                                            ' read_verilog -sv /tmp/tmpcode/' + ws.unique_client + '/code.v; ' + 
+                                            (JSONS.length > 0 ? ('"read_json ' + JSONS.join (' ') + '; ') : '" ') +
+                                            ' read_verilog -sv ' +
+                                            FILES + '; ' +
                                             'synth_ice40 -top top; ' +
-                                            'write_verilog /tmp/tmpcode/' + ws.unique_client + '/struct_code.v" ' + 
-                                            '-l /tmp/tmpcode/' + ws.unique_client + '/yosyslog', {timeout: 30000, cwd: __dirname})
+                                            'write_verilog /tmp/tmpcode/' + ws.unique_client + '/struct_code.v; ' + 
+                                            'write_json /tmp/tmpcode/' + ws.unique_client + '/struct.json;" ' + 
+                                            '-l /tmp/tmpcode/' + ws.unique_client + '/yosyslog', {timeout: 30000, cwd: path.resolve ('/tmp/tmpcode', ws.unique_client)})
+                    ws.yosysJSON = fs.readFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'struct.json')).toString()
                     fs.unlinkSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog'))
                     ws.initYosys = true
                 }
                 catch (ex) {
                     if (ex.errno == 'ETIMEDOUT') {
                         // Can't kill Yosys by PID since it changes after execSync for some weird reason
-                        // So we gotta use ps and find it
+                        // So we got to use ps and find it by its unique client ID
                         psy = cp.execSync ("ps -eo pcpu,pid,args | sort -k1 -r -n | grep yosys").toString().split ("\n")
                         psy = psy.map (el => {
                             if (el.slice (0, 1) == ' ')
@@ -232,7 +236,13 @@ function connection(ws, request) {
                             pcpu = parseFloat (proc.slice (0, proc.indexOf (" "))); proc = proc.slice (proc.indexOf (" ") + 1)
                             pid = parseInt (proc.slice (0, proc.indexOf (" "))); args = proc.slice (proc.indexOf (" ") + 1)
                             if (parseFloat (pcpu) > 90 && args.includes ("yosys") && args.includes (ws.unique_client)) {
-                                process.kill (pid)
+				try {
+                                    process.kill (pid)
+				}
+				catch (err) {
+					console.error ("Unable to kill Yosys PID " + pid || 'pid undefined')
+					console.error (err)
+				}
                             }
                         })
                         ws.send ("YOSYS HUNG: " + ex.output.toString())
@@ -241,6 +251,7 @@ function connection(ws, request) {
                     }
 
                     yosys_out = fs.readFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog'))
+                    ws.yosysJSON = 'No JSON was produced because Yosys ran into an error.'
                     fs.unlinkSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog'))
                     ws.initYosys = false
 
@@ -274,47 +285,65 @@ function connection(ws, request) {
                     else  // Is a mapping error
                     {
                         related_error = indexOfReg(logarray, (/Error/i))
-                        debugLog("Yosys error caught: ")
-                        console.log(related_error)
-                        skippable_error_regex = /is not part of the design|syntax error, unexpected \$end/i
+                        skippable_error_regex = /syntax error, unexpected \$end/i
                         if (related_error && !related_error.message.match(skippable_error_regex)) {
                             // Lazy catch-all for if there was an error but no other details were captured.
                             if (related_error.message.includes('server error')) {
-                                error.push("**/tmp/tmpcode/randomfilereplacement007/code.v(1) [SERVER_ERROR] Your code has errors unrecognized by the server. Make sure to check for missing semicolons, wrong flip flop declarations and so on.")
+                                error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [SERVER_ERROR] Your code has errors unrecognized by the server. Make sure to check for missing semicolons, wrong flip flop declarations and so on.")
                             }
                             // If students try to pull an output low when it is already connected to a high.
                             if (related_error.message.includes("Mismatch in directionality for cell port")) {
-                                codeline = related_error.message.replace(/ERROR: Mismatch in directionality for cell port [^ ]+ /, '')
-                                error.push("**/tmp/tmpcode/randomfilereplacement007/code.v(1) [SYNTHESIS_ERROR] You are trying to drive a signal with two different sources. More information is in: " + codeline)
+                                var codeline = related_error.message.replace(/ERROR: Mismatch in directionality for cell port [^ ]+ /, '')
+                                error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [SYNTHESIS_ERROR] You are trying to drive a signal with two different sources. More information is in: " + codeline)
                             }
                             // Wrong flip flop reset logic
                             else if (related_error.message.includes("Multiple edge sensitive events")) {
-                                codeline = logarray[logarray.indexOf(related_error.message) - 1]
-                                codeline = parseInt(codeline.match(/code\.v:([0-9]+)/)[1])
-                                error.push("**/tmp/tmpcode/randomfilereplacement007/code.v(" + codeline + ") [SYNTHESIS_ERROR] This flip flop does not have correct reset logic.")
+                                var codeline = logarray[logarray.indexOf(related_error.message) - 1]
+                                var filename = codeline.match(/([\w]+\.sv):([0-9]+)/)[1]
+                                codeline = parseInt(codeline.match(/([\w]+\.sv):([0-9]+)/)[2])
+                                error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + codeline + ") [SYNTHESIS_ERROR] This flip flop does not have correct reset logic.")
                             }
                             // For all 'if (reset) perform invalid logic' statements
                             else if (related_error.message.match(/yields non-constant value/i)) {
-                                signal = logarray[related_error.lineno].match(/\\([\w]+) yields non-constant value/i)[1]
-                                msg = "**/tmp/tmpcode/randomfilereplacement007/code.v(" + related_error.lineno + ")"
+                                var signal = logarray[related_error.lineno].match(/\\([\w]+) yields non-constant value/i)[1]
+                                msg = "**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(" + related_error.lineno + ")"
                                 msg += "Two asynchronous resets not allowed in flip flop. '" + signal + "' does not appear to be a valid reset for this FF."
                                 error.push(msg)
                             }
                             // Edge triggering signals for the flip flop cannot be mapped to real flip-flop models.
                             else if (related_error.message.match(/Found non-synthesizable event list!/i)) {
-                                codeline = logarray[logarray.indexOf(related_error.message)]
-                                codeline = parseInt(codeline.match(/code\.v:([0-9]+)/)[1])
-                                error.push("**/tmp/tmpcode/randomfilereplacement007/code.v(" + codeline + ") [SYNTHESIS_ERROR] The port list for this flip flop cannot be mapped to real hardware.")
+                                var codeline = logarray[logarray.indexOf(related_error.message)]
+                                var filename = codeline.match(/([\w]+\.sv):([0-9]+)/)[1]
+                                codeline = parseInt(codeline.match(/([\w]+\.sv):([0-9]+)/)[2])
+                                error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + codeline + ") [SYNTHESIS_ERROR] The port list for this flip flop cannot be mapped to real hardware.")
+                            }
+                            // missing module errors (safest if checked here since JSON would have been parsed)
+                            else if (related_error.message.match(/referenced in module [^ ]+ in cell [^ ]+ is not part of the design/i)) {
+                                error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [SYNTHESIS_ERROR] " + related_error.message.replace ('ERROR: ', ''))
+                            }
+                            else if (related_error.message.match(/ERROR: Module `top' not found!/i)) {
+                                error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [MISSING_MODULE] The top module appears to be missing.  ")
+                            }
+                            else if (related_error.message.match(/ERROR: Identifier `[^']+' doesn't map to any signal/i)) {
+                                [ign, message, filename, lineno] = related_error.message.match (/ERROR: (Identifier `[^']+' doesn't map to any signal) at \/tmp\/tmpcode\/[a-z0-9]+\/([^\.]+\.sv):([0-9]+)/)
+                                error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + lineno + ") " + message)
                             }
                             else {
+                                general_error = /\/tmp\/tmpcode\/[a-z0-9]+\/([^\.]+\.sv)\:([0-9]+)\: ?(.+)/
                                 try {
-                                    general_error = /\/tmp\/tmpcode\/[a-z0-9]+\/code\.v\:([0-9]+)\: (.+)/
-                                    lineno = related_error.message.match(general_error)[1]
-                                    message = related_error.message.match(general_error)[2]
-                                    error.push("**/tmp/tmpcode/randomfilereplacement007/code.v(" + lineno + ") " + message)
+                                    filename = related_error.message.match(general_error)[1]
+                                    lineno = related_error.message.match(general_error)[2] || "1"
+                                    message = related_error.message.match(general_error)[3]
+                                    error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + lineno + ") " + message)
                                 }
                                 catch (ex) {
-                                    error.push("**/tmp/tmpcode/randomfilereplacement007/code.v(1) No line number information: " + related_error.message)
+                                    var message = related_error.message
+                                    if (related_error.message.includes ("cmd error aborting 'source ")) {   // known to appear when outputs are multiply driven
+                                        error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/"+ ws.filenames.filter (f => f.endsWith ('.sv'))[0] +"(1)No line number information - " + message + "\nPossible duplicate connections to outputs.")
+                                    }
+                                    else {
+                                        error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/"+ ws.filenames.filter (f => f.endsWith ('.sv'))[0] +"(1)No line number information - " + message)
+                                    }
                                 }
                             }
                         }
@@ -357,37 +386,39 @@ function connection(ws, request) {
                     // ignore.
                 }
 
-                linebyline = ws.verilogCode.split('\n')
-                linebyline.filter(function (v, i, a) {
-                    // Test for flip flops with both asynchronous reset and set, which are not valid flip flops in hardware.
-                    while (blif_unmapped_ffs.length > 0) {
-                        missing_flip_flop = blif_unmapped_ffs[0]
-                        clock = missing_flip_flop.match("C\=[^ ]+")
-                        console.log("clock: " + clock)
-                        reset = missing_flip_flop.match("R\=[^ ]+")
-                        console.log("reset: " + reset)
-                        always_regex = new RegExp("always ?@ ?\\((?:pos|neg)edge [^ ,]+, ?(?:pos|neg)edge [^ ,]+, ?(?:pos|neg)edge [^\\)]+\\)")
-                        ws.verilogCode.split('\n').filter(function (v, i, a) {
-                            if (v.match(always_regex)) {
-                                // console.log (v)
-                                message = "[CUSTOM_ERROR] Flip flops cannot have both an asynchronous set and reset. Use only either one."
-                                error.push('**/tmp/tmpcode/randomfilereplacement007/code.v(' + (i + 1).toString() + ") " + message)
-                            }
-                        })
-
-                        blif_unmapped_ffs = blif_unmapped_ffs.slice(1)
-                    }
-                    // if (v.match (/always ?@ ?\((?:pos|neg)edge [^ ,]+ ?, ?(?:pos|neg)edge [^ ,]+ ?, ?(?:pos|neg)edge [^ \),]+ ?\)/))
-                    // {
-                    //     message = "[CUSTOM_ERROR] Flip flops cannot have both an asynchronous set and reset. Use only either one."
-                    //     error.push ('**/tmp/tmpcode/randomfilereplacement007/code.v(' + (i + 1).toString() + ") " + message)
-                    // }
-
-                    reg_regex = !v.match(/reg +[^=]+\={2}/i) && !v.match(/reg +\=+/i) && v.match(/reg +[^=]+=[^;]+;/gi) && !v.match(/reg ?\[2\:0\] ?startup ?\= ?0\;/gi) && !v.match(/\<\=/gi)
-                    if (!code.includes("give us a demo please") && reg_regex) {
-                        message = "[CUSTOM_ERROR] You should not initialize a reg outside an always block!"
-                        error.push('**/tmp/tmpcode/randomfilereplacement007/code.v(' + (i + 1).toString() + ") " + message)
-                    }
+                ws.codelist.forEach ((e, fi) => {
+                    linebyline = e.split('\n')
+                    linebyline.filter(function (v, i, a) {
+                        // Test for flip flops with both asynchronous reset and set, which are not valid flip flops in hardware.
+                        while (blif_unmapped_ffs.length > 0) {
+                            missing_flip_flop = blif_unmapped_ffs[0]
+                            clock = missing_flip_flop.match("C\=[^ ]+")
+                            console.log("clock: " + clock)
+                            reset = missing_flip_flop.match("R\=[^ ]+")
+                            console.log("reset: " + reset)
+                            always_regex = new RegExp("always ?@ ?\\((?:pos|neg)edge [^ ,]+, ?(?:pos|neg)edge [^ ,]+, ?(?:pos|neg)edge [^\\)]+\\)")
+                            ws.verilogCode.split('\n').filter(function (v, i, a) {
+                                if (v.match(always_regex)) {
+                                    // console.log (v)
+                                    message = "[CUSTOM_ERROR] Flip flops cannot have both an asynchronous set and reset. Use only either one."
+                                    error.push('**/tmp/tmpcode/hiddentmpcodefolderpath/' + ws.filenames[fi] + '(' + (i + 1).toString() + "): " + message)
+                                }
+                            })
+    
+                            blif_unmapped_ffs = blif_unmapped_ffs.slice(1)
+                        }
+                        ta_override = e.match (/give me a magic override against the inline logic assignment/gi)
+                        startup_reg = !v.match(/(?:reg|logic) ?\[2\:0\] ?startup ?\= ?0\;/gi)
+                        not_equating = !v.match(/(?:reg|logic) +[^=]+\={2}/i)
+                        is_reg_or_logic = v.match(/(?:logic|reg) +[^=]+= *.+/gi)
+                        // added 10/24/2020
+                        not_typedef = !v.match(/typedef enum (?:logic|reg)? (?:[\[\]0-9\:]+) \{?/gi)
+                        reg_regex = !ta_override && not_equating && !v.match(/(?:reg|logic) +\=+/i) && not_typedef && is_reg_or_logic && startup_reg && !v.match(/\<\=/gi)
+                        if (reg_regex) {
+                            message = "[CUSTOM_ERROR] You should not initialize a reg/logic outside an always block!"
+                            error.push('**/tmp/tmpcode/hiddentmpcodefolderpath/' + ws.filenames[fi] + '(' + (i + 1).toString() + "): " + message)
+                        }
+                    })
                 })
 
                 if (error.length != '0') {
@@ -399,24 +430,29 @@ function connection(ws, request) {
                     }
                     fs.moveSync("/tmp/tmpcode/" + ws.unique_client, "error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
                     error.forEach(function (element) {
-                        modded_err_rgx = /\*?\*?\/tmp\/tmpcode\/[a-z0-9]+\/code\.v:?\(? ?([0-9]+)\)?/
+                        modded_err_rgx = /\*?\*?\/tmp\/tmpcode\/[a-z0-9]+\/([\w]+\.sv):?\(? ?([0-9]+)\)?/
+                        colon_check = /\.sv\([0-9]+\)\:/
                         try {
-                            num = parseInt(element.match(modded_err_rgx)[1])
-                            if (element.includes(':'))
-                                modded_err_msg = element.replace(modded_err_rgx, 'Line ' + num.toString())
+                            var name = element.match(modded_err_rgx)[1]
+                            var num = parseInt(element.match(modded_err_rgx)[2])
+                            if (colon_check.test (element))
+                                modded_err_msg = element.replace(modded_err_rgx, name + ': Line ' + num.toString())
                             else
-                                modded_err_msg = element.replace(modded_err_rgx, 'Line ' + num.toString() + ": ")
-                            modded_err_msg = modded_err_msg.replace(/\/tmp\/tmpcode\/[^\/]+\/code.v:[0-9]+: /, '')
+                                modded_err_msg = element.replace(modded_err_rgx, name + ': Line ' + num.toString() + ": ")
+                            modded_err_msg = modded_err_msg.replace(/\/tmp\/tmpcode\/[^\/]+\/([\w]+\.sv):[0-9]+: /, '')
                             modded_error.push(modded_err_msg)
                         }
                         catch (ex) {
                             debugLog("Cannot parse this error: " + element)
                             num = 1
                         }
-                    }
-                    )
+                    })
+
                     if (modded_error.length != '0') {
-                        ws.send("Verilator log:\n" + ws.verilatorLog + "Yosys log:\n" + yosys_out + "\nCompilation failed with the following error:\n" + modded_error.join('\n'))
+                        ws.send("Verilator log:\n" + (ws.verilatorLog || 'Verilator produced no logs.') + 
+                                "\nYosys-produced JSON:\n" + ws.yosysJSON + 
+                                "\nYosys log:\n" + yosys_out + 
+                                "\nCompilation failed with the following error:\n" + modded_error.join('\n'))
                         ws.close()
                     }
                 }
@@ -438,9 +474,16 @@ function connection(ws, request) {
                     env.SVDPI_TO_PIPE = '1';
                     env.SVDPI_FROM_PIPE = '0';
 
-                    ws.simulator_object = cp.spawn('cvc64', args, { env: env, cwd: __dirname });
+                    try {
+                        ws.simulator_object = cp.spawn('cvc64', args, { env: env });
+                    }
+                    catch (err) {
+                        console.error (err)
+                        console.error (err.stderr.toString())
+                    }
 
-                    ws.send("Simulation successfully started!\nVerilator log:\n" + ws.verilatorLog + "\nYosys log:\n" + yosys_out)
+                    ws.send("Simulation successfully started!\nVerilator log:\n" + (ws.verilatorLog || 'Verilator produced no logs.') + 
+                            "\nYosys-produced JSON:\n" + ws.yosysJSON + "\nYosys log:\n" + yosys_out)
                     ws.cvcTimeout = false
                     ws.error_caught = false
 
@@ -448,6 +491,8 @@ function connection(ws, request) {
                         var data = indata.toString('utf8').trim()
                         var msgdata = data.replaceAll('\0', '')
                         try {
+                            // normal simulation output will look like a JSON object: {'output_name': output_value...}
+                            // if parsing of the object fails, it must be an error message or garbage we can't turn off
                             var parsed = JSON.parse(msgdata)
                             ws.send(JSON.stringify (parsed))
                         }
@@ -540,12 +585,13 @@ function connection(ws, request) {
                     debugLog("Stopped " + ws.unique_client)
                     ws.simulator_object.kill('SIGINT')
                 }
+                // try to find CVC process and kill it with a SIGINT
                 cmd = "ps -eo pcpu,pid,args | grep " + ws.unique_client
                 psy = cp.execSync (cmd).toString().split ("\n")
                 psy.forEach ((ps) => {
                     extract = ps.match (/([0-9]+\.[0-9]) ([0-9]+) (.+)/)
-                    if (extract && extract.length != 4)
-                        console.log (extract)
+                    if (extract && extract.length != 4) // what?  I need to see the output
+                        console.log ('Malformed ps output: ' + extract)
                     else if (extract && extract.includes ("cvc +interp"))
                         process.kill (extract[2], 'SIGINT')
                 })

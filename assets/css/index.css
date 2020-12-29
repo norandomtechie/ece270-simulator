@@ -29,6 +29,17 @@
   z-index: 0
 }
 
+.unselectable {
+  /* https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                      supported by Chrome, Edge, Opera and Firefox */
+}
+
 #ace_settingsmenu, #ace_settingsmenu.label, #ace_settingsmenu button, #ace_settingsmenu input {
   background: var(--document-body-bg)!important;
   background-color: var(--document-body-bg)!important;
@@ -182,41 +193,68 @@
   z-index: 0;
 }
 
-#editor-tab-header {
+#editor-tab-header, #editor-tab-workspace-header {
   display: flex;
   flex-direction: row;
+  overflow-x: auto;
 }  
-.editor-tab {
+.editor-tab, .editor-tab-workspace {
   width: auto;
-  height: 5vh;
+  height: 4vh;
   border: 1px solid #bbb;
   border-color: var(--editor-tab-border);
-  border-radius: 5px 5px 0 0;
+  border-radius: 0;
   display: flex;
   flex-direction: row;
-  padding: 0.5vw;
+  padding: 1vh 0.5vw 0.5vh 0.5vw;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
-.tab-label {
+.editor-tab-workspace {
+  min-width: 5vw;
+  align-items: center;
+  justify-content: center;
+}
+.editor-tab:not(#editor-tab-add):hover, .editor-tab-workspace:not(#editor-tab-workspace-add):hover {
+  background: var(--etw-bg-hover);
+}
+#editor-tab-workspace-add {
+  min-width: 2.5vw;
+}
+.editor-tab-workspace:first-child {
+  border-radius: 5px 0 0 0;
+}
+.editor-tab-workspace:last-child {
+  border-radius: 0 5px 0 0;
+}
+.editor-tab {
+  border-radius: 0;
+}
+.tab-label-workspace, .tab-label {
   color: var(--display-4-color);
   cursor: pointer;
   display: flex;
   align-items: center;
   height: 100%;
-  margin-right: 1vw;
   font-size: calc(0.70vw + 0.20vh);
 }
 /* .tab-label:hover {
   background-color: var(--editor-tab-bg-hover);
 } */
-.tab-close {
+.tab-close, .wksp-tab-close {
   height: auto;
-  margin: 7.5px;
+  margin: 0 0.5em 0 1em;
   width: 0.45vw!important;
   color: var(--display-4-color);
 }
-.tab-close:hover {
+.tab-close:hover, .wksp-tab-close:hover {
   filter: opacity(0.5);
+}
+#wksp-tab-add {
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0;
 }
 #tab-add {
   cursor: pointer;
@@ -331,7 +369,7 @@ select, [name="project_list"] {
   opacity: 0;
   background-color: rgba(0,30,50,0.6); /* Black background with opacity */
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
-  transition: 0.3s;
+  transition: all 0.3s;
 }
 
 #open_dialog_icon {
@@ -365,17 +403,22 @@ select, [name="project_list"] {
   padding-top: 1vw;
   padding-left: 1vw;
   border-radius: 15px;
-  height: 70%;
+  height: 40%;
   width: 50%;
   background-color: var(--inner-overlay-bg);
   z-index: 9;
-  position: fixed;
   filter: blur(0);
   border: 5px #445 solid;
 }
 
 .top-icon {
   color: var(--top-icon-color);
+  float: left; margin-left: 10px; cursor: pointer;
+  display: flex!important; align-items: center; 
+  justify-content: center; font-size: 20px;
+}
+.top-icon:first-child {
+  margin: 0; 
 }
 
 .btn-view {
@@ -383,6 +426,7 @@ select, [name="project_list"] {
   color: var(--display-4-color);
   box-shadow: none;
   transition: all 0.5s;
+  font-size: calc(0.5vw + 0.5vh);
 }
 .btn-view:hover {
   filter: var(--hover-filter);
@@ -415,6 +459,132 @@ select, [name="project_list"] {
   border-radius: 0 0 10px 0;
 }
 
+.browser_row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0 5px 5px;
+  margin-bottom: 5px;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: border 0.3s;
+}
+.browser_row_file {
+  width: 100%;
+  height: 3vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: border 0.3s;
+}
+.browser_row_selected {
+  border: 1px solid var(--display-4-color);
+}
+.browser_row:nth-child(odd) {
+  background-color: var(--file-browser-row-odd);
+}
+.browser_row:nth-child(even) {
+  background-color: var(--file-browser-row-eve);
+}
+#file_browser {
+  width: 80%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--fpga-editor-border);
+  border-radius: 4px;
+  background: transparent;
+  overflow: auto;
+}
+.browser_row_file:hover {
+  border: 1px solid var(--display-4-color);
+}
+.browser_row_col {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+               Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 
+               'Helvetica Neue', sans-serif;
+  color: var(--display-4-color);
+  flex-grow: 1;
+  flex-basis: 1px; /* idk why but this keeps the column width a fixed size for any-sized text */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--display-4-color);
+  font-size: 14px;
+}
+.modern-font {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+               Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 
+               'Helvetica Neue', sans-serif;
+}
+input[name="filedir"] {
+  display: none;  
+}
+input[name="filedir"] + label {
+  border: 1px solid transparent;
+  transition: border 0.3s;
+  padding: 0.25vh 0 0.25vh 0;
+  margin: 0.25vh 0 0.25vh 0;
+}
+
+.browser-view {
+  width: 100%; 
+  font-size: calc(0.5vw + 0.9vh); 
+  color: var(--display-4-color);
+}
+
+label[for="newfile"] {
+  border-radius: 10px 0 0 10px;
+}
+label[for="newfolder"] {
+  border-radius: 0 10px 10px 0;
+}
+input[name="filedir"]:checked + label {
+  border: 1px solid var(--display-4-color);
+}
+#overlay_new_dirfile {
+  display: none; 
+  opacity: 0;
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: space-between; 
+  height: 60%;
+  position: absolute;
+  top: 5%;
+  left: 10%;
+  width: 80%;
+  height: 90%;
+  border: 1px solid var(--display-4-color);
+  border-radius: 5px;
+  background: var(--inner-overlay-bg);
+  z-index: 10;
+  transition: opacity 0.3s;
+}
+#selworkspace {
+  width: 55%;
+  height: 3.4vh;
+  margin-left: 5%;
+  border: 1px solid var(--display-4-color);
+  border-radius: 2px;
+  background-color: transparent;
+}
+.filedir_view {
+  width: 100%; 
+  height: 100%; 
+  flex-grow: 1; 
+  padding: 3vh 2vw 3vh 2vw; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: space-evenly;
+}
+#add_new_folder_view {
+  display: none;
+}
+
 #localport {
   text-align: left; 
   border-radius: 8px; 
@@ -425,4 +595,43 @@ select, [name="project_list"] {
   width: 4.25vw; 
   font-size: 1.5vh;
   text-align: center;
+}
+
+.subpanel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 1vh 2vw 1vh 2vw;
+  padding: 2vh 1vw 2vh 1vw;
+  border: 1px solid var(--display-4-color);
+  border-radius: 5px;
+}
+
+#share_id_input {
+  width: 50%; 
+  height: 4vh;
+  background: transparent; 
+  color: var(--display-4-color); 
+  border: 1px solid var(--display-4-color);
+  border-radius: 5px;
+  padding: 1%;
+}
+
+#share_id_btn {
+  width: 5%;
+  height: 4vh;
+  margin-left: -5%;
+  background: transparent;
+  border-radius: 0 5px 5px 0;
+  border: 1px solid var(--display-4-color);
+}
+
+/* https://stackoverflow.com/questions/20435166/contenteditable-not-working-in-safari-but-works-in-chrome */
+/* lol i realized this like a day before the simulator was set to go */
+/* This allows the user to edit the tab/workspace names on Safari, because as usual 
+Apple screws everything up for everyone who tries to develop on its platforms */
+[contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
 }

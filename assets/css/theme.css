@@ -60,11 +60,19 @@
     --editor-tab-bg-hover: #eee;
     --editor-tab-bg-edit: #ccc;
     --editor-tab-close-color-hover: #666;
-    --editor-tab-hover: brightness(0.75);
-    --editor-tab-selected: brightness(0.5)!important;
+    --editor-tab-hover: brightness(0.8);
+    --editor-tab-selected: brightness(0.25)!important;
+    --editor-tab-error: 1px solid #f44;
     --dark-mode-switch-position: 19px;
     --local-simulation-switch-position: 19px;
     --autocomplete-switch-position: 19px;
+
+    --file-browser-row-odd: #e0e0e0;
+    --file-browser-row-eve: transparent;
+    --file-browser-col-border: #555;
+
+    --etw-bg-hover: rgba(100, 100, 100, 0.05);
+    --etw-bg-selected: rgba(100, 100, 100, 0.1);
 }
 
 [uart-option="false"] {
@@ -186,6 +194,13 @@
     --editor-tab-bg-edit: #444;
     --editor-tab-close-color-hover: #999;
     --editor-tab-hover: brightness(1.25);
-    --editor-tab-selected: brightness(1.75)!important;
+    --editor-tab-selected: brightness(3)!important;
     --dark-mode-switch-position: 42px;
+
+    --file-browser-row-odd: #445;
+    --file-browser-row-eve: transparent;
+    --file-browser-col-border: #555;
+
+    --etw-bg-hover: rgba(255, 255, 255, 0.05);
+    --etw-bg-selected: rgba(255, 255, 255, 0.1);
 }
