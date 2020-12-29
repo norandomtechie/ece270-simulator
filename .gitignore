@@ -4,3 +4,4 @@ serverlog
 analytics/simulation.log
 **/svdpi.o
 **/ignore/
+error_log/*
