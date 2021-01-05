@@ -33,7 +33,7 @@ app.get ('/', async function (req, res) {
 });
 
 app.get ('/help', function (req, res) {
-    res.send (fs.readFileSync ('manual.html').toString())
+    res.send (fs.readFileSync (__dirname + '/manual.html').toString())
 });
 
 app.get ('/help/*', function (req, res) {
