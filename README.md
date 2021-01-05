@@ -8,6 +8,12 @@
 
 It's likely that you may find example code in here that you may feel tempted to use in lab assignments for classes by digging deep enough.  Please don't.  You may be cited for plagiarism, and more importantly, you won't learn anything helpful.
 
+**The ece270-simulator is also now available as a Docker container!**  You can pull and run it with the following commands:
+```
+docker pull norandomtechie/ece270-simulator
+docker run -d -p 4500:4500 --name 270sim norandomtechie/ece270-simulator
+```
+
 ## Introduction
 This project is essentially a backup of the ECE 270 simulator used at Purdue University, intended to simulate synthesized SystemVerilog on a virtual breakout board.  When installed, a user should navigate to localhost:4500 in a browser, enter some SystemVerilog targeted at the FPGA + breakout board the simulator is intended for, and click Simulate.  This processes the code for syntax errors using Verilator on the local server, synthesizes it with Yosys if the syntax check is successful to produce gate-level Verilog, and starts a real-time simulation of the gate-level Verilog, where inputs from the student are sent to the simulation, and outputs from the simulations are displayed on the virtual FPGA on the webpage.
 
