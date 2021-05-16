@@ -1,9 +1,9 @@
 var shiftKey = false;
-var STATUS_READY = "#e0e0e0"
-var SIM_RUNNING = "#e0f0e0"
-var CODE_ERROR = "#f0e0e0"
-var SERVER_DOWN = "#eecccc"
-var DEMO_RUNNING = "#dafae6"
+var STATUS_READY = "#e0e0e0";
+var SIM_RUNNING = "#e0f0e0";
+var CODE_ERROR = "#f0e0e0";
+var SERVER_DOWN = "#eecccc";
+var DEMO_RUNNING = "#dafae6";
 var lightModeTheme = {
 	"STATUS_READY": "#e0e0e0",
 	"SIM_RUNNING": "#e0f0e0",
@@ -12,7 +12,7 @@ var lightModeTheme = {
 	"DEMO_RUNNING": "#dafae6",
 	"SYNTHESIS": "#fefe7a",
 	"CONNECTING": "#f4f47a"
-}
+};
 var darkModeTheme = {
 	"STATUS_READY": "#444",
 	"SIM_RUNNING": "#464",
@@ -21,15 +21,61 @@ var darkModeTheme = {
 	"DEMO_RUNNING": "#353",
 	"SYNTHESIS": "#687509",
 	"CONNECTING": "#585509"
-}
+};
 
-var EDITOR_DARK_THEME = "ace/theme/chaos" // localStorage.ace_dark_theme
-var EDITOR_LIGHT_THEME = "ace/theme/chrome" // localStorage.ace_light_theme
+var LIT_SS = "#f00"; 
+var BLANK_SS = "#222"; 
+var LIT_RED = "#f00"; 
+var BLANK_RED = "#300"; 
+
+var TUTORIAL_DESCS = [
+	{'description': `Welcome to the ECE 270 simulator!  This simulator for ECE 270 was created initially as a personal project but has since turned into an 
+	extremely useful tool for ECE 270 students wishing to avoid late nights in lab working on the physical board. We have since put those dark days behind us. 
+	It came in extremely handy for when the course was forced online during the pandemic, ensuring that students continued to be able to gain experience with 
+	Verilog/SystemVerilog in an online environment.  We've since returned to in-person classes, but we will continue to use it for the class to help reduce the 
+	overall demand for limited physical lab resources.`,
+	'top': '25vh', 'left': '25vw', 'width': '40vw', 'height': '50vh'},
+
+	{'description': `The simulator is quite simple to work with - all you need to do is type in your SystemVerilog design in the lower-right code editor, and click the 
+	Simulate button below the virtual FPGA board on the lower left.  Go ahead and type <code>assign right[0] = hz100;</code> beneath the commented line
+	that says "Your code goes here".  Then, press the Simulate button, and after your SystemVerilog code is processed, synthesized and has started 
+	simulating, you should see the rightmost small red LED start to blink very rapidly.  Congratulations on running your first SystemVerilog simulation!`,
+	'top': '', 'left': '', 'width': '', 'height': ''},
+
+	{'description': `The Demo button showcases the full capability of the virtual board by running a design that will flash all the LEDs available on the board.  Go ahead 
+	and click it, and it should start the demo simulation.  If you're in ECE 270, some of the behavior you see here will be taught in your upcoming labs!`,
+	'top': '', 'left': '', 'width': '', 'height': ''},
+	
+	{'description': `Now let's get to know the simulator's embedded code editor.  This is where you'll be the other 50% of the time - you will write your SystemVerilog code 
+	for each lab in here, with the ability to toggle options like AutoComplete, Vim/Emacs/Sublime keybindings, tab sizes, and much more.  You can try 
+	setting these now by clicking inside the editor and pressing Ctrl+Comma.  Change some settings, and press the Escape key.  They'll be saved and 
+	reloaded the next time you open the simulator.`,
+	'top': '', 'left': '', 'width': '', 'height': ''},
+	
+	{'description': `As you move from lab to lab, you'll need some sort of file management to keep your files separate.  The simulator has a file management system called 
+	workspacing, which allows you to organize your code files as separate folders (or workspaces).  Let's set up a new one and give it a unique name.  Start by clicking the 
+	Add button below (the one with a plus sign in the first row), and in the alert dialog that appears, type in a workspace name and hit Enter.`,
+	'top': '', 'left': '', 'width': '', 'height': ''},
+
+	{'description': `You should now be in your shiny new workspace!  You can also perform operations like adding, removing and renaming files within a workspace, as well 
+	as removing and renaming workspaces.  Add a file by clicking the other Add button in the second row.  Rename it by holding down the Shift key and double-clicking on 
+	the newly added file tab, typing in a new filename (for SystemVerilog files, end it with .sv) and hitting Enter.  `,
+	'top': '', 'left': '', 'width': '', 'height': ''},
+
+	{'description': `Now, to remove the file.  Click on the Open Icon here (the second one from the left that looks like a folder).`,
+	'top': '', 'left': '', 'width': '', 'height': ''},
+
+	{'description': ``,
+	'top': '', 'left': '', 'width': '', 'height': ''},
+]
+
+var EDITOR_DARK_THEME = "ace/theme/chaos"; // localStorage.ace_dark_theme
+var EDITOR_LIGHT_THEME = "ace/theme/chrome"; // localStorage.ace_light_theme
 var pending = null;
 var lftred = "";
 var rgtred = "";
 var rgbled = "";
-var template_code = "270sim_source_uart.sv"
+var template_code = "270sim_source_uart.sv";
 
 var ws;
 var errors = [];
@@ -77,32 +123,6 @@ else if (localStorage.codeAutocomplete == "false") {
 button = document.getElementsByClassName("btn-info")[0]
 button.isMouseOver = false
 
-function change_password() {
-	console.log('change_password')
-	$.post({
-		url: window.location.href + "user/passwd",
-		contentType: 'application/json',
-		data: JSON.stringify({ 'password': $("#passwd").prop("value") }),
-		success: function (response) {
-			if (response.status == "success")
-				alert("Password successfully changed!")
-			else
-				alert("Error: " + response.reason)
-		}
-	})
-}
-
-// $(".btn-info").on("keydown keyup mouseover mousemove mouseenter", (event) => {
-// 	if (event.ctrlKey && $(".btn-info").text() == "Reload Code")
-// 		$(".btn-info").text("Load Template")
-// })
-
-// $(".btn-info").on("keyup mouseleave", () => {
-// 	if (Object.keys (window.localStorage.filesystem).length > 1)
-// 		$(".btn-info").text("Reload Code")
-// 	else
-// 		$(".btn-info").text("Load Template")
-// })
 
 // a-f, w-z, 0-9, ctrl, alt, shift
 curmap = {}
@@ -138,6 +158,7 @@ function populateKeystate(e) {
 				!(document.getElementById("overlay").style.display == "flex") &&
 				!(document.getElementById("overlay_2").style.display == "flex") &&
 				!(document.getElementById("overlay_3").style.display == "flex") &&
+				!(document.getElementById("overlay_4").style.display == "flex") &&
 				 (document.activeElement == document.body) 
 			    ) 
 			{
@@ -298,7 +319,8 @@ function send_inputs() {
 	}
 	buttonmap = "t" + binary + buttonmap
 	sentInput = buttonmap
-	ws.send(buttonmap)
+	if (ws)
+		ws.send(buttonmap)
 }
 
 var saved_txclk = '-1';
@@ -315,20 +337,20 @@ function set_outputs(json_out) {
 		ss = document.getElementsByClassName("ss" + i.toString() + "_line")
 		for (var j = 7; j >= 0; j = j - 1) {
 			if ((parseInt(json_out["SS" + i]) & Math.pow(2, (7 - j))) > 0)
-				ss[j].setAttribute("stroke", "#f00")
+				ss[j].setAttribute("stroke", LIT_SS) // LIT_SS = "#f00"
 			else
-				ss[j].setAttribute("stroke", "#222")
+				ss[j].setAttribute("stroke", BLANK_SS) // BLANK_SS = "#222"
 		}
 
 		if ((parseInt(json_out["LFTRED"]) & Math.pow(2, i)) > 0)
-			lftred[i].setAttribute("fill", "#f00")
+			lftred[i].setAttribute("fill", LIT_RED)	// LIT_RED = "#f00"
 		else
-			lftred[i].setAttribute("fill", "#300")
+			lftred[i].setAttribute("fill", BLANK_RED)	// BLANK_RED = "#300"
 
 		if ((parseInt(json_out["RGTRED"]) & Math.pow(2, i)) > 0)
-			rgtred[i].setAttribute("fill", "#f00")
+			rgtred[i].setAttribute("fill", LIT_RED)	// LIT_RED = "#f00"
 		else
-			rgtred[i].setAttribute("fill", "#300")
+			rgtred[i].setAttribute("fill", BLANK_RED)	// BLANK_RED = "#300"
 	}
 
 	color = "#"
@@ -350,26 +372,24 @@ function set_outputs(json_out) {
 }
 
 function ice40hx8k_handler() {
-	time = new Date().getTime() / 1000
+	time = new Date().getTime() / 1000;
 
-	// if (editor.session.getValue().includes("’")) {
-	// 	// alert("Copying code from the notes without typing it out? Tsk tsk...\n" +
-	// 	// 	"The code you copied intentionally has special characters that " +
-	// 	// 	"cannot be parsed by Yosys or CVC. We highly recommend that you " +
-	// 	// 	"type out the entire code segment you are trying to use.\n" +
-	// 	// 	"If you really did type it out, and you're still seeing this message, " +
-	// 	// 	"contact the head TA.")
-	// 	// return
-	// 	alert ("We found special characters in your code that indicate you copied it.  Considering that there is quite a lot of provided code, " + 
-	// 		   "we will permit it for Lab 13.  These characters will be automatically removed from your code before it is sent for simulation.")
-	// 	editor.setValue (editor.getValue().replace (/’/g, "'"))
-	// }
+	if (editor.session.getValue().includes("’")) {
+		alert("Copying code from the notes without typing it out? Tsk tsk...\n" +
+			"The code you copied intentionally has special characters that " +
+			"cannot be parsed by Yosys or CVC. We highly recommend that you " +
+			"type out the entire code segment you are trying to use.\n" +
+			"If you really did type it out, and you're still seeing this message, " +
+			"contact the head TA.");
+		return;
+		// alert ("We found special characters in your code that indicate you copied it.  Considering that there is quite a lot of provided code, " + 
+		// 	   "we will permit it for Lab 13.  These characters will be automatically removed from your code before it is sent for simulation.")
+		// editor.setValue (editor.getValue().replace (/’/g, "'"))
+	}
 	if (editor.session.getValue().match(/\/\/ ?module top|(\/\* ?\n?)module top/)) {
 		alert("It seems like you have commented out or removed the top module. Your code will not compile!")
 		return
 	}
-
-	// saveAllFilesToStorage()
 	update_status("STATUS_READY", "Status: Ready")
 
 	if (typeof ws != "undefined" && ws.readyState == ws.OPEN) {
@@ -381,7 +401,7 @@ function ice40hx8k_handler() {
 			"SS5": 0, "SS4": 0, "SS3": 0, "SS2": 0, "SS1": 0, "SS0": 0
 		})
 	}
-	ws = new WebSocket(window.location.protocol.replace ('http', 'ws') + "//" + window.location.host + "/")
+	ws = new WebSocket("ws://" + window.location.host + "/")
 	ws.currentWorkspace = window.active_tab.getAttribute ('workspace')
 	Array.from ($('.editor-tab')).forEach (e => e.removeAttribute ('errors'))
 
@@ -389,7 +409,6 @@ function ice40hx8k_handler() {
 	var messages = ""
 	var synthesis_interval = ""
 	ws.onmessage = function (event) {
-		// editor.getSession().clearAnnotations ()
 		if (event.data.includes("Processing Verilog code...")) {
 			update_status("SYNTHESIS", "Status: Synthesizing...")
 			messages = event.data + "\n"
@@ -428,6 +447,12 @@ function ice40hx8k_handler() {
 			messages += event.data
 			// window.alert (messages)
 			messages = ""
+		}
+		else if (event.data.includes("Error occurred in")) {
+			alert(event.data);
+			update_status("CODE_ERROR", "Status: Simulation error")
+			this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
+			return;
 		}
 		else if (event.data.includes("Error") || event.data.includes("failed")) {
 			clearInterval(synthesis_interval)
@@ -488,7 +513,18 @@ function ice40hx8k_handler() {
 		}
 		else if (event.data.includes("Unauthorized WebSocket")) {
 			update_status("CODE_ERROR", "Status: Unauthorized simulation")
-			alert("Your simulator session has either expired, or not been started.  Log in by refreshing the page or navigating to the login portal at https://verilog.ecn.purdue.edu/portal.")
+			// alert("Your simulator session has either expired, or not been started.  Refresh the page.");
+			alert("Your simulator session has either expired, or not been started.  THIS IS NEW - READ THIS!  We'll now open a new tab to let you log in again without having to refresh this page.  " + 
+				  "(Borrowed this idea from Brightspace.  It's one of the (few) good things they do)."); 
+			window.open("https://verilog.ecn.purdue.edu/portal?return", "_blank", "toolbar=yes,top=500,left=500,width=600,height=800");
+			window.rerunSimulation = setInterval(async () => {
+				var resp = await fetch('/'); 
+				if (!resp.redirected) {
+					clearInterval(window.rerunSimulation);
+					delete window.rerunSimulation; 
+					ice40hx8k_handler();
+				}
+			}, 500); 		
 		}
 		else {
 			try {
@@ -515,11 +551,14 @@ function ice40hx8k_handler() {
 				}
 				else if (event.data.includes("YOSYS HUNG")) {
 					alert("Your code took longer than expected to compile, which is an indicator that your design is too complex and must be optimized. " +
-						  "Check your design with a TA or Rick. \n" +
+						  "Check your design with course staff. \n" +
 						  "We do not allow compile times to exceed 30 seconds to allow for other students to continue running their simulations. ")
 					update_status("CODE_ERROR", "Status: Synthesis timeout")
 				}
-				// else if (event.data.includes("CVC HUNG")) {
+				else if (event.data.includes("TIMING VIOLATION")) {
+					console.log (event.data);
+				}
+				// else if (event.data.includes("SIM HUNG")) {
 				// 	alert("Your simulation was killed because of a bug in your code.  Ensure that your flip flops are only changing regs as they're meant to, " + 
 				// 		  "and that you are not changing regs in different always blocks.  If you're absolutely sure your code is correct, post it privately to instructors on Piazza.")
 				// 	update_status("CODE_ERROR", "Status: Simulation hung on server")
@@ -528,18 +567,27 @@ function ice40hx8k_handler() {
 					console.error (err)
 					console.log(event.data)
 				}
-				this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
+				if (!event.data.includes("TIMING VIOLATION"))
+					this.pending = setTimeout(function () { update_status("STATUS_READY", "Status: Ready") }, 1000);
 			}
 		}
 	}
 	ws.onopen = function () {
 		if (ws.readyState == 1) {
 			if (localStorage.switchsim == 'workspace') {
-				ws.send (JSON.stringify (getWorkspace (getFilesystem(), window.active_tab.getAttribute ('workspace'))))
+				var files = getWorkspace (getFilesystem(), window.active_tab.getAttribute ('workspace'));
 			}
 			else {
-				ws.send (JSON.stringify (getWorkspace (getFilesystem(), window.active_tab.getAttribute ('workspace')).filter (e => e.name == window.active_tab.getAttribute ('name'))))
+				var files = getWorkspace (getFilesystem(), window.active_tab.getAttribute ('workspace')).filter (e => e.name == window.active_tab.getAttribute ('name'));
 			}
+			var settings = getWkspSettings (window.active_tab.getAttribute ('workspace'));
+			// workaround for users who already created a new workspace before I noticed the bug
+			if (typeof settings === "undefined") {
+				settings = {"support": [], "testbench": ""};
+				setWkspSettings(window.active_tab.getAttribute ('workspace'), settings); 
+			}
+			settings.simulateWith = document.getElementById ('simselector').value; 
+			ws.send (JSON.stringify ({'files': files.map(f => typeof(f)=="string" ? JSON.parse(f) : f), 'settings': settings}));
 		}
 	}
 	ws.onclose = function (evt) {
@@ -563,48 +611,18 @@ function load_template(e) {
 	});
 }
 
-function toggle_information(pos) {
-	var descbar = document.getElementById("description-navbar")
-	if (pos == "15vh") {
-		var id = setInterval(reduce_padding, 10)
-		function reduce_padding() {
-			if (descbar.style["paddingBottom"] == "0vh")
-				clearInterval(id);
-			else
-				descbar.style["paddingBottom"] = (parseInt(descbar.style["paddingBottom"].replace("vh", "")) - 1).toString() + "vh"
-		}
-	}
-	else {
-		var id = setInterval(incr_padding, 10)
-		function incr_padding() {
-			if (descbar.style["paddingBottom"] == "15vh")
-				clearInterval(id);
-			else
-				descbar.style["paddingBottom"] = (parseInt(descbar.style["paddingBottom"].replace("vh", "")) + 1).toString() + "vh"
-		}
-	}
-}
-
-
 // :) opens in new tab, so dw you don't lose your work (although you shouldn't lol thank goodness for window.localstorage)
 function rickroll() { window.open("https://youtu.be/dQw4w9WgXcQ?t=85") } 
 
-function changeItUp() {
-	document.getElementById("desctext").innerHTML = `R3JlYXQgY2F0Y2ghIEEgbG9jYWxpemVkIHZlcnNpb24gaXMgaG9zdGVkIGF0IGh0dHBzOi8vZ2l0aHViLmNvbS9ub3JhbmRvbXRlY2hpZS9lY2
-                                                    UyNzAtc2ltdWxhdG9yLiBUaGUgY29kZSB0aGVyZSBpcyBhIGJpdCBvdXQgb2YgZGF0ZSwgYnV0IGl0IHdhcyB0aGUgZmluYWwgdmVyc2lvbiBv
-                                                    ZiB0aGUgc2ltdWxhdG9yIHVzZWQgb3ZlciB0aGUgc3VtbWVyLCBzbyBpdCBzaG91bGQgd29yay4gWW91IHdpbGwgbmVlZCBMaW51eCB0byB0cn
-                                                    kgaXQgb3V0LCBob3dldmVyIC0gV2luZG93cyBhbmQgbWFjT1MgZG8gbm90IHN1cHBvcnQgdGhlIGluY3JlZGlibGUgc29mdHdhcmUgd2UgdXNl
-                                                    ZC4=`
-}
-
 function display_info(sect) {
 	var p_elm = document.getElementById("desctext")
+	var descbar = document.getElementById("description-navbar")
 
-	if (descbar.style["paddingBottom"] == "15vh" && sect == selected_section) {
-		toggle_information("15vh")
+	if (descbar.style["height"] == "15vh" && sect == selected_section) {
+		descbar.style["height"] = "0vh";
 	}
-	else if (descbar.style["paddingBottom"] == "0vh") {
-		toggle_information("0vh")
+	else if (descbar.style["height"] == "0vh") {
+		descbar.style["height"] = "15vh";
 	}
 
 	selected_section = sect
@@ -626,7 +644,9 @@ function display_info(sect) {
 			p_elm.innerHTML = "Enter your code in the editor below. Ensure that you include the top module and that its name is top. \
 			Include any other modules referenced in your code, and then hit Simulate. Change the inputs to see the expected behavior of the board! \
 			To include more modules, simply paste them one after the other into the textbox.\
-			It's okay if you don't get it. <p id='nevergonnagiveyouup' onclick='javascript:rickroll()' style='display: inline; text-decoration: none; cursor: pointer'>Don't give up!</p>"
+			It's okay if you don't get it. <p id='nevergonnagiveyouup' onclick='javascript:rickroll()' style='display: inline; cursor: pointer; color: cornflowerblue; transition: all 0.3s'>Don't give up on yourself!</p>"
+			document.querySelector('#nevergonnagiveyouup').style['color'] = 'cornflowerblue';
+			setTimeout(() => { if (document.querySelector('#nevergonnagiveyouup')) document.querySelector('#nevergonnagiveyouup').style['color'] = ''; }, 1000)
 			break;
 		case 3:
 			p_elm.innerHTML = "The simulator couldn't have been made possible without the guidance and support of my fellow UTAs, GTAs, my overly critical friends in ECE, numerous posts on StackOverflow, Reddit, Mozilla \
@@ -645,36 +665,19 @@ function display_info(sect) {
                                no sensitive information remains, is uploaded to <a href='https://github.com/norandomtechie/ece270-simulator'>Niraj's GitHub repository</a> 
                                at the end of every semester.  It can be downloaded and installed for use locally, or even if you simply want to look at the source code.`
 			break;
-		default:
-			alert("Nah don't mess with this pls")
 	}
 }
 
 window.onbeforeunload = function () {
-	window.localStorage.evalboardtheme = document.getElementById("evalthemeselector").value
-	window.localStorage.editor_width = $("#editor-workspace").width()
-	localStorage.ace_options = JSON.stringify (editor.getOptions())
+	window.localStorage.evalboardtheme = document.getElementById("evalthemeselector").value;
+	window.localStorage.editor_width = $("#editor-workspace").width();
+	localStorage.ace_options = JSON.stringify (editor.getOptions());
 	if (localStorage.ice40DarkMode == "true")
-		localStorage.ace_dark_theme = editor.getOption("theme")
+		localStorage.ace_dark_theme = editor.getOption("theme");
 	else if (localStorage.ice40DarkMode == "false")
-		localStorage.ace_light_theme = editor.getOption("theme")
+		localStorage.ace_light_theme = editor.getOption("theme");
 	reset_handler()
 };
-
-function get_file_by_name (name, filelist) {
-	return new Promise ((resolve, reject) => {
-		try {
-			filelist.forEach ((file) => {
-				if (file.name == name)
-					resolve (file)
-			})
-			resolve ({'name': 'filenotfound'})
-		}
-		catch (err) {
-			reject (err)
-		}
-	})
-}
 
 function closeOverlay() {
 	document.getElementById("overlay").style.opacity = 1;
@@ -705,10 +708,10 @@ function saveAllFilesToStorage() {
 		var etl_workspace = !($(e).parent().attr('workspace') in editor_tab_list);
 		var etl_code = ($(e).parent().attr('workspace') in editor_tab_list) && !($(e).parent().attr('name') in editor_tab_list[$(e).parent().attr('workspace')]);
 		if (etl_workspace || etl_code) {
-			console.log ("saveAllFilesToStorage attempted but code was not found, exiting...")
-			console.log (etl_workspace, etl_code)
-			console.log (editor_tab_list)
-			return
+			console.log ("saveAllFilesToStorage attempted but code was not found, exiting...");
+			console.log (etl_workspace, etl_code);
+			console.log (editor_tab_list);
+			return;
 		}
 		data = {
 			name: $(e).parent().attr('name'),
@@ -751,30 +754,6 @@ function clearEditorErrors() {
 	error_id = []
 }
 
-// function save_all_files_to_server() {
-// 	labels = Array.from($('.tab-label'))
-// 	labels.pop()	// removes Add button from list, since it is not a code file	
-// 	labels.map((e) => {
-// 		$.post({
-// 			url: '/file/new',
-// 			contentType: 'application/json',
-// 			data: JSON.stringify({
-// 				'name': $(e).parent().attr('name'),
-// 				'code': editor_tab_list[$(e).parent().attr('session')].getValue(),
-// 				'mtime': $(e).parent().attr('mtime')
-// 			}),
-// 			success: function (result) {
-// 				if (result.status != 'success') {
-// 					alert("There was an error saving '" +
-// 						e.target.innerHTML +
-// 						"'. Details: " + result.reason
-// 					)
-// 				}
-// 			}
-// 		})
-// 	})
-// }
-
 function saveVerilog() {
 	uriContent = "data:application/octet-stream," + encodeURIComponent(editor.getValue());
 	document.getElementById("downlink").href = uriContent
@@ -789,7 +768,6 @@ function stop_handler() {
 		this.pending = setTimeout(() => {
 			update_status("STATUS_READY", "Status: Ready")
 		}, 1100)
-		// alert ("Simulation has been stopped.")
 	}
 }
 
@@ -825,7 +803,7 @@ function demo_handler() {
 		})
 	}
 
-	ws = new WebSocket(window.location.protocol.replace ('http', 'ws') + "//" + window.location.host + "/")
+	ws = new WebSocket("ws://" + window.location.host + "/")
 	update_status("CONNECTING", "Status: Connecting...")
 	var synthesis_interval = ""
 	ws.onmessage = function (event) {
@@ -882,8 +860,10 @@ function demo_handler() {
 		clearEditorErrors()
 		errors = []
 		if (ws.readyState == 1) {
-			ws.send(JSON.stringify ([{name: 'demo.sv', code: "give us a demo please"}]))
-			setTimeout (send_inputs, 500)
+			ws.send(JSON.stringify ({'files': [{name: 'demo.sv', code: "give us a demo please"}], 
+									 'settings': {'support': [], 'testbench': "", 'simulateWith': document.getElementById ('simselector').value}}
+			));
+			setTimeout (send_inputs, 500);
 		}
 	}
 	ws.onclose = function (evt) {
@@ -980,43 +960,65 @@ function openSettings() {
 function blurMainView (opt) {
 	switch (opt) {
 		case 0:
-			$("#mainview").css ('filter', 'blur(3px)')
-			break;
+			$("#mainview").css('filter', 'blur(3px)')
+		break;
 		case 1:
-			$("#mainview").css ('filter', 'blur(0px)')
-			break;
+			$("#mainview").css('filter', 'blur(0px)')
+		break;
+	}
+}
+
+function fadeWholeMainView(opt) {
+	switch (opt) {
+		case 0:
+			$('#mainview').css('filter', 'brightness(0.65)');
+			$('#mainview').css('background', 'var(--tutorial-fade)');
+		break;
+		case 1:
+			$('#mainview').css('background', '');
+			$('#mainview').css('filter', '');
+		break;
+	}
+}
+
+function toggleTutorial(opt) {
+	switch (opt) {
+		case 0:
+			fadeWholeMainView(0);
+			$('#overlay_7').css ('display', 'flex');
+			$('#overlay_7').animate ({'opacity': '1'}, 250);
+		break;
+		case 1:
+			$('#overlay_7').animate ({'opacity': '0'}, 250, () => {
+				$('#overlay_7').css ('display', 'none');
+				fadeWholeMainView(1);
+			});
+		break;
+	}
+}
+
+function tutorialAction(action) {
+	switch (action) {
+		case 'prev':
+
+		break;
+		case 'stop':
+
+		break;
+		case 'next':
+
+		break;
 	}
 }
 
 function closeSettings() {
 	if ($('#overlay_2').css('display') == 'none')
-		return false
+		return false;
 	$('#overlay_2').animate({ 'opacity': 0 }, 200, () => {
 		$('#overlay_2').css('display', 'none')
 	})
 	blurMainView(1)
 }
-
-// Sorry guys.  One day...
-// function saveCurrentTabToServer() {
-// 	$.post({
-// 		url: '/file/save',
-// 		contentType: 'application/json',
-// 		data: JSON.stringify({
-// 			'name': $(window.active_tab).attr('name'),
-// 			'code': editor_tab_list[$(window.active_tab).attr('session')].getValue(),
-// 			'mtime': $(window.active_tab).attr('mtime')
-// 		}),
-// 		success: function (result) {
-// 			if (result.status != 'success') {
-// 				alert("There was an error saving '" +
-// 					$(window.active_tab).attr('name') +
-// 					"'. Details: " + result.reason
-// 				)
-// 			}
-// 		}
-// 	})
-// }
 
 function lightMode() {
 	editor.setTheme(EDITOR_LIGHT_THEME)
@@ -1093,13 +1095,14 @@ function toggleAutocomplete() {
 var editor_tab_list = {}
 
 function openTabsFromStorage() {
-    var filesystem = JSON.parse (localStorage.filesystem)
-	var opened = []
+    var filesystem = JSON.parse (localStorage.filesystem);
+	var opened = [];
 
     Object.keys (filesystem).forEach (workspace => {
 		if (Object.keys (filesystem[workspace]).length == 0) return
 		if (workspace != localStorage.currentWorkspace) return
-        JSON.parse (filesystem [workspace]).forEach(f => {
+        getWorkspace(filesystem, workspace).forEach(file => {
+			var f = typeof(file) == "string" ? JSON.parse(file) : file;
 			if (f.state == 'closed') {
 				return
 			}
@@ -1140,39 +1143,201 @@ function openFileFromStorage(f, ws, force) {
 	addTab(f)
 }
 
-function changeBoardTheme(theme) {
-	switch (theme) {
-		case "Original":
-			cnva = "#041f05"
-			ltrs = "black"
-			caps = "#aaa"
-			fowt = "bold"
-			break;
-		case "Dark Original":
-			cnva = "#041005"
-			ltrs = "black"
-			caps = "#aaa"
-			fowt = "bold"
-			break;
-		case "Modern":
-			cnva = "#17183f"
-			ltrs = "white"
-			caps = "#333666"
-			fowt = "normal"
-			break;
+// added spring 2021 for archival reasons
+// must NOT be used to ease public distribution of what should 
+// be your **private** code.
+function zipStorage() {
+	var fs = getFilesystem(); 
+	var zip = new JSZip();
+	for (var fldr in fs) {
+		var zipfldr = zip.folder(fldr); 
+		var wksp = getWorkspace(fs, fldr);
+		wksp.forEach (e => {
+			zipfldr.file(e.name, e.code, {createFolders: true, date: new Date(e.mtime)}); 
+		}); 
 	}
-	document.getElementById("canvas_background").setAttribute("fill", cnva)
-	Array.from(document.getElementsByClassName("inputbutton")).forEach(function (el) { el.setAttribute("fill", caps); el.setAttribute("font-weight", fowt) })
-	Array.from(document.getElementsByClassName("svg_text")).forEach(function (el) { el.setAttribute("fill", ltrs); el.setAttribute("font-weight", fowt) })
-	window.localStorage.evalboardtheme = theme
+	zip.generateAsync({type: "blob"}).then ((content) => {
+		var link = document.createElement("a");
+		var username = $('#profile_uname').text().match (/, ([a-z0-9]+)/)[1]; 
+		link.href = URL.createObjectURL(content);
+		link.download = username + "_simulator.zip"; 
+		link.style.display = 'none'; 
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	})
+}
+
+function changeBoardTheme(theme) {
+	if (typeof window.localStorage.evalboardcustomtheme != "undefined") {
+		try {
+			var cnva = JSON.parse(window.localStorage.evalboardcustomtheme)['cnva'];
+			var ltrs = JSON.parse(window.localStorage.evalboardcustomtheme)['ltrs'];
+			var caps = JSON.parse(window.localStorage.evalboardcustomtheme)['caps'];
+			var fnwt = JSON.parse(window.localStorage.evalboardcustomtheme)['fnwt'];
+			LIT_SS = JSON.parse(window.localStorage.evalboardcustomtheme)['lit_ss'] || "#f00";
+			BLANK_SS = JSON.parse(window.localStorage.evalboardcustomtheme)['blank_ss'] || "#222";
+			LIT_RED = JSON.parse(window.localStorage.evalboardcustomtheme)['lit_red'] || "#f00";
+			BLANK_RED = JSON.parse(window.localStorage.evalboardcustomtheme)['blank_red'] || "#300";
+			var lftred = document.getElementsByClassName("lftred"); 
+			var rgtred = document.getElementsByClassName("rgtred"); 
+			for (var i = 7; i >= 0; i = i - 1) {
+				lftred[i].setAttribute("fill", BLANK_RED); 	// BLANK_RED = "#300"
+				rgtred[i].setAttribute("fill", BLANK_RED); 	// BLANK_RED = "#300"
+				for (var j = 7; j >= 0; j = j - 1) {
+					ss = document.getElementsByClassName("ss" + i.toString() + "_line"); 
+					ss[j].setAttribute("stroke", BLANK_SS);  // BLANK_SS = "#222"
+				}
+			}
+		}
+		catch(err) {
+			window.prompt (`An error occurred trying to set your custom evaluation board colors.  
+			Set them up in the dev console again.  The format is in the box below.  
+			Change the value of "cnva" for the background, "ltrs" for the letter color, "caps" for the 
+			button color, and "fnwt" for the font weight.`.replace (/[ \t\n]{2,}/g, ' '), 
+			`window.localStorage.evalboardcustomtheme = JSON.stringify({"cnva": "#041f05", "ltrs": 
+			"black", "caps": "#aaa", "fnwt": "bold", "lit_ss": "#f00", blank_ss: "#222", lit_red: "#f00", 
+			blank_red: "#300"}); changeBoardTheme("null")`.replace (/[ \t\n]{2,}/g, ' ')); 
+			console.log (err);
+		}
+	}
+	if (!cnva) {
+		switch (theme) {
+			case "Original":
+				cnva = "#041f05";
+				ltrs = "black";
+				caps = "#aaa";
+				fnwt = "bold";
+				break;
+			case "Dark Original":
+				cnva = "#041005";
+				ltrs = "black";
+				caps = "#aaa";
+				fnwt = "bold";
+				break;
+			case "Modern":
+				cnva = "#17183f";
+				ltrs = "white";
+				caps = "#333666";
+				fnwt = "normal";
+				break;
+		}
+	}
+	document.getElementById("canvas_background").setAttribute("fill", cnva);
+	Array.from(document.getElementsByClassName("inputbutton")).forEach(function (el) { el.setAttribute("fill", caps); el.setAttribute("font-weight", fnwt) });
+	Array.from(document.getElementsByClassName("svg_text")).forEach(function (el) { el.setAttribute("fill", ltrs); el.setAttribute("font-weight", fnwt) });
+	window.localStorage.evalboardtheme = theme;
+}
+
+function setGlobalWkspSettings(all) {
+	localStorage['workspace_settings'] = JSON.stringify(all);
+}
+
+function getGlobalWkspSettings() {
+	if (!('workspace_settings' in localStorage)) {
+		localStorage['workspace_settings'] = '{}';
+		return {};
+	}
+	return JSON.parse(localStorage['workspace_settings']);
+}
+
+function getWkspSettings(wksp, all=getGlobalWkspSettings()) {
+	if(!(wksp in all)) {
+		return undefined;
+	}
+	else {
+		return all[wksp];
+	}
+}
+
+function setWkspSettings(wksp, val, all=JSON.parse(localStorage['workspace_settings'])) {
+	all[wksp] = val;
+	localStorage['workspace_settings'] = JSON.stringify(all);
+}
+
+// first-time load, check in on support modules
+$.get({
+	url: "/support",
+	contentType: 'application/json',
+	success: function (response) {
+		window.supportModules = response; 
+		var fs = getFilesystem();
+		for (var wksp in fs) {
+			var wksp_saved = getWkspSettings(wksp); 
+			wksp_saved["support"].forEach (s => {
+				if (!window.supportModules.includes(s)) {
+					wksp_saved["support"] = wksp_saved["support"].filter (f => f != s); 
+				}
+			}); 
+			setWkspSettings(wksp, wksp_saved); 
+		}
+	}
+}); 
+
+function toggleWorkspaceSettings(event, tgl) {
+	if (tgl) {
+		// check the tab the settings gear icon was clicked for workspace name
+		var wksp = event.currentTarget.parentNode.parentNode.querySelector ('label').textContent;
+		// if it doesn't exist, create an empty object so rest of the code doesn't fail
+		var wksp_saved = getWkspSettings(wksp);
+		if (wksp_saved == undefined) {
+			var wksp_saved = {"support": [], "testbench": ""};
+			setWkspSettings(wksp, wksp_saved);
+		}
+		$('#wksp_settings_title').text(`Workspace Settings for '${wksp}'`);
+		blurMainView(0);
+		$('#overlay_6').animate ({'opacity': '1'}, 250, () => {
+			$('#overlay_6').css ('display', 'flex');
+		});
+		if ($('#moduleinitial').length > 0) {
+			$('#wksp_module_enable').children().remove();
+		}
+		var existing = Array.from($('.wksp_module')).map(st => st.querySelector('label').innerHTML); 
+		window.supportModules.forEach(f => {
+			if (!(existing.includes(f))) {
+				document.querySelector('#wksp_module_enable').innerHTML += `<div class="wksp_module">
+				<i class="fa fa-check-square module_check"></i>
+				<label class="module_name">${f}</label></div>`;
+			}
+		});
+		Array.from($('.wksp_module')).forEach(st => { 
+			if (wksp_saved["support"].includes(st.querySelector('label').innerHTML)) {
+				st.querySelector('i').style.color = 'var(--display-4-color)';
+			}
+			else {
+				st.querySelector('i').style.color = '';
+			}
+		});
+		if (Array.from($('#select_testbench option')).map(e => e.textContent).includes (wksp_saved['testbench'])) {
+			document.querySelector("#select_testbench").value = wksp_saved['testbench'];
+		}
+		else {
+			// if the testbench was removed, don't show it and use the last selected option instead
+			wksp_saved['testbench'] = document.querySelector("#select_testbench").value;
+			// save it too so we don't have to keep setting the testbench every time wksp settings is opened
+			setWkspSettings(wksp, wksp_saved);
+		}
+	}
+	else {
+		$('#overlay_6').animate ({'opacity': '0'}, 250, () => {
+			$('#overlay_6').css ('display', 'none');
+		});
+		blurMainView(1);
+	}
 }
 
 function selectWorkspaceByElement(elm, force) {
+	// don't accidentally select the workspace-add button if this is somehow called
 	if (elm.id == 'editor-tab-workspace-add') return
+	// add settings icon for this workspace:
+	document.querySelector('#div_workspace_gear')?.remove();
+	document.querySelector('#workspace_gear')?.remove();
+	elm.innerHTML += `<div id="div_workspace_gear"><i class="fa fa-cog" onclick="javascript:toggleWorkspaceSettings(event, true)" id="workspace_gear"></i></div>`
 	// save last tab hopefully?
 	if (window.active_tab && $(window.active_tab).attr('workspace') in editor_tab_list && editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')]) {
 		editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].setValue(editor.session.getValue())
 	}
+	// 
 	// remove current tabs
 	$('.editor-tab[id!=editor-tab-add]').remove()
 	// open workspace tabs
@@ -1196,6 +1361,7 @@ function selectTabByElement(elm) {
 
 	window.active_tab = elm
 	
+	// set ace editor mode based on file extension
 	if (elm.getAttribute('name').endsWith ('.mem')) {
 		editor.session.setMode("ace/mode/text")
 	}
@@ -1285,8 +1451,8 @@ function tabDrag (e) {
 		}
 	}
 
-	var file = getWorkspace (getFilesystem(), old_wksp).filter (e => e.name == name)[0]
-	var ws = getWorkspace (getFilesystem(), old_wksp).filter (e => e.name != name)
+	var file = getWorkspace(getFilesystem(), old_wksp).filter (e => e.name == name)[0];
+	var ws = getWorkspace(getFilesystem(), old_wksp).filter (e => e.name != name);
 	if (ws.length == 0) {
 		$('.editor-tab-workspace[name="' + old_wksp + '"]').remove()
 		$('#browser_' + old_wksp).remove()
@@ -1441,48 +1607,24 @@ function toggleProfile() {
 		$.get({ url: "/profile", cache: false }, function (data) {
 			window.profile_json = data
 			$("#loading").animate ({'opacity': '0'}, 200, () => {
-				$("#loading").css ('display', 'none')
-				$("#profile_visit").text ($("#profile_visit").text().replace ("VISIT", JSON.parse (window.profile_json).visits))
-				$("#profile_sim").text ($("#profile_sim").text().replace ("SIM", JSON.parse (window.profile_json).lifesims))
-				$("#profile_dem").text ($("#profile_dem").text().replace ("DEM", JSON.parse (window.profile_json).demoes))
-				$("#profile_err").text ($("#profile_err").text().replace ("ERR", JSON.parse (window.profile_json).errors))
-				$(".profile_data").css ('display', 'block')
-				$(".profile_data").animate ({'opacity': '1'}, 200)
-
-				var graphData = {}
-				JSON.parse (window.profile_json).error_data.forEach (e => {
-					if (e.time.split (" ")[0] in graphData) {
-						graphData [e.time.split (" ")[0]] = parseInt (graphData [e.time.split (" ")[0]]) + 1
-					}
-						else {
-						graphData [e.time.split (" ")[0]] = 1
-					}
-				})
-				var plotData = [
-					{
-					  x: Object.keys (graphData),
-					  y: Object.values (graphData),
-					  type: 'bar'
-					}
-				];
-				var layout = {
-					plot_bgcolor: $(".inner_overlay").css ('background-color'),
-					paper_bgcolor: $(".inner_overlay").css ('background-color'),
-					font: {color: $(".display-4").css ('color')}
-				};
-				Plotly.newPlot('error_graph', plotData, layout, {responsive: true});
+				$("#loading").css ('display', 'none');
+				$("#profile_visits2").text(JSON.parse (window.profile_json).visits);
+				$("#profile_sims2").text(JSON.parse (window.profile_json).lifesims);
+				$("#profile_demoes2").text(JSON.parse (window.profile_json).demoes);
+				$("#profile_errors2").text(JSON.parse (window.profile_json)?.errors || 0);
+				$(".profile_text:last-child").css('opacity', 1);
+				$(".profile_data").css ('display', 'block');
+				$(".profile_data").animate ({'opacity': '1'}, 200);
 			})
 		});
 	}
 	else {
 		$("#overlay_4,.profile_data").animate ({'opacity': '0'}, 200, () => {
-			$("#overlay_4,.profile_data").css ('display', 'none')
-			$("#loading").css ('opacity', '1')
-			$("#loading").css ('display', '')
+			$(".profile_text:last-child").css('opacity', 0);
+			$("#overlay_4,.profile_data").css ('display', 'none');
+			$("#loading").css ('opacity', '1');
+			$("#loading").css ('display', '');
+			blurMainView(1);
 		})
 	}
-}
-
-function open_hdlwave() {
-	window.open ('https://verilog.ecn.purdue.edu/hdlwave/?encoded=' + btoa (window.editor.getValue()), '_blank')
 }

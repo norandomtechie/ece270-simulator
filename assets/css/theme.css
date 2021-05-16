@@ -1,4 +1,7 @@
 :root { 
+    --tutorial-fade: #eee;
+    --tutorial-btn-bg-hover: #222;
+    --tutorial-btn-hover: #eee;
     --navbar-upper-bg: #e9e9e9;
     --desc-navbar-bg: #e0e0e0;
     --navbar-lower-bg: #e0e0e0;
@@ -12,6 +15,7 @@
     --codemirror-border: 1px solid #ddd;
     /* set ace editor theme to chrome */
     --inner-overlay-bg: #eee;
+    --inner-overlay-bg-tutorial: rgba(240, 240, 255, 0.95);
     --settings-btn-bg: #eee;
     --open-icon-color: inherit;
     --top-icon-color: inherit;
@@ -136,6 +140,9 @@
 }
 
 [data-theme="dark"] {
+    --tutorial-fade: #1d1d1d;
+    --tutorial-btn-bg-hover: #eee;
+    --tutorial-btn-hover: #222;
     --special-text-coloration: #ddd;
     --navbar-upper-bg: #222;
     --desc-navbar-bg: #333;
@@ -151,6 +158,7 @@
     --codemirror-border: 1px solid #444;
     /* set ace editor theme to chrome */
     --inner-overlay-bg: #223;
+    --inner-overlay-bg-tutorial: rgba(10, 10, 30, 0.8);
     --settings-btn-bg: #223;
     --open-icon-color: white;
     --top-icon-color: white;

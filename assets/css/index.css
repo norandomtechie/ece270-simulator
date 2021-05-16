@@ -201,6 +201,7 @@
 .editor-tab, .editor-tab-workspace {
   width: auto;
   height: 4vh;
+  position: relative;
   border: 1px solid #bbb;
   border-color: var(--editor-tab-border);
   border-radius: 0;
@@ -211,7 +212,7 @@
   transition: background-color 0.3s;
 }
 .editor-tab-workspace {
-  min-width: 5vw;
+  min-width: 6vw;
   align-items: center;
   justify-content: center;
 }
@@ -272,7 +273,7 @@ body {
   background-color: var(--document-body-bg);
 }
 option {
-  font-family: Lato, sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 300;
   font-size: calc(0.75vw + 0.5vh);
 }
@@ -403,12 +404,32 @@ select, [name="project_list"] {
   padding-top: 1vw;
   padding-left: 1vw;
   border-radius: 15px;
-  height: 40%;
+  height: 70%;
   width: 50%;
   background-color: var(--inner-overlay-bg);
   z-index: 9;
   filter: blur(0);
   border: 5px #445 solid;
+}
+
+/* Tutorial needs to be able to move around */
+#overlay_7 {
+  width: 45%; 
+  height: 60%; 
+  padding: 2vh 2vw 2vh 2vw;
+  position: absolute;
+  top: 22.5vh;
+  left: 27.5vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-top: 1vw;
+  padding-left: 1vw;
+  border-radius: 15px;
+  background-color: var(--inner-overlay-bg-tutorial);
+  z-index: 9;
+  border: 5px #454045 solid;
 }
 
 .top-icon {
@@ -627,11 +648,160 @@ input[name="filedir"]:checked + label {
   border: 1px solid var(--display-4-color);
 }
 
+#div_workspace_gear {
+  position: absolute; 
+  width: 30%; 
+  height: 100%; 
+  padding: 3% 3% 0 0;
+  top: 0%;
+  left: 70%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+#workspace_gear {
+  font-size: calc(0.5vw); 
+  color: var(--display-4-color); 
+  border: 1px solid transparent;
+  position: relative; 
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 10%;
+  margin: 1% 0 1% 0;
+  transition: all 0.3s;
+}
+
+#workspace_gear:hover, #workspace_gear_active {
+  border: 1px solid var(--display-4-color);
+}
+
+#wksp_module_enable {
+  width: 85%;
+  height: 85%;
+  border: 1px solid var(--display-4-color);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow-y: scroll;
+}
+
+.wksp_module {
+  width: 100%;
+  height: 4vh;
+  padding: 1vh 0 1vh 0;
+  border-bottom: 1px solid var(--display-4-color);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.module_check {
+  width: calc(0.65vw + 1vh);
+  height: calc(0.65vw + 1vh);
+  color: '';
+  border: 1px solid var(--display-4-color);
+  margin: 0 0.5vw 0 1vw;
+  border-radius: 4%;
+  background: transparent;
+  transition: all 0.3s;
+}
+
+.module_name {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: var(--display-4-color);
+  margin-bottom: 0;
+}
+
+.profile_table {
+  width: 100%;
+  height: 40%;
+  border: 1px solid var(--display-4-color);
+  border-radius: 5px;
+}
+.profile_text {
+  width: 50%;
+  font-weight: 300;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: calc(0.7vw + 0.7vh);
+  color: var(--display-4-color);
+  transition: opacity 0.3s;
+}
+.profile_text:last-child {
+  opacity: 0;
+  border-left: 1px solid var(--display-4-color);
+}
+.profile_table tr:first-child th {
+  padding-top: 1.5vh;
+}
+.profile_table tr:last-child th {
+  padding-bottom: 1.5vh;
+}
+
 /* https://stackoverflow.com/questions/20435166/contenteditable-not-working-in-safari-but-works-in-chrome */
-/* lol i realized this like a day before the simulator was set to go */
 /* This allows the user to edit the tab/workspace names on Safari, because as usual 
 Apple screws everything up for everyone who tries to develop on its platforms */
 [contenteditable] {
   -webkit-user-select: text;
   user-select: text;
+}
+
+.mbtn {
+  width: 8vw;
+  height: 4vh;
+  background: transparent;
+  color: var(--display-4-color);
+  text-align: center;
+  border-radius: 5px;
+  border: 1px solid var(--display-4-color);
+  transition: all 0.3s;
+}
+.mbtn:hover:not(:disabled) {
+  background: var(--tutorial-btn-bg-hover);
+  color: var(--tutorial-btn-hover);
+}
+
+#resize-editor {
+  height: 33%; 
+  width: 1%; 
+  cursor: w-resize; 
+  background-color:transparent; 
+  border-left: 3px solid var(--display-4-color);
+  transition: border 0.2s;
+}
+#resize-editor:hover {
+	border-left: 9px solid var(--display-4-color);
+}
+/* sorry not sorry */
+#nevergonnagiveyouup:hover {
+  filter: brightness(1.5);
+}
+
+/* frostyfinder! */
+.findallresult {
+    width: 90%;
+    padding: 3%;
+    padding: 1%;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    height: 15%;
+}
+
+.findallresult p {
+	font-size: 14px;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	margin: 0;
+}
+
+.findallresult code {
+  font-family: Courier, Consolas;
+  font-size: 11px;
+}
+
+#findallmore {
+  margin-right: 15px;
+  font-size: calc(1vw + 1vh);
 }

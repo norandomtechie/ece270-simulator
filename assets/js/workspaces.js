@@ -765,7 +765,38 @@ window.onload = function () {
 		$(e.target).addClass ('dragging')
 		last_page_x = e.pageX
 		return false;
-	})
+	}).on ('click', '.module_check', e => {
+		var icon  = e.currentTarget;
+		var mod   = icon.parentNode.querySelector('label').innerHTML;
+		var wksp  = $('#wksp_settings_title').text().match(/for '([^']+)'/)[1];
+		if (!('workspace_settings' in localStorage)) {
+			localStorage['workspace_settings'] = `{"${wksp}": {"support": [], "testbench": ""}}`;
+		}
+		var saved = getWkspSettings(wksp) || {"support": [], "testbench": ""};
+		var support = saved["support"];
+		if (icon.style.color == '') {
+			icon.style.color = 'var(--display-4-color)';
+			support.push(mod);
+		}
+		else {
+			icon.style.color = '';
+			support = support.filter(e => e != mod);
+		}
+		saved["support"] = support;
+		setWkspSettings(wksp, saved);
+	}).on ('change', '#select_testbench', e => {
+		var wksp = $('#wksp_settings_title').text().match(/for '([^']+)'/)[1];
+		if (!('workspace_settings' in localStorage)) {
+			localStorage['workspace_settings'] = `{"${wksp}": {"support": [], "testbench": ""}}`;
+		}
+		if (!(wksp in JSON.parse(localStorage['workspace_settings']))) {
+			setWkspSettings(wksp, {"support": [], "testbench": ""});
+		}
+		var wksp_settings = getWkspSettings(wksp);
+		wksp_settings["testbench"] = e.currentTarget.value;
+		setWkspSettings(wksp, wksp_settings);
+	});
+	
 
 	if (!localStorage.switchsim) {
 		localStorage.switchsim = 'workspace'

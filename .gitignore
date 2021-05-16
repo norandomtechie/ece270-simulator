@@ -6,3 +6,4 @@ analytics/simulation.log
 **/ignore/
 error_log/*
 testbench/
+support/

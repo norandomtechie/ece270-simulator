@@ -1,13 +1,13 @@
 #!/bin/bash
 if [[ "$(pwd)" != *setup ]]
 then
-    cd setup || (echo "The setup directory is missing.  Please ensure that you cloned the simulator properly." && exit 1)
+    cd setup || (echo "The setup directory is missing.  Please ensure that you cloned the simulator repository properly." && exit 1)
 fi
 printf "ECE 270 simulator setup\n\n"
 
-declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["yosys"]="https://github.com/YosysHQ/yosys" ["cvc64"]="https://github.com/CambridgeHackers/open-src-cvc" )
+declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["yosys"]="https://github.com/YosysHQ/yosys" ["cvc64"]="https://github.com/CambridgeHackers/open-src-cvc" ["iverilog"]="https://github.com/steveicarus/iverilog" )
 
-declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["cvc64"]="open-src-cvc" )
+declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["cvc64"]="open-src-cvc" ["iverilog"]="iverilog" )
 
 echo "Setting up folders..."
 for folder in ../error_log /tmp/tmpcode
@@ -16,7 +16,7 @@ do
 done
 
 echo "Checking for dependencies..."
-for command in "verilator" "yosys" "cvc64" "node"
+for command in "verilator" "yosys" "cvc64" "iverilog" "node"
 do
     which $command
     if [[ $? == 1 ]]
@@ -70,8 +70,17 @@ do
             cd -
             rm -rf open-src-cvc
             ;;
+        "iverilog")
+            cd iverilog
+            autoconf
+            ./configure
+            make -j$(nproc) || (echo "Compiling IcarusVerilog failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
+            make install
+            cd - 
+            rm -rf iverilog
+            ;;
         "node")
-            curl -sL https://deb.nodesource.com/setup_12.x | bash -
+            curl -sL https://deb.nodesource.com/setup_14.x | bash -
             apt-get -y install nodejs
             ;;
         *)

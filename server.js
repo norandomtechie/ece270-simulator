@@ -40,6 +40,17 @@ app.get ('/help/*', function (req, res) {
     res.sendFile (__dirname + '/md/' + req.url.replace ('/help/', ''))
 });
 
+app.get ('/support', function (req, res) {
+    try {
+        var files = fs.readdirSync (`${__dirname}/support`); 
+        files = files.filter (f => f.endsWith('.v') || f.endsWith('.sv')); 
+        res.send (files);
+    }
+    catch (err) {
+        res.send ([]); 
+    }
+});
+
 function debugLog (message) {
     console.log (getTime() + ": " + message)
 }

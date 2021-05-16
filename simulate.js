@@ -14,7 +14,7 @@
     connection from every user.
 
     The Verilog code is syntaxically checked, compiled, synthesized, 
-    and finally simulated with the help of external tools like CVC
+    and finally simulated with the help of external tools like CVC/Icarus
     and Yosys. Any errors in the code will cause the WebSocket to send
     them back and immediately close the connection.
 */
@@ -24,7 +24,8 @@ const os = require('os');
 const cp = require('child_process');
 const crypto = require('crypto');
 const path = require('path');
-const rimraf = require('rimraf'), hostname = os.hostname();
+const rimraf = require('rimraf'),
+ hostname = os.hostname();
 
 /* 
     https://stackoverflow.com/questions/18052762/remove-directory-which-is-not-empty
@@ -114,7 +115,8 @@ function connection(ws, request) {
     ws.on('message', function incoming(message) {
         switch (ws.currentState) {
             case "INIT":
-                var workspace = JSON.parse (message);
+                var payload = JSON.parse (message);
+                var workspace = payload.files;
                 ws.codelist = [];
                 var hash = crypto.createHash('sha256');
 
@@ -145,23 +147,24 @@ function connection(ws, request) {
                 // Triggering "Synthesizing..." on webpage
                 ws.send("Processing Verilog code...")
 
-                var error = [], modded_error = [], error_line = []
+                var supports = payload.settings.support.map (e => 'support/' + e);
+                var error = [], modded_error = [], error_line = [];
                 var FILES;
                 try {
                     const VERILATOR = "verilator"
                     const VFLAGS    = "--lint-only --top-module top"
+                          SUPPORTS  = supports.reduce ((p,n) => p + " " + n, "") + " "
                           FILES     = `${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `
                           FILES     += ws.filenames.filter (f => f.endsWith ('.sv')).map (f => path.resolve ('/tmp/tmpcode', ws.unique_client, f)).join (' ')
-                    const WARNINGS  = ['%Warning-WIDTH']
+                    const WARNINGS  = ['%Warning-WIDTH', '%Warning-SELRANGE']
                     var err_regex = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)", "g")
                     var err_regex_single = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)")
                     var ignore_err_rgx = /(This may be because there\'s no search path specified with)/
                     
-                    cp.execSync ([VERILATOR, VFLAGS, FILES].join (" "), { cwd: __dirname })
+                    cp.execSync ([VERILATOR, VFLAGS, SUPPORTS, FILES].join (" "), { cwd: __dirname })
                 }
                 catch (e) {
                     if (e) {
-                        console.error (e.stderr.toString())
                         var errors = []
                         ws.verilatorLog = e.message
                         if (e.message.match (err_regex)) {
@@ -205,18 +208,18 @@ function connection(ws, request) {
                 // remove yosys files from list
                 FILES = FILES.replace (`${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `, '')
                 JSONS = ws.filenames.filter (f => f.endsWith ('.json'))
-
+                SUPPORTS = supports.map (e => `${__dirname}/${e}`).reduce ((p,n) => `${p} ${n}`, "") + " ";
+                
                 try {
                     yosys_out = cp.execSync('yosys -p ' + 
-                                            (JSONS.length > 0 ? ('"read_json ' + JSONS.join (' ') + '; ') : '" ') +
-                                            ' read_verilog -sv ' +
-                                            FILES + '; ' +
+                    (JSONS.length > 0 ? ('"read_json ' + JSONS.join (' ') + '; ') : '" ') +
+                    `read_verilog -sv ${SUPPORTS} ${FILES}; ` +
                                             'synth_ice40 -top top; ' +
                                             'write_verilog /tmp/tmpcode/' + ws.unique_client + '/struct_code.v; ' + 
                                             'write_json /tmp/tmpcode/' + ws.unique_client + '/struct.json;" ' + 
-                                            '-l /tmp/tmpcode/' + ws.unique_client + '/yosyslog', {timeout: 30000, cwd: path.resolve ('/tmp/tmpcode', ws.unique_client)})
-                    ws.yosysJSON = fs.readFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'struct.json')).toString()
-                    fs.unlinkSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog'))
+                                            '-l /tmp/tmpcode/' + ws.unique_client + '/yosyslog', {timeout: 60000, cwd: path.resolve ('/tmp/tmpcode', ws.unique_client)})
+                                            ws.yosysJSON = fs.readFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'struct.json')).toString()
+                                            fs.unlinkSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog'))
                     ws.initYosys = true
                 }
                 catch (ex) {
@@ -236,41 +239,41 @@ function connection(ws, request) {
                             pcpu = parseFloat (proc.slice (0, proc.indexOf (" "))); proc = proc.slice (proc.indexOf (" ") + 1)
                             pid = parseInt (proc.slice (0, proc.indexOf (" "))); args = proc.slice (proc.indexOf (" ") + 1)
                             if (parseFloat (pcpu) > 90 && args.includes ("yosys") && args.includes (ws.unique_client)) {
-				try {
-                                    process.kill (pid)
-				}
-				catch (err) {
-					console.error ("Unable to kill Yosys PID " + pid || 'pid undefined')
-					console.error (err)
-				}
+                                try {
+                                    process.kill (pid);
+                                }
+                                catch (err) {
+                                    console.error ("Unable to kill Yosys PID " + pid || 'pid undefined');
+                                    console.error (err);
+                                }
                             }
-                        })
+                        });
                         ws.send ("YOSYS HUNG: " + ex.output.toString())
                         ws.close()
-                        return
+                        return;
                     }
 
-                    yosys_out = fs.readFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog'))
-                    ws.yosysJSON = 'No JSON was produced because Yosys ran into an error.'
-                    fs.unlinkSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog'))
-                    ws.initYosys = false
+                    yosys_out = fs.readFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog')); 
+                    ws.yosysJSON = 'No JSON was produced because Yosys ran into an error.'; 
+                    fs.unlinkSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog')); 
+                    ws.initYosys = false; 
 
                     function indexOfReg(arr, search) {
                         for (var elm in arr) {
                             try {
                                 if (typeof arr[elm] == 'string' && arr[elm].match(search)) {
                                     d = new Object();
-                                    d.message = arr[elm]
-                                    d.lineno = arr.indexOf(arr[elm])
-                                    return d
+                                    d.message = arr[elm]; 
+                                    d.lineno = arr.indexOf(arr[elm]); 
+                                    return d; 
                                 }
                             }
                             catch (ex) {
-                                debugLog('indexOfReg failed')
-                                debugLog(arr)
+                                debugLog('indexOfReg failed');
+                                debugLog(arr);
                                 d = new Object();
-                                d.message = "[ERROR] Internal server error. Please try again later."
-                                d.lineno = 1
+                                d.message = "[ERROR] Internal server error. Please try again later."; 
+                                d.lineno = 1; 
                                 return d;
                             }
                         }
@@ -396,7 +399,7 @@ function connection(ws, request) {
                             console.log("clock: " + clock)
                             reset = missing_flip_flop.match("R\=[^ ]+")
                             console.log("reset: " + reset)
-                            always_regex = new RegExp("always ?@ ?\\((?:pos|neg)edge [^ ,]+, ?(?:pos|neg)edge [^ ,]+, ?(?:pos|neg)edge [^\\)]+\\)")
+                            always_regex = new RegExp("always(\_ff)? ?@ ?\\((?:pos|neg)edge [^ ,]+, ?(?:pos|neg)edge [^ ,]+, ?(?:pos|neg)edge [^\\)]+\\)?")
                             ws.verilogCode.split('\n').filter(function (v, i, a) {
                                 if (v.match(always_regex)) {
                                     // console.log (v)
@@ -458,112 +461,183 @@ function connection(ws, request) {
                 }
                 else {
                     // Introduced Yosys-produced gate-level synthesis approach
-                    ws.currentState = "SIMULATE"
+                    ws.currentState = "SIMULATE";
                     ws.rxdata = [];  ws.recvInput = ''; 
                     ws.rxclk = 'x';  ws.txclk = 'x';
                     ws.rxready = 'x';
                     var env = Object.create(process.env);
-
-                    debugLog("Starting " + ws.unique_client)
-
-                    var args = (`+interp ${__dirname}/sim_modules/tb_ice40.sv ${__dirname}/sim_modules/reset.v ` +
-                        `${__dirname}/sim_modules/cells_sim_timing.v ` +
-                        `${__dirname}/sim_modules/cells_map_timing.v ` +
-                        `/tmp/tmpcode/${ws.unique_client}/struct_code.v -sv_lib ${__dirname}/sim_modules/svdpi.so`).split(" ")
-
-                    env.SVDPI_TO_PIPE = '1';
-                    env.SVDPI_FROM_PIPE = '0';
-
-                    try {
-                        ws.simulator_object = cp.spawn('cvc64', args, { env: env });
-                    }
-                    catch (err) {
-                        console.error (err)
-                        console.error (err.stderr.toString())
-                    }
-
-                    ws.send("Simulation successfully started!\nVerilator log:\n" + (ws.verilatorLog || 'Verilator produced no logs.') + 
-                            "\nYosys-produced JSON:\n" + ws.yosysJSON + "\nYosys log:\n" + yosys_out)
-                    ws.cvcTimeout = false
-                    ws.error_caught = false
-
-                    ws.simulator_object.stdout.on('data', (indata) => {
-                        var data = indata.toString('utf8').trim()
-                        var msgdata = data.replaceAll('\0', '')
+                    debugLog("Starting " + ws.unique_client + ' on ' + (payload.settings?.simulateWith == 'icarus' ? 'IcarusVerilog' : 'CVC')); 
+                    if (payload.settings?.simulateWith == 'icarus') {
+                        // additional compile step - ugh
+                        var IVL = 'iverilog ';
+                        var VARGS = `-o /tmp/tmpcode/${ws.unique_client}/simcomm.vvp -g2012 -gspecify `;
+                        var FILES = `${__dirname}/sim_modules/simcomm.sv /tmp/tmpcode/${ws.unique_client}/struct_code.v ` ;
+                        var CELLS = `${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `;
+                        
+                        // run compile step
                         try {
-                            // normal simulation output will look like a JSON object: {'output_name': output_value...}
-                            // if parsing of the object fails, it must be an error message or garbage we can't turn off
-                            var parsed = JSON.parse(msgdata)
-                            ws.send(JSON.stringify (parsed))
+                            var output = cp.execSync(IVL + VARGS + FILES + CELLS, { cwd: `/tmp/tmpcode/${ws.unique_client}` });
                         }
-                        catch (ex) {
-                            if (data.includes("10 minutes exceeded")) {
-                                ws.cvcTimeout = true
-                                ws.send("TIME LIMIT EXCEEDED")
+                        catch (err) {
+                            console.error (err)
+                            ws.send('Error occurred in Icarus compile step: ' + err.stderr.toString()); 
+                            ws.close();
+                            return;
+                        }
+
+                        // now for the actual simulation
+                        var sargs = `-M. -m ${__dirname}/sim_modules/simcomm /tmp/tmpcode/${ws.unique_client}/simcomm.vvp`.split(" ");
+                        env.RECV_PIPE = '1';
+                        env.SEND_PIPE = '0';
+                        try {
+                            // pipe stderr to stdout just in case we don't catch something
+                            ws.simulator_object = cp.spawn('vvp', sargs, { env: env, stdio: [ 'pipe', 'pipe', process.stdout ] });
+                        }
+                        catch (err) {
+                            console.error (err)
+                            console.error (err.stderr.toString())
+                            ws.send('Error occurred in Icarus simulation: ' + err.stderr.toString()); 
+                            ws.close();
+                            return;
+                        }
+                        
+                        ws.send("Simulation successfully started!\nVerilator log:\n" + (ws.verilatorLog || 'Verilator produced no logs.') + 
+                                "\nYosys-produced JSON:\n" + ws.yosysJSON + "\nYosys log:\n" + yosys_out)
+                        ws.simTimeout = false; 
+                        ws.error_caught = false; 
+
+                        ws.simulator_object.stdout.on('data', (indata) => {
+                            var data = indata.toString('utf8').trim()
+                            var msgdata = data.replaceAll('\0', '')
+                            try {
+                                // normal simulation output will look like a JSON object: {'output_name': output_value...}
+                                // if parsing of the object fails, it must be an error message
+                                var parsed = JSON.parse(msgdata)
+                                ws.send(JSON.stringify (parsed))
                             }
-                            else if (data.match(/timing violation in tb_struct_ice40\.ice40\.([\w]+)/)) {
-                                module_name = data.match(/timing violation in tb_struct_ice40\.ice40\.([\w]+)/)[1]
-                                violation_type = data.match(/\$([a-z]+)\(D\:/)[1]
-                                struct_code = fs.readFileSync('/tmp/tmpcode/' + ws.unique_client + '/struct_code.v').toString()
-                                flip_flop_regex = new RegExp(/SB_D[FFRES]* _54_ \(\n *\.C\(([^\)]+)\) *,\n *\.D\(([^\)]+)\) *,\n *\.Q\(([^\)]+)\) *,\n *\.R\(([^\)]+)\) *\n *\);/)
-                                try {
-                                    params = struct_code.match(flip_flop_regex).slice(1, 5)
-                                    ws.send("A flip flop (FF) in your code encountered a " + violation_type + " timing violation. " +
-                                        "The FF had the following signals: " +
-                                        "\nClock: " + params[0].replaceAll('\\', '') +
-                                        "\nData: " + params[1].replaceAll('\\', '') +
-                                        "\nOutput: " + params[2].replaceAll('\\', '') +
-                                        "\nReset: " + params[3].replaceAll('\\', '') + "\n"
-                                    )
+                            catch (ex) {
+                                if (msgdata.includes("10 minutes exceeded")) {
+                                    ws.simTimeout = true; 
+                                    ws.send("TIME LIMIT EXCEEDED"); 
                                 }
-                                catch (ex) {
-                                    debugLog(data)
-                                    ws.send("There was a timing violation, but some details could not be retrieved due to a Regex parsing error. Please contact course staff with a copy of your code.")
+                                else if (msgdata.includes("iming violation")) {
+                                    ws.send("TIMING VIOLATION");
                                 }
-                                ws.close()
+                                else if (ws.readyState == 1) {
+                                    if (msgdata.includes(" Continue ") || msgdata.includes("Flushing output streams")) {
+                                        // Meh.  Skip.
+                                        // It's either literally continuing, or it's stopping.
+                                        ws.simulator_object.kill('SIGTERM'); 
+                                    }
+                                    else if (!msgdata.includes ('{"LFTRED"') && !msgdata.includes ('10 minutes exceeded')) {
+                                        debugLog('IcarusVerilog gave unexpected output for ' + ws.unique_client + ' (' + username +  '): '); 
+                                        debugLog(msgdata); 
+                                        ws.error_caught = true; 
+                                    }
+                                }
                             }
-                            else {
-                                if (data.match(/Unresolved modules or udps:[^t]+top/)) {
-                                    ws.send("MISSING TOP MODULE")
-                                    ws.error_caught = true
+                        });
+                    }
+                    else {
+                        var args = (`+interp ${__dirname}/sim_modules/tb_ice40.sv ${__dirname}/sim_modules/reset.v ` +
+                            `${__dirname}/sim_modules/cells_sim_timing.v ` +
+                            `${__dirname}/sim_modules/cells_map_timing.v ` +
+                            `/tmp/tmpcode/${ws.unique_client}/struct_code.v -sv_lib ${__dirname}/sim_modules/svdpi.so`).split(" "); 
+
+                        env.SVDPI_TO_PIPE = '1';
+                        env.SVDPI_FROM_PIPE = '0';
+
+                        try {
+                            ws.simulator_object = cp.spawn('cvc64', args, { env: env, stdio: [ 'pipe', 'pipe', process.stdout ] });
+                        }
+                        catch (err) {
+                            console.error (err); 
+                            console.error (err.stderr.toString()); 
+                            ws.send('Error occurred in simulation: ' + err.stderr.toString()); 
+                            ws.close();
+                            return;
+                        }
+                        
+                        ws.send("Simulation successfully started!\nVerilator log:\n" + (ws.verilatorLog || 'Verilator produced no logs.') + 
+                                "\nYosys-produced JSON:\n" + ws.yosysJSON + "\nYosys log:\n" + yosys_out)
+                        ws.simTimeout = false
+                        ws.error_caught = false
+
+                        ws.simulator_object.stdout.on('data', (indata) => {
+                            var data = indata.toString('utf8').trim()
+                            var msgdata = data.replaceAll('\0', '')
+                            try {
+                                // normal simulation output will look like a JSON object: {'output_name': output_value...}
+                                // if parsing of the object fails, it must be an error message or garbage we can't turn off
+                                var parsed = JSON.parse(msgdata)
+                                ws.send(JSON.stringify (parsed))
+                            }
+                            catch (ex) {
+                                if (data.includes("10 minutes exceeded")) {
+                                    ws.simTimeout = true
+                                    ws.send("TIME LIMIT EXCEEDED")
                                 }
-                                else if (data.match (/Copyright \(c\) 1991/)) { // ignore the CVC regular copyright output
-                                    ws.send ("SIMULATION CLOSED")
+                                else if (data.match(/timing violation in tb_struct_ice40\.ice40\.([\w]+)/)) {
+                                    module_name = data.match(/timing violation in tb_struct_ice40\.ice40\.([\w]+)/)[1]
+                                    violation_type = data.match(/\$([a-z]+)\(D\:/)[1]
+                                    struct_code = fs.readFileSync('/tmp/tmpcode/' + ws.unique_client + '/struct_code.v').toString()
+                                    flip_flop_regex = new RegExp(/SB_D[FFRES]* _54_ \(\n *\.C\(([^\)]+)\) *,\n *\.D\(([^\)]+)\) *,\n *\.Q\(([^\)]+)\) *,\n *\.R\(([^\)]+)\) *\n *\);/)
+                                    try {
+                                        params = struct_code.match(flip_flop_regex).slice(1, 5)
+                                        ws.send("A flip flop (FF) in your code encountered a " + violation_type + " timing violation. " +
+                                            "The FF had the following signals: " +
+                                            "\nClock: " + params[0].replaceAll('\\', '') +
+                                            "\nData: " + params[1].replaceAll('\\', '') +
+                                            "\nOutput: " + params[2].replaceAll('\\', '') +
+                                            "\nReset: " + params[3].replaceAll('\\', '') + "\n"
+                                        )
+                                    }
+                                    catch (ex) {
+                                        debugLog(data)
+                                        ws.send("There was a timing violation, but some details could not be retrieved due to a Regex parsing error. Please contact course staff with a copy of your code.")
+                                    }
+                                    ws.close()
                                 }
                                 else {
-                                    if (ws.readyState != 1) {
-                                        ws.simulator_object.kill('SIGINT')
-                                        debugLog ('Killed CVC on stdout')
-                                        debugLog (ws.readyState)
-                                    }
-                                    if (!data.includes ('{"LFTRED"') && !data.includes ('Time limit of 5 minutes')) {
-                                        debugLog('CVC gave unexpected output for ' + ws.unique_client + ' (' + username +  '): ')
-                                        debugLog(data)
+                                    if (data.match(/Unresolved modules or udps:[^t]+top/)) {
+                                        ws.send("MISSING TOP MODULE")
                                         ws.error_caught = true
+                                    }
+                                    else if (data.match (/Copyright \(c\) 1991/)) { // ignore the CVC regular copyright output
+                                        ws.send ("SIMULATION CLOSED")
+                                    }
+                                    else {
+                                        if (ws.readyState != 1) {
+                                            ws.simulator_object.kill('SIGINT')
+                                            debugLog ('Killed CVC on stdout')
+                                            debugLog (ws.readyState)
+                                        }
+                                        if (!data.includes ('{"LFTRED"') && !data.includes ('Time limit of 5 minutes')) {
+                                            debugLog('CVC gave unexpected output for ' + ws.unique_client + ' (' + username +  '): ')
+                                            debugLog(data)
+                                            ws.error_caught = true
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
-
+                        });
+                    }
+                    // for both processes, code is common
                     ws.simulator_object.on('exit', (code, signal) => {
-                        if (!ws.cvcTimeout && !ws.error_caught && ws.readyState == 1) {
-                            debugLog("FATAL: CVC has quit.")
+                        if (!ws.simTimeout && !ws.error_caught && ws.readyState == 1) {
+                            debugLog("FATAL: Simulation has quit.")
                             debugLog('Code ' + code)
                             debugLog('Signal ' + signal)
-                            if (signal == 'SIGINT') {
+                            if (signal == 'SIGINT')
                                 ws.send("SIGINTED")
-                            }
-                            else if (signal == 'SIGKILL') {
-                                ws.send ('CVC HUNG')
-                            }
+                            else if (signal == 'SIGKILL') 
+                                ws.send ('SIM HUNG')
                         }
                         ws.send("END SIMULATION")
                         ws.close()
                     });
                 }
-
-                break;
+            break;
 
             case "SIMULATE":
                 try {
@@ -571,10 +645,9 @@ function connection(ws, request) {
                     ws.simulator_object.stdin.write(ws.recvInput)
                 }
                 catch (ex) {
-                    debugLog('Tried writing a message: ' + ws.recvInput + ' to closed CVC process, ignoring...')
+                    // debugLog('Tried writing a message: ' + ws.recvInput + ' to closed CVC process, ignoring...')
                 }
                 break;
-
         }
     });
     ws.on('close',
@@ -585,15 +658,15 @@ function connection(ws, request) {
                     debugLog("Stopped " + ws.unique_client)
                     ws.simulator_object.kill('SIGINT')
                 }
-                // try to find CVC process and kill it with a SIGINT
+                // try to find CVC process and kill it with a SIGTERM
                 cmd = "ps -eo pcpu,pid,args | grep " + ws.unique_client
                 psy = cp.execSync (cmd).toString().split ("\n")
                 psy.forEach ((ps) => {
                     extract = ps.match (/([0-9]+\.[0-9]) ([0-9]+) (.+)/)
-                    if (extract && extract.length != 4) // what?  I need to see the output
+                    if (extract && extract.length != 4)
                         console.log ('Malformed ps output: ' + extract)
-                    else if (extract && extract.includes ("cvc +interp"))
-                        process.kill (extract[2], 'SIGINT')
+                    else if (extract && (extract.includes ("cvc +interp") || extract.includes ("vvp -M")))
+                        process.kill (extract[2], 'SIGTERM')
                 })
             }
             catch (ex) {
