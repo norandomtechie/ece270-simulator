@@ -9,7 +9,7 @@ ARG INSIDE_DOCKER=yes
 RUN apt-get update
 RUN apt-get upgrade
 # Install git
-RUN apt-get install -y git
+RUN apt-get install -y git wget
 # Download simulator codebase
 RUN git clone https://github.com/norandomtechie/ece270-simulator $HOME/ece270-simulator
 # Allow connections from outside the container
