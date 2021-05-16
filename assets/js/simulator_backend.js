@@ -1158,7 +1158,7 @@ function zipStorage() {
 	}
 	zip.generateAsync({type: "blob"}).then ((content) => {
 		var link = document.createElement("a");
-		var username = $('#profile_uname').text().match (/, ([a-z0-9]+)/)[1]; 
+		var username = 'demouser'; 
 		link.href = URL.createObjectURL(content);
 		link.download = username + "_simulator.zip"; 
 		link.style.display = 'none'; 

@@ -80,8 +80,13 @@ do
             rm -rf iverilog
             ;;
         "node")
-            curl -sL https://deb.nodesource.com/setup_14.x | bash -
-            apt-get -y install nodejs
+            wget https://nodejs.org/dist/v14.17.0/node-v14.17.0-linux-x64.tar.xz
+            unxz node-v14.17.0-linux-x64.tar.xz
+            tar -xf node-v14.17.0-linux-x64.tar
+            mv node-v14.17.0-linux-x64 node
+            for i in $(/usr/bin/ls)
+                ln -s $i /usr/bin/$i
+            rm -f node-v14.17.0-linux-x64.tar
             ;;
         *)
             echo "wait... what?  You modified this script, didn't you!?"
@@ -93,16 +98,19 @@ done
 
 cd ..
 echo "Installing node modules..."
-npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
+/usr/bin/npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
 mkdir -p /tmp/tmpcode
-echo "Starting node server..."
-runuser -l $SUDO_USER -c "node $(pwd)/cluster.js > $(pwd)/serverlog 2>&1 &"
-sleep 3
-if [ "$(cat serverlog)" == "Simulator started and running on port 4500." ]
+if [ "$INSIDE_DOCKER" != "YES" ]
 then
-    echo "The node server with dependencies have been successfully set up!  Visit localhost:4500 to access the simulator hosted on this machine, or configure https://verilog.ecn.purdue.edu/ to use your computer to perform simulations!"
-    exit 0
-else
-    echo "An error has occurred.  Please post the output of 'cat serverlog' in a GitHub issue along with any other errors that may have printed out from this script."
-    exit 1
+    echo "Starting node server..."
+    runuser -l $SUDO_USER -c "node $(pwd)/cluster.js > $(pwd)/serverlog 2>&1 &"
+    sleep 3
+    if [ "$(cat serverlog)" == "Simulator started and running on port 4500." ]
+    then
+        echo "The node server with dependencies have been successfully set up!  Visit localhost:4500 to access the simulator hosted on this machine, or configure https://verilog.ecn.purdue.edu/ to use your computer to perform simulations!"
+        exit 0
+    else
+        echo "An error has occurred.  Please post the output of 'cat serverlog' in a GitHub issue along with any other errors that may have printed out from this script."
+        exit 1
+    fi
 fi

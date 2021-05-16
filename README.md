@@ -1,6 +1,15 @@
-# ECE 270 Simulator (updated Fall 2020)
+# ECE 270 Simulator (updated Spring 2021)
 
-We'll update this for Spring 2021 eventually.  It may include features that we were unable to add while the semester was ongoing.
+## Changes made during Summer 2021
+- Support for IcarusVerilog simulations
+- Easter egg!
+- Under-the-hood optimizations and code clean-up
+
+Considering adding some more features, and hopefully will have them added before Fall 2021.
+
+## Changes made during Spring 2021
+- Added zip download option to archive code
+- Workspace-unique support modules (place in support/ folder and check workspace settings)
 
 ## Changes made during Summer/Fall 2020
 - Introduced workspaces to better organize files  
