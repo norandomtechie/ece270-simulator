@@ -84,7 +84,7 @@ do
             unxz node-v14.17.0-linux-x64.tar.xz
             tar -xf node-v14.17.0-linux-x64.tar
             mv node-v14.17.0-linux-x64 node
-            for i in $(/usr/bin/ls)
+            for i in $(/usr/bin/ls node/bin/)
                 ln -s $i /usr/bin/$i
             rm -f node-v14.17.0-linux-x64.tar
             ;;
