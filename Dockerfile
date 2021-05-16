@@ -15,4 +15,4 @@ RUN git clone https://github.com/norandomtechie/ece270-simulator $HOME/ece270-si
 # Allow connections from outside the container
 RUN sh -c "sed -i 's/127.0.0.1/0.0.0.0/g' $HOME/ece270-simulator/cluster.js"
 # Install node_modules/
-RUN sh -c 'cd $HOME/ece270-simulator && ./setup/setup.sh'
+RUN sh -c "cd $HOME/ece270-simulator && ./setup/setup.sh"
