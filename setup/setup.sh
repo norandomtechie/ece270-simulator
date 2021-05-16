@@ -72,6 +72,7 @@ do
             ;;
         "iverilog")
             cd iverilog
+            apt-get install -y gperf
             autoconf
             ./configure
             make -j$(nproc) || (echo "Compiling IcarusVerilog failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
@@ -100,13 +101,19 @@ done
 
 cd ..
 echo "Installing node modules..."
+# https://stackoverflow.com/questions/51811564/sh-1-node-permission-denied
+if [ "$INSIDE_DOCKER" == "YES" ]
+then
+    /usr/bin/npm config set user 0          
+    /usr/bin/npm config set unsafe-perm true
+done
 /usr/bin/npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
 mkdir -p /tmp/tmpcode
 if [ "$INSIDE_DOCKER" != "YES" ]
 then
     echo "Starting node server..."
     runuser -l $SUDO_USER -c "node $(pwd)/cluster.js > $(pwd)/serverlog 2>&1 &"
-    sleep 3
+    sleep 3     # give some spin-up time
     if [ "$(cat serverlog)" == "Simulator started and running on port 4500." ]
     then
         echo "The node server with dependencies have been successfully set up!  Visit localhost:4500 to access the simulator hosted on this machine, or configure https://verilog.ecn.purdue.edu/ to use your computer to perform simulations!"
