@@ -104,9 +104,9 @@ echo "Installing node modules..."
 # https://stackoverflow.com/questions/51811564/sh-1-node-permission-denied
 if [ "$INSIDE_DOCKER" == "YES" ]
 then
-    /usr/bin/npm config set user 0          
+    /usr/bin/npm config set user 0
     /usr/bin/npm config set unsafe-perm true
-done
+fi
 /usr/bin/npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
 mkdir -p /tmp/tmpcode
 if [ "$INSIDE_DOCKER" != "YES" ]
