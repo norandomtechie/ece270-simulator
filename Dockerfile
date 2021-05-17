@@ -14,7 +14,7 @@ RUN apt-get install -y git wget
 RUN git clone https://github.com/norandomtechie/ece270-simulator $HOME/ece270-simulator
 # Allow connections from outside the container
 RUN sh -c "sed -i 's/127.0.0.1/0.0.0.0/g' $HOME/ece270-simulator/cluster.js"
-# Install node_modules/
+# Run setup.sh script
 RUN sh -c "cd $HOME/ece270-simulator && ./setup/setup.sh"
 # start server
 CMD node $HOME/ece270-simulator/cluster.js
