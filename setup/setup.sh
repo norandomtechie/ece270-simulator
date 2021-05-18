@@ -1,7 +1,7 @@
 #!/bin/bash
 if [[ "$(pwd)" != *setup ]]
 then
-    cd setup || (echo "The setup directory is missing.  Please ensure that you cloned the simulator repository properly." && exit 1)
+    cd setup || (echo "The setup directory is missing.  Please ensure that you cloned the simulator repository properly, and that you're running it inside the repo folder." && exit 1)
 fi
 printf "ECE 270 simulator setup\n\n"
 
@@ -47,7 +47,6 @@ do
             make -j$(nproc) || (echo "Compiling verilator failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
             make install
             cd -
-            rm -rf verilator
             ;;
         "yosys")
             cd yosys/
@@ -61,14 +60,12 @@ do
             make -j$(nproc) || (echo "Compiling yosys failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
             make install
             cd -
-            rm -rf yosys
             ;;
         "cvc64")
             cd open-src-cvc/src
             make -f makefile.cvc64 || (echo "Compiling cvc failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
             cp cvc64 /usr/bin/cvc64
             cd -
-            rm -rf open-src-cvc
             ;;
         "iverilog")
             cd iverilog
@@ -78,7 +75,6 @@ do
             make -j$(nproc) || (echo "Compiling IcarusVerilog failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
             make install
             cd - 
-            rm -rf iverilog
             ;;
         "node")
             wget https://nodejs.org/dist/v14.17.0/node-v14.17.0-linux-x64.tar.xz
@@ -89,7 +85,6 @@ do
             do 
                 ln -s $i /usr/bin/$(basename $i);
             done
-            rm -f node-v14.17.0-linux-x64.tar
             ;;
         *)
             echo "wait... what?  You modified this script, didn't you!?"
