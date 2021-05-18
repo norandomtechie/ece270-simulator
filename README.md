@@ -4,6 +4,7 @@
 - Support for IcarusVerilog simulations
 - Easter egg!
 - Under-the-hood optimizations and code clean-up
+- Docker image updated to use current version (should remain updated via Git, do a 'git pull' inside the container to receive updates)
 
 Considering adding some more features, and hopefully will have them added before Fall 2021.
 
