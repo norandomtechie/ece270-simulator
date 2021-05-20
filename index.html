@@ -39,23 +39,23 @@
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 </head>
 
-<body onresize="resizeHandler()" style="height: 100vh; background-color: var(--navbar-upper-bg);">
-  <div class="findall" style="width: 400px; height: 500px; position: absolute; top: 25vh; left: 25vw; z-index: 100; display: none; opacity: 0; transition: opacity 0.3s ease 0s; background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%; border: 2px solid var(--display-4-color); border-radius: 5px;">
-    <div class="findalltop" style="width:100%; height: 2.5%; background: #fff"></div>
-    <div class="findallbkgd" style="width:100%;height:95%;filter: blur(10px); z-index: 99; background: rgba(255, 255, 255, 0.65);"></div>
-    <div class="findallbody" style="width:100%;height:95%;filter: blur(0px); position: absolute; top: 2.5%; left: 0; z-index: 101; background: transparent; display: flex; align-items: center; padding-top: 20px; justify-content: flex-start; flex-direction: column; overflow-x: hidden; overflow-y: scroll">
-      <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; width: 95%;height: 10%;">
-        <i class="fa fa-search" aria-hidden="true" style="margin-right: 15px;font-size: calc(1vw + 1vh);"></i>
-        <input id="findallsearch" style="width: 85%;font-family: Open Sans;background: transparent;border: 1px solid #888;border-radius: 5px;padding-left: 10px;height: 100%;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" placeholder="Enter a search string...">
+<body onresize="resizeHandler()">
+  <div class="findall">
+    <div class="findalltop"></div>
+    <div class="findallbkgd"></div>
+    <div class="findallbody">
+      <div class="findallwindow">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <input id="findallsearch" placeholder="Enter a search string...">
       </div>
-      <p id="findallstatus" style="font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;width: 90%;margin-top: 15px;margin-bottom: 5px;">Enter at least three characters.</p>
+      <p id="findallstatus">Enter at least three characters.</p>
     </div>
   </div>
-  <div class="overlay" id="overlay_top" style="background-color: var(--navbar-upper-bg); display: block; opacity: 1"></div>
-  <div id="mainview" style="width: 100%;height:100%;margin-right: auto;margin-left: auto;transition: filter 0.75s">
-    <nav class="navbar navbar-light navbar-special navbar-expand-md navigation-clean-button theme-select" style="height: 8vh;">
-      <div class="d-flex align-items-center" style="width: 100%; flex-direction: row; justify-content: space-evenly;">
-        <div style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+  <div class="overlay" id="overlay_top"></div>
+  <div id="mainview">
+    <nav class="navbar navbar-light navbar-special navbar-expand-md navigation-clean-button theme-select" id="header-title">
+      <div class="d-flex align-items-center" id="header-flex">
+        <div id="header-row">
           <!-- <input id="save_as_elm" type="file" name="name" style="display: none"/> -->
           <!-- <button class="btn btn-light btn-bevel" type="button" style="float: right; width: 100px; font-size: 16px; margin-right: 15px" onclick="javascript:document.getElementById('open_elm').click()">Open</button> -->
           <i class="fal fa-file top-icon" title="Create new workspace/file" onclick="javascript:openWorkspaceManager('create')"></i>
@@ -71,37 +71,37 @@
           <input id="open_elm" type="file" name="name" style="display: none"/>
           <a id="downlink" href="none" download="verilog.sv" style="display: none"></a>
         </div>
-        <h1 title="There's Easter eggs all over the site!  Seek and ye shall find, and ye shall tell us on Piazza!" class="display-4 text-center text-muted" style="font-size: calc(1.3vw + 0.5vh); width: auto; margin: 0 10vw 0 10vw">eceFPGA Simulator</h1>
-        <div style="width: 10%; height: auto; display: flex; flex-direction: row; align-items: center">
-          <p class="display-4 text-muted" style="cursor: pointer; font-size: calc(0.8vw + 0.25vh); margin: 0" onclick="zipStorage()">Download as zip</p>
+        <h1 title="There's Easter eggs all over the site!  Seek and ye shall find, and ye shall tell us on Piazza!" class="display-4 text-center text-muted title">eceFPGA Simulator</h1>
+        <div class="download-div">
+          <p class="display-4 text-muted download-button" onclick="zipStorage()">Download as zip</p>
         </div>
       </div>
     </nav>
-    <nav class="navbar navbar-page-info navbar-special" id="status-navbar" style="vertical-align: middle; padding: 0px!important; background-color: #eaeaea">
-      <div class="d-flex justify-content-center" style="width: 100%; height: 100%; padding-top: 1.25vh; padding-bottom: 0.75vh">
-        <div class="col" style="height: 100%">
-          <div class="row justify-content-center" style="vertical-align: middle; margin-left: 5vw; padding-right: 3vw;">
+    <nav class="navbar navbar-page-info navbar-special" id="status-navbar">
+      <div class="d-flex justify-content-center">
+        <div class="col">
+          <div class="row justify-content-center">
             <div class="col">
-              <h1 class="display-4 text-center text-muted" id="status-text" style="font-size: calc(0.4vh + 0.8vw);">Status: Ready</h1>
+              <h1 class="display-4 text-center text-muted" id="status-text">Status: Ready</h1>
             </div>
-            <a onclick="javascript:display_info(0); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">About</h1></a>
-            <a onclick="javascript:display_info(1); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Functionality</h1></a>
-            <a onclick="javascript:display_info(2); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Usage</h1></a>
-            <a onclick="javascript:display_info(3); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Credits</h1></a>
-            <a onclick="javascript:display_info(4); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Privacy</h1></a>
-            <a onclick="javascript:display_info(5); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer;                                 padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Source</h1></a>
+            <a onclick="javascript:display_info(0); return false;"><h1 class="desc display-4 text-center text-muted">About</h1></a>
+            <a onclick="javascript:display_info(1); return false;"><h1 class="desc display-4 text-center text-muted">Functionality</h1></a>
+            <a onclick="javascript:display_info(2); return false;"><h1 class="desc display-4 text-center text-muted">Usage</h1></a>
+            <a onclick="javascript:display_info(3); return false;"><h1 class="desc display-4 text-center text-muted">Credits</h1></a>
+            <a onclick="javascript:display_info(4); return false;"><h1 class="desc display-4 text-center text-muted">Privacy</h1></a>
+            <a onclick="javascript:display_info(5); return false;"><h1 class="desc display-4 text-center text-muted"style="border-right: 0;">Source</h1></a>
             <div style="margin-left: 10vw"></div>
           </div>
         </div>
       </div>
     </nav>
     <nav class="description-navbar" id="description-navbar" style="overflow: hidden; position: fixed; z-index: 2; background-color: #dfdfdf; height: 0vh; transition: height 0.3s">
-      <p class="display-4 text-center text-muted" id="desctext" style="padding-top: 2vh; padding-left: 20vw; padding-right: 20vw; font-size: calc(0.3vh + 0.78vw)"></p>
+      <p class="display-4 text-center text-muted" id="desctext"></p>
     </nav>
     <div style="padding-bottom: 1.5vh"> </div>
     <div class="row justify-content-center">
-      <div class="row text-center d-sm-flex d-xl-flex justify-content-center" style="text-align: center; align-items: center; width: 100%">
-        <div class="col-md-6" style="width: 25%; max-width: calc(15vw + 20vh); padding-right: 1px">
+      <div class="row text-center d-sm-flex d-xl-flex justify-content-center" id="simview">
+        <div id="ice40-div">
           <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 650 690" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <filter id="svg_127_blur" x="-50%" y="-50%" width="200%" height="200%">
@@ -286,42 +286,27 @@
           </svg>
           <div class="col align-self-center">
             <div class="d-xl-flex justify-content-xl-center">
-              <div class="row justify-content-xl-center" style="padding-top: 30px; font-size: 32px; width: 100%; flex-wrap: nowrap">
-                <button class="btn btn-info btn-bevel btn-filter" id="btn-load"  type="button" style="display: flex; width: 40%; align-items: center; justify-content: center; margin-right: 10px; margin-bottom: 4px; font-size: 1vw;" onclick="javascript:load_template(event)">Load Template</button>
-                <button class="btn btn-primary btn-bevel btn-filter"             type="button" style="display: flex; width: 40%; align-items: center; justify-content: center; margin-right: 10px; margin-bottom: 4px; font-size: 1vw;" onclick="javascript:ice40hx8k_handler();">Simulate</button>
+              <div class="row btn-row">
+                <button class="btn btn-info btn-bevel btn-filter" id="btn-load"  type="button"  onclick="javascript:load_template(event)">Load Template</button>
+                <button class="btn btn-primary btn-bevel btn-filter"             type="button"  onclick="javascript:ice40hx8k_handler();">Simulate</button>
               </div>
             </div>
             <div class="d-xl-flex justify-content-xl-center">
-              <div class="row" style="align-items: center; justify-content: space-evenly; padding-top: 10px; font-size: 32px;">
-                <button class="btn btn-dark btn-bevel btn-filter"    type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:demo_handler()">Demo</button>
-                <button class="btn btn-warning btn-bevel btn-filter" type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:stop_handler()">Freeze</button>
-                <button class="btn btn-danger btn-bevel btn-filter" type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:reset_handler()">Stop</button>
+              <div class="row btn-row">
+                <button class="btn btn-dark btn-bevel btn-filter"    type="button" onclick="javascript:demo_handler()">Demo</button>
+                <button class="btn btn-warning btn-bevel btn-filter" type="button" onclick="javascript:stop_handler()">Freeze</button>
+                <button class="btn btn-danger btn-bevel btn-filter" type="button" onclick="javascript:reset_handler()">Stop</button>
               </div>
             </div>
             <div class="d-xl-flex justify-content-xl-center">
-              <div class="row justify-content-xl-center" style="padding-top: 10px;font-size: 32px;padding-bottom: 20px;width: 95%;height:max-content;">
-                <style>
-                  .lowerbtn {
-                    color: var(--display-4-color); 
-                    border: 1px solid var(--display-4-color); 
-                    width: 45%; 
-                    height: calc(2vh+1vw); 
-                    margin-right: 15px; 
-                    margin-bottom: 6px; 
-                    font-size: 0.9vw;
-                    white-space: nowrap;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                  }
-                </style>
+              <div class="btn-row row justify-content-xl-center">
                 <button class="btn btn-bevel btn-filter lowerbtn" id="switchsim" type="button" onclick="javascript:switchWorkspaceSim()">Workspace Simulation</button>
                 <button class="btn btn-bevel btn-filter lowerbtn" type="button" onclick="javascript:openHDLwave();">Verify Design</button>
               </div>
             </div>
           </div>
         </div>
-        <div id="editor-workspace" style="min-width: 20%; max-width: 65%; width: 65%; height: 100%; display: flex; flex-direction: row; align-items: center;">
+        <div id="editor-workspace">
           <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
             <div id="editor-tab-workspace-header">
                 <div class="editor-tab-workspace" id="editor-tab-workspace-add"><label class="tab-label-workspace" id="wksp-tab-add">+</label></div>
