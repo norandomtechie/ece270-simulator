@@ -401,7 +401,7 @@ body {
 }
 
 .display-4.text-center.text-muted.title {
-  font-size: calc(0.5rem + 1.3vw + 0.5vh);
+  font-size: calc(0.5rem + 0.8vw + 0.4vh);
   width: auto;
   margin: 0 10vw 0 10vw
 }
@@ -417,7 +417,7 @@ body {
 
 .download-button {
   cursor: pointer;
-  font-size: calc(0.35rem + 0.8vw + 0.25vh);
+  font-size: calc(0.35rem + 0.7vw + 0.15vh);
   margin: 0;
 }
 
@@ -473,13 +473,15 @@ body {
 }
 
 #editor-workspace {
-  min-width: 60%;
+  min-width: 400px;
+  max-width: 100%;
   flex: 1;
-  height: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-right: 10px
+  padding-right: 10px;
+  margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 .btn.btn-bevel.btn-filter {
@@ -1057,12 +1059,14 @@ Apple screws everything up for everyone who tries to develop on its platforms */
 }
 
 #resize-editor {
-  height: 33%;
-  width: 1%;
+  height: 200px;
+  width: 10px;
   cursor: w-resize;
   background-color: transparent;
   border-left: 3px solid var(--display-4-color);
   transition: border 0.2s;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 #resize-editor:hover {

@@ -811,15 +811,19 @@ window.onload = function () {
 
 	$(document).mousemove (e => {
 		if ($('#resize-editor')[0].classList.contains ("dragging")) {
+			$("#editor-workspace").css("flex", "none")
 			if (e.pageX < last_page_x) {
 				// left
 				$("#editor-workspace").width($("#editor-workspace").width() - (last_page_x - e.pageX))
 				$("#outputview").width($("#editor-workspace").width() - (last_page_x - e.pageX))
 			}
 			else {
-				// right
-				$("#editor-workspace").width($("#editor-workspace").width() + (e.pageX - last_page_x))
-				$("#outputview").width($("#editor-workspace").width() + (e.pageX - last_page_x))
+				// right - make sure not to drag it larger than the width of the window!
+				if ($("#status-navbar").width() - $("#editor-workspace").width() - (e.pageX - last_page_x) >= 700
+						|| ($("#status-navbar").width() < 1675 &&  $("#editor-workspace").width() + (e.pageX - last_page_x) < 1600)) {
+					$("#editor-workspace").width($("#editor-workspace").width() + (e.pageX - last_page_x))
+					$("#outputview").width($("#editor-workspace").width() + (e.pageX - last_page_x))
+				}
 			}
 			last_page_x = e.pageX
 		}
