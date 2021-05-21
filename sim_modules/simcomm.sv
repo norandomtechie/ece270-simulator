@@ -42,6 +42,11 @@ module main;
     logic [31:0] recv;
     integer ctr = 0;
 
+    initial begin
+      $dumpfile("trace.vcd");
+      $dumpvars(0, ice40);
+    end
+
     always begin
         // getinput will contain pb(20), 
         // hz100,reset,rxdata,txready,rxready(12)

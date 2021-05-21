@@ -438,8 +438,9 @@ function closeTabHandler (e) {
 		alert("There must always be one tab open. Add a new tab first, then close this one.")
 }
 
-function setCurrentWorkspace(ws) {
-	localStorage.currentWorkspace = ws
+function setCurrentWorkspace(wksp) {
+	localStorage.currentWorkspace = wksp;
+	window.active_workspace = wksp;
 }
 
 function addTabHandler (e) {

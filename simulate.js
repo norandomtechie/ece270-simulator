@@ -25,7 +25,7 @@ const cp = require('child_process');
 const crypto = require('crypto');
 const path = require('path');
 const rimraf = require('rimraf'),
- hostname = os.hostname();
+      hostname = os.hostname();
 
 /* 
     https://stackoverflow.com/questions/18052762/remove-directory-which-is-not-empty
@@ -491,7 +491,7 @@ function connection(ws, request) {
                         env.SEND_PIPE = '0';
                         try {
                             // pipe stderr to stdout just in case we don't catch something
-                            ws.simulator_object = cp.spawn('vvp', sargs, { env: env, stdio: [ 'pipe', 'pipe', process.stdout ] });
+                            ws.simulator_object = cp.spawn('vvp', sargs, { cwd: `/tmp/tmpcode/${ws.unique_client}`, env: env, stdio: [ 'pipe', 'pipe', process.stdout ] });
                         }
                         catch (err) {
                             console.error (err)
@@ -519,9 +519,13 @@ function connection(ws, request) {
                                 if (msgdata.includes("10 minutes exceeded")) {
                                     ws.simTimeout = true; 
                                     ws.send("TIME LIMIT EXCEEDED"); 
+                                    ws.simulator_object.kill('SIGTERM'); 
                                 }
                                 else if (msgdata.includes("iming violation")) {
                                     ws.send("TIMING VIOLATION");
+                                }
+                                else if (msgdata.includes("VCD info: dumpfile")) {
+                                    // ignore.
                                 }
                                 else if (ws.readyState == 1) {
                                     if (msgdata.includes(" Continue ") || msgdata.includes("Flushing output streams")) {
@@ -559,9 +563,9 @@ function connection(ws, request) {
                         }
                         
                         ws.send("Simulation successfully started!\nVerilator log:\n" + (ws.verilatorLog || 'Verilator produced no logs.') + 
-                                "\nYosys-produced JSON:\n" + ws.yosysJSON + "\nYosys log:\n" + yosys_out)
-                        ws.simTimeout = false
-                        ws.error_caught = false
+                                "\nYosys-produced JSON:\n" + ws.yosysJSON + "\nYosys log:\n" + yosys_out);
+                        ws.simTimeout = false;
+                        ws.error_caught = false;
 
                         ws.simulator_object.stdout.on('data', (indata) => {
                             var data = indata.toString('utf8').trim()
@@ -624,7 +628,14 @@ function connection(ws, request) {
                     }
                     // for both processes, code is common
                     ws.simulator_object.on('exit', (code, signal) => {
-                        if (!ws.simTimeout && !ws.error_caught && ws.readyState == 1) {
+                        if (fs.existsSync(`/tmp/tmpcode/${ws.unique_client}/trace.vcd`)) {
+                            fs.readFile(`/tmp/tmpcode/${ws.unique_client}/trace.vcd`, (err, data) => {
+                                if (err) ws.send(JSON.stringify({'vcd': 'Error in reading VCD data.  Please try again.'}));
+                                else ws.send(JSON.stringify({'vcd': data.toString()}));
+                                ws.close()
+                            });
+                        }
+                        else if (!ws.simTimeout && !ws.error_caught && ws.readyState == 1) {
                             debugLog("FATAL: Simulation has quit.")
                             debugLog('Code ' + code)
                             debugLog('Signal ' + signal)
@@ -632,17 +643,31 @@ function connection(ws, request) {
                                 ws.send("SIGINTED")
                             else if (signal == 'SIGKILL') 
                                 ws.send ('SIM HUNG')
+                            ws.send("END SIMULATION")
+                            ws.close()
                         }
-                        ws.send("END SIMULATION")
-                        ws.close()
                     });
                 }
             break;
 
             case "SIMULATE":
                 try {
-                    ws.recvInput = message
-                    ws.simulator_object.stdin.write(ws.recvInput)
+                    ws.recvInput = message;
+                    if (ws.recvInput == "END SIMULATION") {
+                        ws.simulator_object.kill("SIGTERM");
+                        // if (fs.existsSync(`/tmp/tmpcode/${ws.unique_client}/trace.vcd`)) {
+                        //     fs.readFile(`/tmp/tmpcode/${ws.unique_client}/trace.vcd`, (err, data) => {
+                        //         if (err)
+                        //             ws.send(JSON.stringify({'vcd': 'Error in reading VCD data.  Please try again.  ' + err.toString()}));
+                        //         else
+                        //             ws.send(JSON.stringify({'vcd': data.toString()}));
+                        //         ws.close()
+                        //     });
+                        // }
+                    }
+                    else {
+                        ws.simulator_object.stdin.write(ws.recvInput); 
+                    }
                 }
                 catch (ex) {
                     // debugLog('Tried writing a message: ' + ws.recvInput + ' to closed CVC process, ignoring...')
@@ -670,8 +695,7 @@ function connection(ws, request) {
                 })
             }
             catch (ex) {
-                console.log (getTime())
-                console.error (ex)
+                debugLog(ex.toString());
             }
         }
     )
