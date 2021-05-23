@@ -318,7 +318,7 @@ option {
 
 /***************************************************************/
 
-#autosave_interval, #passwd, #evalthemeselector, #localport {
+#autosave_interval, #passwd, #evalthemeselector, #simselector, #localport {
   border: var(--autosave-evaltheme-passwd-border);
   background-color: var(--autosave-evaltheme-passwd-bg);
   color: var(--autosave-evaltheme-passwd-color);

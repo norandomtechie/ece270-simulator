@@ -149,7 +149,7 @@ void timer_watch (void)
   if (now - start_time > 600)
   {
     char buffer [100];
-    snprintf (buffer, 100, "\nTime limit of 5 minutes exceeded! Stopping simulation.\n");
+    snprintf (buffer, 100, "\nTime limit of 10 minutes exceeded! Stopping simulation.\n");
     write(wpipe, buffer, strlen(buffer) + 1);
     exit(1);
   }

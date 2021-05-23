@@ -207,7 +207,7 @@ function connection(ws, request) {
 
                 // remove yosys files from list
                 FILES = FILES.replace (`${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `, '')
-                JSONS = ws.filenames.filter (f => f.endsWith ('.json'))
+                JSONS = ws.filenames.filter (f => f.endsWith ('.json'));
                 SUPPORTS = supports.map (e => `${__dirname}/${e}`).reduce ((p,n) => `${p} ${n}`, "") + " ";
                 
                 try {
@@ -531,7 +531,7 @@ function connection(ws, request) {
                                     if (msgdata.includes(" Continue ") || msgdata.includes("Flushing output streams")) {
                                         // Meh.  Skip.
                                         // It's either literally continuing, or it's stopping.
-                                        ws.simulator_object.kill('SIGTERM'); 
+                                        // ws.simulator_object.kill('SIGTERM'); 
                                     }
                                     else if (!msgdata.includes ('{"LFTRED"') && !msgdata.includes ('10 minutes exceeded')) {
                                         debugLog('IcarusVerilog gave unexpected output for ' + ws.unique_client + ' (' + username +  '): '); 
@@ -655,15 +655,6 @@ function connection(ws, request) {
                     ws.recvInput = message;
                     if (ws.recvInput == "END SIMULATION") {
                         ws.simulator_object.kill("SIGTERM");
-                        // if (fs.existsSync(`/tmp/tmpcode/${ws.unique_client}/trace.vcd`)) {
-                        //     fs.readFile(`/tmp/tmpcode/${ws.unique_client}/trace.vcd`, (err, data) => {
-                        //         if (err)
-                        //             ws.send(JSON.stringify({'vcd': 'Error in reading VCD data.  Please try again.  ' + err.toString()}));
-                        //         else
-                        //             ws.send(JSON.stringify({'vcd': data.toString()}));
-                        //         ws.close()
-                        //     });
-                        // }
                     }
                     else {
                         ws.simulator_object.stdin.write(ws.recvInput); 

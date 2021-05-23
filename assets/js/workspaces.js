@@ -797,7 +797,6 @@ window.onload = function () {
 		wksp_settings["testbench"] = e.currentTarget.value;
 		setWkspSettings(wksp, wksp_settings);
 	});
-	
 
 	if (!localStorage.switchsim) {
 		localStorage.switchsim = 'workspace'
