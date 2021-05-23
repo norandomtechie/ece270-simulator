@@ -528,9 +528,12 @@ function openHDLwave() {
 }
 
 window.onload = function () {
-	var last_page_x = window.localStorage.editor_width || 2000;
-	$('#editor-workspace').width (window.localStorage.editor_width || '65%')
-	$('#outputview').width (window.localStorage.editor_width || '65%')
+	if (window.localStorage.editor_width) {
+		$("#editor-workspace").css("flex", "none")
+		$('#editor-workspace').width (window.localStorage.editor_width || '65%')
+		$('#outputview').width (window.localStorage.editor_width || '65%')
+	}
+    var last_page_x = $('#resize-editor').position().left;
 
 	window.addEventListener("mousewheel", codescroll, { passive: false })
 	// load_button.innerHTML = load_btn_text
@@ -811,7 +814,9 @@ window.onload = function () {
 
 	$(document).mousemove (e => {
 		if ($('#resize-editor')[0].classList.contains ("dragging")) {
-			$("#editor-workspace").css("flex", "none")
+			if (last_page_x == 0) { //first time adjusting the editor
+				last_page_x = $('#resize-editor').position().left;
+			}
 			if (e.pageX < last_page_x) {
 				// left
 				$("#editor-workspace").width($("#editor-workspace").width() - (last_page_x - e.pageX))
@@ -826,6 +831,7 @@ window.onload = function () {
 				}
 			}
 			last_page_x = e.pageX
+			$("#editor-workspace").css("flex", "none")
 		}
 	})
 

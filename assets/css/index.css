@@ -459,7 +459,7 @@ body {
 }
 
 #ice40-div {
-  max-width: 500px;
+  flex-basis: 500px;
   padding-right: 20px;
 }
 
