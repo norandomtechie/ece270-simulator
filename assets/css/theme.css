@@ -127,6 +127,18 @@
     --simulate-on-save-switch-position: 42px;
 }
 
+[simulation-type="source"] {
+    --st-inner-fill: #444;
+    --st-outer-fill: #fff;
+    --simulation-type-switch-position: 19px;
+}
+
+[simulation-type="mapped"] {
+    --st-inner-fill: #fff;
+    --st-outer-fill: #444;
+    --simulation-type-switch-position: 42px;
+}
+
 [code-autocomplete="false"] {
     --autocomplete-inner-fill: #444;
     --autocomplete-outer-fill: #fff;

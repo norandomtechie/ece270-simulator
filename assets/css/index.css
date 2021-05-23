@@ -147,6 +147,16 @@
   transition: all 0.5s;
 }
 
+#settingsButtonOuterSimType {
+  fill: var(--st-outer-fill);
+}
+
+#settingsButtonInnerSimType {
+  fill: var(--st-inner-fill);
+  cx: var(--simulation-type-switch-position);
+  transition: all 0.5s;
+}
+
 #close1, #close2 {
   fill: var(--close-btn-fill);
 }

@@ -482,14 +482,24 @@
         <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh;">The Ctrl+S shortcut, when used inside the editor, will both save and simulate the code you've written. If you don't want this behavior, flip the slider to disable it.</h4>
       </div>
       <div style="width: 100%; height: 6vh; float: left; margin-top: 0.5vh; margin-bottom: 5px;">
-        <h4 class="display-4 text-muted" style="float: left; font-size: 2vh;">Change Simulation Software</h4>
+        <h4 class="display-4 text-muted" style="float: left; font-size: 2vh;">Change Simulation Type</h4>
         <div style="max-width: 100%; height: 5vh; float: right">
-          <select id="simselector" style="height: 3.5vh; width: 8.5vw; border-radius: 5px">
-            <option selected value="icarus">IcarusVerilog</option>
-            <option value="cvc">CVC64</option>
-          </select>
+          <div style="width: 3.125vw; margin-top: auto; margin-bottom: auto; float: right; cursor: pointer; height: 100%">
+            <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40" >
+              <g>
+                <rect x="-1" y="-1" width="62" height="42" id="canvas_background_3" fill="#fff"/>
+                <g id="canvasGrid" display="none">
+                  <rect id="svg_1" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+                </g>
+              </g>
+              <g>
+                <rect onclick="javascript:toggleSimType()" id="settingsButtonOuterSimType" fill="#fff" stroke-width="0.5" x="2.35782" y="3.97817" width="55.22964" height="31.60169" id="svg_2" rx="19" stroke="#000"/>
+                <ellipse onclick="javascript:toggleSimType()" id="settingsButtonInnerSimType" fill="#444" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636" id="svg_3" rx="12" ry="12.33765" stroke="#000"/>
+              </g>
+            </svg>
+          </div>
         </div>
-        <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh; padding-bottom: 15px">Because your TA got some extra time on his hands this summer, he managed to figure out how to integrate a more actively-maintained Verilog simulation software into this web simulator.  We retained CVC64 to observe behavioral differences, but we recommend you use Icarus for its ongoing active development.</h4>
+        <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh; padding-bottom: 15px">Disable this if you wish to simulate the original Verilog you've written (source simulation), or enable to simulate the synthesized version of your design (mapped simulation).</h4>
       </div>
       <div style="width: 100%; height: 6vh; float: left; margin-top: 0.5vh; margin-bottom: 5px;">
         <h4 class="display-4 text-muted" style="float: left; font-size: 2vh;">Change Evaluation Board <a style="cursor: pointer; text-decoration: none;" onclick="alert('Great find!  Ask Niraj how to set custom colors on the FPGA if you\'d like them.');">Theme</a></h4>

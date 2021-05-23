@@ -107,6 +107,18 @@ else if (!localStorage.simulateOnSave) {
 	document.documentElement.setAttribute("simulate-on-save", "true")
 }
 
+if (localStorage.simulationType == "mapped") {
+	document.documentElement.setAttribute("simulation-type", "mapped")
+}
+else if (localStorage.simulationType == "source") {
+	document.documentElement.setAttribute("simulation-type", "source")
+}
+else if (!localStorage.simulationType) {
+	// by default, simulations will be mapped
+	localStorage.simulationType = "mapped"
+	document.documentElement.setAttribute("simulation-type", "mapped")
+}
+
 if (localStorage.codeAutocomplete == "true") {
 	document.documentElement.setAttribute("code-autocomplete", "true")
 	editor.setOption ("enableBasicAutocompletion", true)
@@ -618,7 +630,7 @@ function ice40hx8k_handler() {
 				settings = {"support": [], "testbench": ""};
 				setWkspSettings(window.active_tab.getAttribute ('workspace'), settings); 
 			}
-			settings.simulateWith = document.getElementById ('simselector').value; 
+			settings.simType = document.documentElement.getAttribute ('simulation-type'); 
 			ws.send (JSON.stringify ({'files': files.map(f => typeof(f)=="string" ? JSON.parse(f) : f), 'settings': settings}));
 		}
 	}
@@ -1104,6 +1116,17 @@ function toggleInstantSim() {
 	else if (window.localStorage.simulateOnSave == "true") {
 		window.localStorage.simulateOnSave = "false"
 		document.documentElement.setAttribute("simulate-on-save", "false")
+	}
+}
+
+function toggleSimType() {
+	if (window.localStorage.simulationType == "source") {
+		window.localStorage.simulationType = "mapped"
+		document.documentElement.setAttribute("simulation-type", "mapped")
+	}
+	else if (window.localStorage.simulationType == "mapped") {
+		window.localStorage.simulationType = "source"
+		document.documentElement.setAttribute("simulation-type", "source")
 	}
 }
 
