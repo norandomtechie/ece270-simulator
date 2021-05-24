@@ -56,6 +56,7 @@
   font-size: calc(0.75vw + 0.25vh);
   transition: all 0.5s;
 }
+
 #logout:hover {
   background-color: var(--logout-hover);
 }
@@ -105,7 +106,6 @@
   transition: all 0.5s;
 }
 
-
 #autocompleteOuter {
   fill: var(--autocomplete-outer-fill);
 }
@@ -129,7 +129,6 @@
 #autoTerminalButtonOuter {
   fill: var(--autoterminal-outer-fill);
 }
-
 
 #autocompleteInner {
   fill: var(--autocomplete-inner-fill);
@@ -168,9 +167,9 @@
 }
 
 .ace-line-error {
-  position:absolute;
-  background:var(--ace-line-error-color);
-  z-index:20
+  position: absolute;
+  background: var(--ace-line-error-color);
+  z-index: 20
 }
 
 #outwego, #nevergonnagiveyouup {
@@ -197,7 +196,8 @@
   display: flex;
   flex-direction: row;
   overflow-x: auto;
-}  
+}
+
 .editor-tab, .editor-tab-workspace {
   width: auto;
   height: 4vh;
@@ -211,75 +211,320 @@
   cursor: pointer;
   transition: background-color 0.3s;
 }
+
 .editor-tab-workspace {
   min-width: 6vw;
   align-items: center;
   justify-content: center;
 }
+
 .editor-tab:not(#editor-tab-add):hover, .editor-tab-workspace:not(#editor-tab-workspace-add):hover {
   background: var(--etw-bg-hover);
 }
+
 #editor-tab-workspace-add {
   min-width: 2.5vw;
 }
+
 .editor-tab-workspace:first-child {
   border-radius: 5px 0 0 0;
 }
+
 .editor-tab-workspace:last-child {
   border-radius: 0 5px 0 0;
 }
+
 .editor-tab {
   border-radius: 0;
 }
+
 .tab-label-workspace, .tab-label {
   color: var(--display-4-color);
   cursor: pointer;
   display: flex;
   align-items: center;
   height: 100%;
-  font-size: calc(0.70vw + 0.20vh);
+  font-size: calc(0.8rem + 0.1vw + 0.05vh);
 }
+
 /* .tab-label:hover {
   background-color: var(--editor-tab-bg-hover);
 } */
+
 .tab-close, .wksp-tab-close {
   height: auto;
   margin: 0 0.5em 0 1em;
   width: 0.45vw!important;
   color: var(--display-4-color);
 }
+
 .tab-close:hover, .wksp-tab-close:hover {
   filter: opacity(0.5);
 }
+
 #wksp-tab-add {
   justify-content: center;
   align-items: center;
   width: 100%;
   margin: 0;
 }
+
 #tab-add {
   cursor: pointer;
   margin-right: 0;
 }
+
 #tab-add:hover {
   background-color: inherit;
 }
+
 .btn {
   cursor: pointer;
 }
 
 body {
   overflow-x: hidden;
-  background-color: var(--document-body-bg);
+  background-color: var(--navbar-upper-bg);
+  height: 100vh;
 }
+
+.findall {
+  width: 400px;
+  height: 500px;
+  position: absolute;
+  top: 25vh;
+  left: 25vw;
+  z-index: 100;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease 0s;
+  background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%;
+  border: 2px solid var(--display-4-color);
+  border-radius: 5px;
+}
+
+.findalltop {
+  width: 100%;
+  height: 2.5%;
+  background: #fff
+}
+
+.findallbkgd {
+  width: 100%;
+  height: 95%;
+  filter: blur(10px);
+  z-index: 99;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.findallbody {
+  width: 100%;
+  height: 95%;
+  filter: blur(0px);
+  position: absolute;
+  top: 2.5%;
+  left: 0;
+  z-index: 101;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  padding-top: 20px;
+  justify-content: flex-start;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: scroll
+}
+
+.findallwindow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 95%;
+  height: 10%;
+}
+
+.fa.fa-search {
+  margin-right: 15px;
+  font-size: 1rem;
+}
+
+#findallsearch {
+  width: 85%;
+  font-family: Open Sans;
+  background: transparent;
+  border: 1px solid #888;
+  border-radius: 5px;
+  padding-left: 10px;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+#findallstatus {
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  width: 90%;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+#overlay_top {
+  background-color: var(--navbar-upper-bg);
+}
+
+#mainview {
+  width: 100%;
+  height: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  transition: filter 0.75s
+}
+
+#header-flex {
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+#header-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.display-4.text-center.text-muted.title {
+  font-size: calc(0.5rem + 0.8vw + 0.4vh);
+  width: auto;
+  margin: 0 10vw 0 10vw
+}
+
+.download-div {
+  width: 10%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.download-button {
+  cursor: pointer;
+  font-size: calc(0.35rem + 0.7vw + 0.15vh);
+  margin: 0;
+}
+
+#status-navbar {
+  vertical-align: middle;
+  padding: 0px!important;
+  background-color: #eaeaea;
+}
+
+.d-flex.justify-content-center {
+  width: 100%;
+  height: 100%;
+  padding-top: 1.25vh;
+  padding-bottom: 0.75vh;
+}
+
+.row.justify-content-center {
+  vertical-align: middle;
+  margin-left: 5vw;
+  padding-right: 3vw;
+}
+
+#status-text {
+  font-size: calc(0.35rem + 0.2vh + 0.7vw);
+}
+
+.desc.display-4.text-center.text-muted {
+  cursor: pointer;
+  border-right: 1px solid gray;
+  padding-left: 2.25vw;
+  padding-right: 2.25vw;
+  font-size: calc(0.35rem + 0.2vh + 0.7vw);
+}
+
+#desctext {
+  padding-top: 2vh;
+  padding-left: 20vw;
+  padding-right: 20vw;
+  font-size: calc(0.2rem + 0.3vh + 0.78vw);
+}
+
+#simview {
+  align-items: center;
+  margin-left: 5vw;
+  padding-right: 3vw;
+}
+
+#ice40-div {
+  flex-basis: 500px;
+  padding-right: 20px;
+}
+
+#editor-workspace {
+  min-width: 400px;
+  max-width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: 10px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.btn.btn-bevel.btn-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 4px;
+  font-size: calc(0.9rem+ 0.2vw);
+  flex: 1;
+}
+
+.row.btn-row {
+  margin-top: 10px;
+  font-size: 32px;
+  width: 100%;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lowerbtn {
+  color: var(--display-4-color); 
+  border: 1px solid var(--display-4-color); 
+  width: 45%; 
+  margin-right: 15px; 
+  margin-bottom: 6px; 
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  font-size: calc(0.8rem + 0.2vw);
+}
+
+.col.align-self-center {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
 option {
   font-family: 'Lato', sans-serif;
   font-weight: 300;
   font-size: calc(0.75vw + 0.5vh);
 }
 
+/***************************************************************/
 /* For firefox */
 /***************************************************************/
+
 .ace_scrollbar, .help_scrollbar {
   scrollbar-color: var(--scrollbar-color);
   scroll-behavior: auto;
@@ -291,7 +536,6 @@ option {
 }
 
 /***************************************************************/
-
 /* For chrome */
 /***************************************************************/
 
@@ -334,16 +578,19 @@ select, [name="project_list"] {
   border-color: var(--btn-info-border);
   color: var(--btn-info-color);
 }
+
 .btn-primary, .btn-primary:hover {
   background-color: var(--btn-primary-bg);
   border-color: var(--btn-primary-border);
   color: var(--btn-primary-color);
 }
+
 .btn-dark, .btn-dark:hover {
   background-color: var(--btn-dark-bg);
   border-color: var(--btn-dark-border);
   color: var(--btn-dark-color);
 }
+
 .btn-danger, .btn-danger:hover {
   background-color: var(--btn-danger-bg);
   border-color: var(--btn-danger-border);
@@ -368,7 +615,7 @@ select, [name="project_list"] {
   right: 0;
   bottom: 0;
   opacity: 0;
-  background-color: rgba(0,30,50,0.6); /* Black background with opacity */
+  background-color: rgba(0, 30, 50, 0.6); /* Black background with opacity */
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
   transition: all 0.3s;
 }
@@ -414,8 +661,8 @@ select, [name="project_list"] {
 
 /* Tutorial needs to be able to move around */
 #overlay_7 {
-  width: 45%; 
-  height: 60%; 
+  width: 45%;
+  height: 60%;
   padding: 2vh 2vw 2vh 2vw;
   position: absolute;
   top: 22.5vh;
@@ -434,12 +681,17 @@ select, [name="project_list"] {
 
 .top-icon {
   color: var(--top-icon-color);
-  float: left; margin-left: 10px; cursor: pointer;
-  display: flex!important; align-items: center; 
-  justify-content: center; font-size: 20px;
+  float: left;
+  margin-left: 10px;
+  cursor: pointer;
+  display: flex!important;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
 }
+
 .top-icon:first-child {
-  margin: 0; 
+  margin: 0;
 }
 
 .btn-view {
@@ -447,22 +699,27 @@ select, [name="project_list"] {
   color: var(--display-4-color);
   box-shadow: none;
   transition: all 0.5s;
-  font-size: calc(0.5vw + 0.5vh);
+  font-size: calc(0.8rem + 0.1vw + 0.1vh);
 }
+
 .btn-view:hover {
   filter: var(--hover-filter);
   color: var(--display-4-color);
 }
+
 .btn-view-active {
   border: var(--code-terminal-active);
   transition: all 0.5s;
 }
+
 #view_code {
   border-radius: 0 0 0 10px;
 }
+
 #view_output {
   border-radius: 0 0 0 0;
 }
+
 #outputview {
   border: 1px solid var(--editor-tab-close-color-hover);
   width: 50vw;
@@ -476,6 +733,7 @@ select, [name="project_list"] {
   color: var(--display-4-color);
   font: 16px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
+
 #view_terminal {
   border-radius: 0 0 10px 0;
 }
@@ -491,6 +749,7 @@ select, [name="project_list"] {
   border: 1px solid transparent;
   transition: border 0.3s;
 }
+
 .browser_row_file {
   width: 100%;
   height: 3vh;
@@ -501,15 +760,19 @@ select, [name="project_list"] {
   border: 1px solid transparent;
   transition: border 0.3s;
 }
+
 .browser_row_selected {
   border: 1px solid var(--display-4-color);
 }
+
 .browser_row:nth-child(odd) {
   background-color: var(--file-browser-row-odd);
 }
+
 .browser_row:nth-child(even) {
   background-color: var(--file-browser-row-eve);
 }
+
 #file_browser {
   width: 80%;
   height: 80%;
@@ -520,31 +783,33 @@ select, [name="project_list"] {
   background: transparent;
   overflow: auto;
 }
+
 .browser_row_file:hover {
   border: 1px solid var(--display-4-color);
 }
+
 .browser_row_col {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 
-               Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 
-               'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: var(--display-4-color);
   flex-grow: 1;
-  flex-basis: 1px; /* idk why but this keeps the column width a fixed size for any-sized text */
+  flex-basis: 1px;
+  /* idk why but this keeps the column width a fixed size for any-sized text */
   display: flex;
   align-items: center;
   justify-content: center;
   border-right: 1px solid var(--display-4-color);
   font-size: 14px;
 }
+
 .modern-font {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 
-               Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 
-               'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+
 input[name="filedir"] {
-  display: none;  
+  display: none;
 }
-input[name="filedir"] + label {
+
+input[name="filedir"]+label {
   border: 1px solid transparent;
   transition: border 0.3s;
   padding: 0.25vh 0 0.25vh 0;
@@ -552,26 +817,29 @@ input[name="filedir"] + label {
 }
 
 .browser-view {
-  width: 100%; 
-  font-size: calc(0.5vw + 0.9vh); 
+  width: 100%;
+  font-size: calc(0.5vw + 0.9vh);
   color: var(--display-4-color);
 }
 
 label[for="newfile"] {
   border-radius: 10px 0 0 10px;
 }
+
 label[for="newfolder"] {
   border-radius: 0 10px 10px 0;
 }
-input[name="filedir"]:checked + label {
+
+input[name="filedir"]:checked+label {
   border: 1px solid var(--display-4-color);
 }
+
 #overlay_new_dirfile {
-  display: none; 
+  display: none;
   opacity: 0;
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: space-between; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   height: 60%;
   position: absolute;
   top: 5%;
@@ -584,6 +852,7 @@ input[name="filedir"]:checked + label {
   z-index: 10;
   transition: opacity 0.3s;
 }
+
 #selworkspace {
   width: 55%;
   height: 3.4vh;
@@ -592,28 +861,30 @@ input[name="filedir"]:checked + label {
   border-radius: 2px;
   background-color: transparent;
 }
+
 .filedir_view {
-  width: 100%; 
-  height: 100%; 
-  flex-grow: 1; 
-  padding: 3vh 2vw 3vh 2vw; 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+  padding: 3vh 2vw 3vh 2vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: space-evenly;
 }
+
 #add_new_folder_view {
   display: none;
 }
 
 #localport {
-  text-align: left; 
-  border-radius: 8px; 
+  text-align: left;
+  border-radius: 8px;
   margin-right: 1vw;
-  padding-left: 10px; 
-  padding-right: 10px; 
-  height: 3.5vh; 
-  width: 4.25vw; 
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 3.5vh;
+  width: 4.25vw;
   font-size: 1.5vh;
   text-align: center;
 }
@@ -630,10 +901,10 @@ input[name="filedir"]:checked + label {
 }
 
 #share_id_input {
-  width: 50%; 
+  width: 50%;
   height: 4vh;
-  background: transparent; 
-  color: var(--display-4-color); 
+  background: transparent;
+  color: var(--display-4-color);
   border: 1px solid var(--display-4-color);
   border-radius: 5px;
   padding: 1%;
@@ -649,9 +920,9 @@ input[name="filedir"]:checked + label {
 }
 
 #div_workspace_gear {
-  position: absolute; 
-  width: 30%; 
-  height: 100%; 
+  position: absolute;
+  width: 30%;
+  height: 100%;
   padding: 3% 3% 0 0;
   top: 0%;
   left: 70%;
@@ -661,10 +932,10 @@ input[name="filedir"]:checked + label {
 }
 
 #workspace_gear {
-  font-size: calc(0.5vw); 
-  color: var(--display-4-color); 
+  font-size: calc(0.5vw);
+  color: var(--display-4-color);
   border: 1px solid transparent;
-  position: relative; 
+  position: relative;
   cursor: pointer;
   border-radius: 50%;
   padding: 10%;
@@ -722,6 +993,7 @@ input[name="filedir"]:checked + label {
   border: 1px solid var(--display-4-color);
   border-radius: 5px;
 }
+
 .profile_text {
   width: 50%;
   font-weight: 300;
@@ -730,13 +1002,16 @@ input[name="filedir"]:checked + label {
   color: var(--display-4-color);
   transition: opacity 0.3s;
 }
+
 .profile_text:last-child {
   opacity: 0;
   border-left: 1px solid var(--display-4-color);
 }
+
 .profile_table tr:first-child th {
   padding-top: 1.5vh;
 }
+
 .profile_table tr:last-child th {
   padding-bottom: 1.5vh;
 }
@@ -759,22 +1034,27 @@ Apple screws everything up for everyone who tries to develop on its platforms */
   border: 1px solid var(--display-4-color);
   transition: all 0.3s;
 }
+
 .mbtn:hover:not(:disabled) {
   background: var(--tutorial-btn-bg-hover);
   color: var(--tutorial-btn-hover);
 }
 
 #resize-editor {
-  height: 33%; 
-  width: 1%; 
-  cursor: w-resize; 
-  background-color:transparent; 
+  height: 200px;
+  width: 10px;
+  cursor: w-resize;
+  background-color: transparent;
   border-left: 3px solid var(--display-4-color);
   transition: border 0.2s;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
+
 #resize-editor:hover {
-	border-left: 9px solid var(--display-4-color);
+  border-left: 9px solid var(--display-4-color);
 }
+
 /* sorry not sorry */
 #nevergonnagiveyouup:hover {
   filter: brightness(1.5);
@@ -782,18 +1062,18 @@ Apple screws everything up for everyone who tries to develop on its platforms */
 
 /* frostyfinder! */
 .findallresult {
-    width: 90%;
-    padding: 3%;
-    padding: 1%;
-    border: 1px solid #bbb;
-    border-radius: 3px;
-    height: 15%;
+  width: 90%;
+  padding: 3%;
+  padding: 1%;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  height: 15%;
 }
 
 .findallresult p {
-	font-size: 14px;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-	margin: 0;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
 }
 
 .findallresult code {
