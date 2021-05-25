@@ -430,7 +430,7 @@ body {
 }
 
 .download-div {
-    width: 10%;
+    width: 12.5%;
     height: auto;
     display: flex;
     flex-direction: row;
@@ -511,7 +511,7 @@ body {
     margin-right: 10px;
     margin-left: 10px;
     margin-bottom: 4px;
-    font-size: calc(0.9rem+ 0.2vw);
+    font-size: calc(0.9rem + 0.2vw);
     flex: 1;
 }
 
