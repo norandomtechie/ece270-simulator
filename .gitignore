@@ -7,3 +7,4 @@ analytics/simulation.log
 error_log/*
 testbench/
 support/
+.vscode/
