@@ -1,46 +1,50 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <title>eceFPGA Simulator</title>
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-  <link rel="stylesheet" href="assets/css/Features-Clean.css">
-  <link rel="stylesheet" href="assets/css/Header-Dark.css">
-  <link rel="stylesheet" href="assets/css/index.css">
-  <link rel="stylesheet" href="assets/css/theme.css">
-  <link rel="stylesheet" href="assets/css/xterm.css">
-  <link rel="stylesheet" href="assets/fontawesome/css/all.css">
-  <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-  <!-- <link href="assets/convergence/css/ace-converge-wrap.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>eceFPGA Simulator</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/Features-Clean.css">
+    <link rel="stylesheet" href="assets/css/Header-Dark.css">
+    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/xterm.css">
+    <link rel="stylesheet" href="assets/fontawesome/css/all.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <!-- <link href="assets/convergence/css/ace-converge-wrap.css" rel="stylesheet">
   <link href="assets/convergence/css/ace-collab-ext.css" rel="stylesheet"> -->
-  <style>
-  /* latin */
-  @font-face {
-    font-family: 'Courier';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Courier Std Medium'), local('CourierStd'), url("assets/fonts/Courier.woff2") format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-  }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
-  }
-  html {
-    background-color: var(--navbar-upper-bg);
-  }
-  </style>
-  <script src="assets/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-  <script src="assets/js/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="assets/js/jquery-3.5.1.min.js"></script>
-  <!-- <script src="assets/js/jquery-ui.min.js"></script> -->
-  <!-- <script src="assets/fontawesome/js/all.js"></script> -->
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* latin */
+        
+        @font-face {
+            font-family: 'Courier';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Courier Std Medium'), local('CourierStd'), url("assets/fonts/Courier.woff2") format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+        }
+        
+        html {
+            background-color: var(--navbar-upper-bg);
+        }
+    </style>
+    <script src="assets/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="assets/js/jszip.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="assets/js/jquery-3.5.1.min.js"></script>
+    <!-- <script src="assets/js/jquery-ui.min.js"></script> -->
+    <!-- <script src="assets/fontawesome/js/all.js"></script> -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 </head>
 
 <body onresize="resizeHandler()" style="height: 100vh; background-color: var(--navbar-upper-bg);">
-  <div class="findall" style="width: 400px; height: 500px; position: absolute; top: 25vh; left: 25vw; z-index: 100; display: none; opacity: 0; transition: opacity 0.3s ease 0s; background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%; border: 2px solid var(--display-4-color); border-radius: 5px;">
+    <!-- <div class="findall" style="width: 400px; height: 500px; position: absolute; top: 25vh; left: 25vw; z-index: 100; display: none; opacity: 0; transition: opacity 0.3s ease 0s; background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%; border: 2px solid var(--display-4-color); border-radius: 5px;">
     <div class="findalltop" style="width:100%; height: 2.5%; background: #fff"></div>
     <div class="findallbkgd" style="width:100%;height:95%;filter: blur(10px); z-index: 99; background: rgba(255, 255, 255, 0.65);"></div>
     <div class="findallbody" style="width:100%;height:95%;filter: blur(0px); position: absolute; top: 2.5%; left: 0; z-index: 101; background: transparent; display: flex; align-items: center; padding-top: 20px; justify-content: flex-start; flex-direction: column; overflow-x: hidden; overflow-y: scroll">
@@ -50,59 +54,85 @@
       </div>
       <p id="findallstatus" style="font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;width: 90%;margin-top: 15px;margin-bottom: 5px;">Enter at least three characters.</p>
     </div>
-  </div>
-  <div class="overlay" id="overlay_top" style="background-color: var(--navbar-upper-bg); display: block; opacity: 1"></div>
-  <div id="mainview" style="width: 100%;height:100%;margin-right: auto;margin-left: auto;transition: filter 0.75s">
-    <nav class="navbar navbar-light navbar-special navbar-expand-md navigation-clean-button theme-select" style="height: 8vh;">
-      <div class="d-flex align-items-center" style="width: 100%; flex-direction: row; justify-content: space-evenly;">
-        <div style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-          <!-- <input id="save_as_elm" type="file" name="name" style="display: none"/> -->
-          <!-- <button class="btn btn-light btn-bevel" type="button" style="float: right; width: 100px; font-size: 16px; margin-right: 15px" onclick="javascript:document.getElementById('open_elm').click()">Open</button> -->
-          <i class="fal fa-file top-icon" title="Create new workspace/file" onclick="javascript:openWorkspaceManager('create')"></i>
-          <i class="fal fa-folder-open top-icon" title="Opens the simulator file manager" onclick="javascript:openWorkspaceManager('open')"></i>
-          <i class="fal fa-save top-icon" title="Saves all code immediately to browser storage" onclick="javascript:alert('No need.  Typing code and creating/moving/deleting files or workspaces will be immediately saved to the browser.  Be careful before wiping your computer, though - your code is only saved on your own computer, so if you need to wipe your computer, save your code to an external location first.')"></i>
-          <i class="fal fa-arrow-circle-down top-icon" title="Download a copy of the code in the active tab" onclick="javascript:saveVerilog()"></i>
-          <i class="fal fa-cogs top-icon" title="Manage main simulator settings" onclick="javascript:openSettings()"></i>
-          <i class="fal fa-terminal top-icon" title="Manage virtual FPGA terminal settings" onclick="javascript:openUART()"></i>
-          <!-- <i class="fal fa-podcast top-icon" title="Share editor with course staff" onclick="javascript:toggleLiveSessionPanel()"></i> -->
-          <!-- <a style="margin-left: 10px; text-decoration: none; color: black" target="_blank" href="/help"></a> -->
-          <!-- <i class="fal fa-laptop-code top-icon" title="Feature WIP" onclick="javascript:alert('Still working on whatever should go here.  Try later.')"></i> -->
-          <i class="fal fa-question-circle top-icon" title="Opens simulator handbook in new tab" onclick="window.open ('/help', '_blank')"></i>
-          <input id="open_elm" type="file" name="name" style="display: none"/>
-          <a id="downlink" href="none" download="verilog.sv" style="display: none"></a>
+  </div> -->
+    <div class="overlay" id="tutorial">
+        <p>Welcome to the ECE 270 simulator! This simulator was initially created as a personal project but has since turned into an extremely useful tool for ECE 270 students wishing to avoid late nights in lab working on the physical board. We have since
+            put those dark days behind us.
+            <br> <br> It came in extremely handy for when the course was forced online during the pandemic, ensuring that students continued to be able to gain experience with Verilog/SystemVerilog in an online environment. We've since returned to in-person
+            classes, but we will continue to use it for the class to help reduce the overall demand for limited physical lab resources.
+            <br> <br> Starting this semester, we'd like for you to be able to gain a better understanding of how to use this tool, to navigate and utilize it to its full extent, and most importantly, to avoid mistakes and accidental data loss. We have
+            therefore designed a tutorial system to teach you how to use this. You have three options on how to continue from here.
+        </p>
+        <div class="tutorial_actions">
+            <button class="btn btn-tutorial" onclick='tutorialButtonAction(0)'>Start the tutorial.  (Highly recommended even if you've used the simulator before - a lot has changed!)</button>
+            <button class="btn btn-tutorial" onclick='tutorialButtonAction(1)'>Skip the tutorial.  (You can always take it again from Settings, but we still recommend you take it now).</button>
+            <button class="btn btn-tutorial" onclick='tutorialButtonAction(2)'>Ask me again next time.  (Jump right in for now, and we'll ask you again when you refresh the page.)</button>
         </div>
-        <h1 title="There's Easter eggs all over the site!  Seek and ye shall find, and ye shall tell us on Piazza!" class="display-4 text-center text-muted" style="font-size: calc(1.3vw + 0.5vh); width: auto; margin: 0 10vw 0 10vw">eceFPGA Simulator</h1>
-        <div style="width: 10%; height: auto; display: flex; flex-direction: row; align-items: center">
-          <p class="display-4 text-muted" style="cursor: pointer; font-size: calc(0.8vw + 0.25vh); margin: 0" onclick="zipStorage()">Download as zip</p>
-        </div>
-      </div>
-    </nav>
-    <nav class="navbar navbar-page-info navbar-special" id="status-navbar" style="vertical-align: middle; padding: 0px!important; background-color: #eaeaea">
-      <div class="d-flex justify-content-center" style="width: 100%; height: 100%; padding-top: 1.25vh; padding-bottom: 0.75vh">
-        <div class="col" style="height: 100%">
-          <div class="row justify-content-center" style="vertical-align: middle; margin-left: 5vw; padding-right: 3vw;">
-            <div class="col">
-              <h1 class="display-4 text-center text-muted" id="status-text" style="font-size: calc(0.4vh + 0.8vw);">Status: Ready</h1>
+    </div>
+    <div class="overlay" id="overlay_top" style="background-color: var(--navbar-upper-bg); display: block; opacity: 1"></div>
+    <div id="mainview" style="width: 100%;height:100%;margin-right: auto;margin-left: auto;transition: filter 0.75s">
+        <nav class="navbar navbar-light navbar-special navbar-expand-md navigation-clean-button theme-select" style="height: 8vh;">
+            <div class="d-flex align-items-center" style="width: 100%; flex-direction: row; justify-content: space-evenly;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                    <!-- <input id="save_as_elm" type="file" name="name" style="display: none"/> -->
+                    <!-- <button class="btn btn-light btn-bevel" type="button" style="float: right; width: 100px; font-size: 16px; margin-right: 15px" onclick="javascript:document.getElementById('open_elm').click()">Open</button> -->
+                    <i class="fal fa-file top-icon" title="Create new workspace/file" onclick="javascript:openWorkspaceManager('create')"></i>
+                    <i class="fal fa-folder-open top-icon" title="Opens the simulator file manager" onclick="javascript:openWorkspaceManager('open')"></i>
+                    <i class="fal fa-save top-icon" title="Saves all code immediately to browser storage" onclick="javascript:alert('No need.  Typing code and creating/moving/deleting files or workspaces will be immediately saved to the browser.  Be careful before wiping your computer, though - your code is only saved on your own computer, so if you need to wipe your computer, save your code to an external location first.')"></i>
+                    <i class="fal fa-arrow-circle-down top-icon" title="Download a copy of the code in the active tab" onclick="javascript:saveVerilog()"></i>
+                    <i class="fal fa-cogs top-icon" title="Manage main simulator settings" onclick="javascript:openSettings()"></i>
+                    <i class="fal fa-terminal top-icon" title="Manage virtual FPGA terminal settings" onclick="javascript:openUART()"></i>
+                    <!-- <i class="fal fa-podcast top-icon" title="Share editor with course staff" onclick="javascript:toggleLiveSessionPanel()"></i> -->
+                    <!-- <a style="margin-left: 10px; text-decoration: none; color: black" target="_blank" href="/help"></a> -->
+                    <!-- <i class="fal fa-laptop-code top-icon" title="Feature WIP" onclick="javascript:alert('Still working on whatever should go here.  Try later.')"></i> -->
+                    <i class="fal fa-question-circle top-icon" title="Opens simulator handbook in new tab" onclick="window.open ('/help', '_blank')"></i>
+                    <input id="open_elm" type="file" name="name" style="display: none" />
+                    <a id="downlink" href="none" download="verilog.sv" style="display: none"></a>
+                </div>
+                <h1 title="There's Easter eggs all over the site!  Seek and ye shall find, and ye shall tell us on Piazza!" class="display-4 text-center text-muted" style="font-size: calc(1.3vw + 0.5vh); width: auto; margin: 0 10vw 0 10vw">eceFPGA Simulator</h1>
+                <div style="width: 10%; height: auto; display: flex; flex-direction: row; align-items: center">
+                    <p class="display-4 text-muted" style="cursor: pointer; font-size: calc(0.8vw + 0.25vh); margin: 0" onclick="zipStorage()">Download as zip</p>
+                </div>
             </div>
-            <a onclick="javascript:display_info(0); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">About</h1></a>
-            <a onclick="javascript:display_info(1); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Functionality</h1></a>
-            <a onclick="javascript:display_info(2); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Usage</h1></a>
-            <a onclick="javascript:display_info(3); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Credits</h1></a>
-            <a onclick="javascript:display_info(4); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Privacy</h1></a>
-            <a onclick="javascript:display_info(5); return false;"><h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer;                                 padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Source</h1></a>
-            <div style="margin-left: 10vw"></div>
-          </div>
-        </div>
-      </div>
-    </nav>
-    <nav class="description-navbar" id="description-navbar" style="height: 0vh; overflow: hidden; position: fixed; z-index: 2; background-color: #dfdfdf; transition: height 0.3s">
-      <p class="display-4 text-center text-muted" id="desctext" style="padding-top: 2vh; padding-left: 20vw; padding-right: 20vw; font-size: calc(0.3vh + 0.78vw)"></p>
-    </nav>
-    <div style="padding-bottom: 1.5vh"> </div>
-    <div class="row justify-content-center">
-      <div class="row text-center d-sm-flex d-xl-flex justify-content-center" style="text-align: center; align-items: center; width: 100%">
-        <div class="col-md-6" style="width: 25%; max-width: calc(15vw + 20vh); padding-right: 1px">
-          <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 650 690" xmlns="http://www.w3.org/2000/svg">
+        </nav>
+        <nav class="navbar navbar-page-info navbar-special" id="status-navbar" style="vertical-align: middle; padding: 0px!important; background-color: #eaeaea">
+            <div class="d-flex justify-content-center" style="width: 100%; height: 100%; padding-top: 1.25vh; padding-bottom: 0.75vh">
+                <div class="col" style="height: 100%">
+                    <div class="row justify-content-center" style="vertical-align: middle; margin-left: 5vw; padding-right: 3vw;">
+                        <div class="col">
+                            <h1 class="display-4 text-center text-muted" id="status-text" style="font-size: calc(0.4vh + 0.8vw);">Status: Ready</h1>
+                        </div>
+                        <a onclick="javascript:display_info(0); return false;">
+                            <h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">About</h1>
+                        </a>
+                        <a onclick="javascript:display_info(1); return false;">
+                            <h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Functionality</h1>
+                        </a>
+                        <a onclick="javascript:display_info(2); return false;">
+                            <h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Usage</h1>
+                        </a>
+                        <a onclick="javascript:display_info(3); return false;">
+                            <h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Credits</h1>
+                        </a>
+                        <a onclick="javascript:display_info(4); return false;">
+                            <h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer; border-right: 1px solid gray; padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Privacy</h1>
+                        </a>
+                        <a onclick="javascript:display_info(5); return false;">
+                            <h1 class="desc display-4 text-center text-muted" id="status-text" style="cursor: pointer;                                 padding-left: 2.25vw; padding-right: 2.25vw; font-size: calc(0.4vh + 0.8vw);">Source</h1>
+                        </a>
+                        <div style="margin-left: 10vw"></div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <nav class="description-navbar" id="description-navbar" style="height: 0vh; overflow: hidden; position: fixed; z-index: 2; background-color: #dfdfdf; transition: height 0.3s">
+            <p class="display-4 text-center text-muted" id="desctext" style="padding-top: 2vh; padding-left: 20vw; padding-right: 20vw; font-size: calc(0.3vh + 0.78vw)"></p>
+        </nav>
+        <div style="padding-bottom: 1.5vh"> </div>
+        <div class="row justify-content-center">
+            <div class="row text-center d-sm-flex d-xl-flex justify-content-center" style="text-align: center; align-items: center; width: 100%">
+                <div class="col-md-6" style="width: 25%; max-width: calc(15vw + 20vh); padding-right: 1px">
+                    <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 650 690" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <filter id="svg_127_blur" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="0"/>
@@ -284,168 +314,161 @@
                 <text class="svg_text" onmousedown="javascript:toggle_button (event, 'key3'); return false;" onmouseup="javascript:toggle_button (event, 'key3'); return false;" id="text3" x="155.129016" y="615.129053" font-family="Courier" font-size="28" fill="white" style="cursor: pointer; white-space: pre;">3</text>
             </g>
           </svg>
-          <div class="col align-self-center">
-            <div class="d-xl-flex justify-content-xl-center">
-              <div class="row justify-content-xl-center" style="padding-top: 30px; font-size: 32px; width: 100%; flex-wrap: nowrap">
-                <button class="btn btn-info btn-bevel btn-filter" id="btn-load"  type="button" style="display: flex; width: 40%; align-items: center; justify-content: center; margin-right: 10px; margin-bottom: 4px; font-size: 1vw;" onclick="javascript:load_template(event)">Load Template</button>
-                <button class="btn btn-primary btn-bevel btn-filter"             type="button" style="display: flex; width: 40%; align-items: center; justify-content: center; margin-right: 10px; margin-bottom: 4px; font-size: 1vw;" onclick="javascript:ice40hx8k_handler();">Simulate</button>
-              </div>
+                    <div class="col align-self-center">
+                        <div class="d-xl-flex justify-content-xl-center">
+                            <div class="row justify-content-xl-center" style="padding-top: 30px; font-size: 32px; width: 100%; flex-wrap: nowrap">
+                                <button class="btn btn-info btn-bevel btn-filter" id="btn-load" type="button" style="display: flex; width: 40%; align-items: center; justify-content: center; margin-right: 10px; margin-bottom: 4px; font-size: 1vw;" onclick="javascript:load_template(event)">Load Template</button>
+                                <button class="btn btn-primary btn-bevel btn-filter" type="button" style="display: flex; width: 40%; align-items: center; justify-content: center; margin-right: 10px; margin-bottom: 4px; font-size: 1vw;" onclick="javascript:ice40hx8k_handler();">Simulate</button>
+                            </div>
+                        </div>
+                        <div class="d-xl-flex justify-content-xl-center">
+                            <div class="row" style="align-items: center; justify-content: space-evenly; padding-top: 10px; font-size: 32px;">
+                                <button class="btn btn-dark btn-bevel btn-filter" type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:ice40hx8k_handler(true)">Demo</button>
+                                <button class="btn btn-warning btn-bevel btn-filter" type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:stop_handler()">Freeze</button>
+                                <button class="btn btn-danger btn-bevel btn-filter" type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:reset_handler()">Stop</button>
+                            </div>
+                        </div>
+                        <div class="d-xl-flex justify-content-xl-center">
+                            <div class="row justify-content-xl-center" style="padding-top: 10px;font-size: 32px;padding-bottom: 20px;width: 95%;height:max-content;">
+                                <style>
+                                    .lowerbtn {
+                                        color: var(--display-4-color);
+                                        border: 1px solid var(--display-4-color);
+                                        width: 45%;
+                                        height: calc(2vh+1vw);
+                                        margin-right: 15px;
+                                        margin-bottom: 6px;
+                                        font-size: 0.9vw;
+                                        white-space: nowrap;
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                    }
+                                </style>
+                                <button class="btn btn-bevel btn-filter lowerbtn" id="switchsim" type="button" onclick="javascript:switchWorkspaceSim()">Workspace Simulation</button>
+                                <button class="btn btn-bevel btn-filter lowerbtn" type="button" onclick="javascript:downloadVCD();">Download Traces</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="editor-workspace" style="min-width: 20%; max-width: 65%; width: 65%; height: 100%; display: flex; flex-direction: row; align-items: center;">
+                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+                        <div id="editor-tab-workspace-header">
+                            <div class="editor-tab-workspace" id="editor-tab-workspace-add"><label class="tab-label-workspace" id="wksp-tab-add">+</label></div>
+                        </div>
+                        <div id="editor-tab-header">
+                            <div class="editor-tab" id="editor-tab-add"><label class="tab-label" id="tab-add">+</label></div>
+                        </div>
+                        <div class="wrapped-editor">
+                            <div id="codemirror_box" style="width: 100%; top: 0; bottom: 0; left: 0; right: 0; z-index: 0"></div>
+                            <div class="radar-view" id="radar-view" style="position: relative;"></div>
+                        </div>
+                        <div id="terminal" style="display: none"></div>
+                        <textarea id="outputview" readonly style="display: none">No output has been produced from a simulation yet.</textarea>
+                        <script src="assets/js/ace-builds/src-noconflict/ext-language_tools.js"></script>
+                        <script>
+                            ace.require("ace/ext/language_tools");
+                            var editor = ace.edit("codemirror_box")
+                            var EditSession = ace.require("ace/edit_session").EditSession
+                            editor.setTheme("ace/theme/chrome")
+                            editor.session.setMode("ace/mode/verilog")
+                            editor.session.setTabSize(2)
+                            document.getElementById('codemirror_box').style.fontSize = '14px';
+                            editor.setShowPrintMargin(false);
+                            var Range = ace.require('ace/range').Range;
+                        </script>
+                        <div id="uart_view" style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                            <button class="btn btn-bevel btn-view btn-view-active" id="view_code" onclick="switchView(0)">Code View</button>
+                            <button class="btn btn-bevel btn-view" id="view_output" onclick="switchView(2)">Tool Output</button>
+                            <button class="btn btn-bevel btn-view" id="view_terminal" onclick="switchView(1)">Terminal View</button>
+                        </div>
+                    </div>
+                    <div id="resize-editor" style="height: 20%; width: 1%; cursor: w-resize; background-color:transparent; border-left: 3px solid var(--display-4-color)" draggable="true"></div>
+                </div>
             </div>
-            <div class="d-xl-flex justify-content-xl-center">
-              <div class="row" style="align-items: center; justify-content: space-evenly; padding-top: 10px; font-size: 32px;">
-                <button class="btn btn-dark btn-bevel btn-filter"    type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:demo_handler()">Demo</button>
-                <button class="btn btn-warning btn-bevel btn-filter" type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:stop_handler()">Freeze</button>
-                <button class="btn btn-danger btn-bevel btn-filter" type="button" style="vertical-align: middle; align-content: center; width: 6vw; height: calc(2vh+1vw); margin-right: 15px; margin-bottom: 6px; font-size: 1vw;" onclick="javascript:reset_handler()">Stop</button>
-              </div>
-            </div>
-            <div class="d-xl-flex justify-content-xl-center">
-              <div class="row justify-content-xl-center" style="padding-top: 10px;font-size: 32px;padding-bottom: 20px;width: 95%;height:max-content;">
-                <style>
-                  .lowerbtn {
-                    color: var(--display-4-color); 
-                    border: 1px solid var(--display-4-color); 
-                    width: 45%; 
-                    height: calc(2vh+1vw); 
-                    margin-right: 15px; 
-                    margin-bottom: 6px; 
-                    font-size: 0.9vw;
-                    white-space: nowrap;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                  }
-                </style>
-                <button class="btn btn-bevel btn-filter lowerbtn" id="switchsim" type="button" onclick="javascript:switchWorkspaceSim()">Workspace Simulation</button>
-                <button class="btn btn-bevel btn-filter lowerbtn" type="button" onclick="javascript:downloadVCD();">Download Traces</button>
-              </div>
-            </div>
-          </div>
         </div>
-        <div id="editor-workspace" style="min-width: 20%; max-width: 65%; width: 65%; height: 100%; display: flex; flex-direction: row; align-items: center;">
-          <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
-            <div id="editor-tab-workspace-header">
-                <div class="editor-tab-workspace" id="editor-tab-workspace-add"><label class="tab-label-workspace" id="wksp-tab-add">+</label></div>
-            </div>
-            <div id="editor-tab-header">
-              <div class="editor-tab" id="editor-tab-add"><label class="tab-label" id="tab-add">+</label></div>
-            </div>
-            <div class="wrapped-editor">
-              <div id="codemirror_box" style="width: 100%; top: 0; bottom: 0; left: 0; right: 0; z-index: 0"></div>
-              <div class="radar-view" id="radar-view" style="position: relative;"></div>
-            </div>
-            <div id="terminal" style="display: none"></div>
-            <textarea id="outputview" readonly style="display: none">No output has been produced from a simulation yet.</textarea>
-            <script src="assets/js/ace-builds/src-noconflict/ext-language_tools.js"></script>
-            <script>
-              ace.require("ace/ext/language_tools");
-              var editor = ace.edit ("codemirror_box")
-              if (!localStorage.codeAutocomplete || localStorage.codeAutocomplete == "true") {
-                editor.setOptions({
-                  enableBasicAutocompletion: true,
-                  enableSnippets: true,
-                  enableLiveAutocompletion: true
-                });
-                if (!localStorage.codeAutocomplete)
-                  localStorage.codeAutocomplete = "true"
-              }
-              var EditSession = ace.require ("ace/edit_session").EditSession
-              editor.setTheme ("ace/theme/chrome")
-              editor.session.setMode("ace/mode/verilog")
-              editor.session.setTabSize(2)
-              document.getElementById('codemirror_box').style.fontSize='14px';
-              editor.setShowPrintMargin(false);
-              var Range = ace.require('ace/range').Range;
-            </script>
-            <div id="uart_view" style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-              <button class="btn btn-bevel btn-view btn-view-active" id="view_code" onclick="switchView(0)">Code View</button>
-              <button class="btn btn-bevel btn-view" id="view_output" onclick="switchView(2)">Tool Output</button>
-              <button class="btn btn-bevel btn-view" id="view_terminal" onclick="switchView(1)">Terminal View</button>
-            </div>
-          </div>
-          <div id="resize-editor" style="height: 20%; width: 1%; cursor: w-resize; background-color:transparent; border-left: 3px solid var(--display-4-color)" draggable="true"></div>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="overlay align-items-center justify-content-center" id="overlay">
-    <div class="inner_overlay" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 60%">
-      <div style="margin-top: 1vh; display: flex; align-items: center; justify-content: flex-end; width: 95%">
-        <div style="width: calc(1vw + 1vh); float: right; cursor: pointer" onclick="javascript:closeOverlay()">
-          <svg viewBox="0 0 512 512" style="color: white">
+    <div class="overlay align-items-center justify-content-center" id="overlay">
+        <div class="inner_overlay" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 60%">
+            <div style="margin-top: 1vh; display: flex; align-items: center; justify-content: flex-end; width: 95%">
+                <div style="width: calc(1vw + 1vh); float: right; cursor: pointer" onclick="javascript:closeOverlay()">
+                    <svg viewBox="0 0 512 512" style="color: white">
             <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
             <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
           </svg>
+                </div>
+            </div>
+            <h4 class="display-4 text-muted" style="filter: blur(0); font-size: 2vh">These are the files stored in your browser's localStorage. Double-click to open one: </h4>
+            <div class="align-items-center" style="padding-left: 17%; padding-right: 20%; width: 100%; height: 100%">
+                <select name="project_list" multiple style="text-align: center; margin-top: 10px; width: calc(30vw + 2vh); height: 80%; font-size: calc(0.25vh + 0.75vw)"></select>
+                <div id="open_dialog_icon" style="padding-top: 0.8vh; width: calc(30vw + 2vh); height: 4vh">
+                    <i class="fal fa-play " id="btnload" style="width: 1.5vh; margin-right: 15px; cursor: pointer" onclick="javascript:loadVerilog()"></i>
+                    <i class="fal fa-times" id="btndel" style="width: 1.5vh; margin-right: 15px; cursor: pointer" onclick="javascript:clearItem()"></i>
+                </div>
+            </div>
         </div>
-      </div>
-      <h4 class="display-4 text-muted" style="filter: blur(0); font-size: 2vh">These are the files stored in your browser's localStorage. Double-click to open one: </h4>
-      <div class="align-items-center" style="padding-left: 17%; padding-right: 20%; width: 100%; height: 100%">
-      <select name="project_list" multiple style="text-align: center; margin-top: 10px; width: calc(30vw + 2vh); height: 80%; font-size: calc(0.25vh + 0.75vw)"></select>
-        <div id="open_dialog_icon" style="padding-top: 0.8vh; width: calc(30vw + 2vh); height: 4vh">
-          <i class="fal fa-play " id="btnload" style="width: 1.5vh; margin-right: 15px; cursor: pointer" onclick="javascript:loadVerilog()"></i>
-          <i class="fal fa-times" id="btndel"  style="width: 1.5vh; margin-right: 15px; cursor: pointer" onclick="javascript:clearItem()"></i>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="overlay align-items-center justify-content-center" id="overlay_workspace">
-    <div class="inner_overlay" style="width: 65%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 60%">
-      <div style="margin-top: 1vh; display: flex; align-items: center; justify-content: flex-end; width: 95%">
-        <div style="width: calc(1vw + 1vh); float: right; cursor: pointer" onclick="javascript:closeWorkspaceManager()">
-          <svg viewBox="0 0 512 512" style="color: white">
+    <div class="overlay align-items-center justify-content-center" id="overlay_workspace">
+        <div class="inner_overlay" style="width: 65%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 60%">
+            <div style="margin-top: 1vh; display: flex; align-items: center; justify-content: flex-end; width: 95%">
+                <div style="width: calc(1vw + 1vh); float: right; cursor: pointer" onclick="javascript:closeWorkspaceManager()">
+                    <svg viewBox="0 0 512 512" style="color: white">
             <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
             <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
           </svg>
-        </div>
-      </div>
-      <h4 class="display-4 text-muted" style="filter: blur(0); font-size: 2.5vh">File Manager</h4>
-      <h4 class="display-4 text-muted" style="filter: blur(0); width: 100%; text-align: center; font-size: 1.5vh">Columns:&nbsp;&nbsp;&nbsp;&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Created on&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Last modified</h4>
-      <div id="file_browser"></div>
-      <div style="height: 4vh; width: 40%; margin-bottom: 1vh; display: flex; flex-direction: row; align-items: center; justify-content: space-evenly;">
-        <i class="fa fa-file" style="cursor: pointer; color: var(--display-4-color)" onclick="browserToggleNewDirfile(0)"></i>
-        <i class="fa fa-folder-open" style="cursor: pointer; color: var(--display-4-color)" onclick="browserOpenSelectedFiledirs()"></i>
-        <i class="fa fa-trash" style="cursor: pointer; color: var(--display-4-color)" onclick="browserDeleteSelectedFiledirs()"></i>
-      </div>
-      <div class="overlay" id="overlay_new_dirfile">
-        <div style="margin-top: 1vh; display: flex; align-items: center; justify-content: flex-end; width: 95%">
-          <div style="width: calc(1vw + 1vh); float: right; cursor: pointer" onclick="javascript:browserToggleNewDirfile(1)">
-            <svg viewBox="0 0 512 512" style="color: white">
+                </div>
+            </div>
+            <h4 class="display-4 text-muted" style="filter: blur(0); font-size: 2.5vh">File Manager</h4>
+            <h4 class="display-4 text-muted" style="filter: blur(0); width: 100%; text-align: center; font-size: 1.5vh">Columns:&nbsp;&nbsp;&nbsp;&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Created on&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Last modified</h4>
+            <div id="file_browser"></div>
+            <div style="height: 4vh; width: 40%; margin-bottom: 1vh; display: flex; flex-direction: row; align-items: center; justify-content: space-evenly;">
+                <i class="fa fa-file" style="cursor: pointer; color: var(--display-4-color)" onclick="browserToggleNewDirfile(0)"></i>
+                <i class="fa fa-folder-open" style="cursor: pointer; color: var(--display-4-color)" onclick="browserOpenSelectedFiledirs()"></i>
+                <i class="fa fa-trash" style="cursor: pointer; color: var(--display-4-color)" onclick="browserDeleteSelectedFiledirs()"></i>
+            </div>
+            <div class="overlay" id="overlay_new_dirfile">
+                <div style="margin-top: 1vh; display: flex; align-items: center; justify-content: flex-end; width: 95%">
+                    <div style="width: calc(1vw + 1vh); float: right; cursor: pointer" onclick="javascript:browserToggleNewDirfile(1)">
+                        <svg viewBox="0 0 512 512" style="color: white">
               <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
               <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
             </svg>
-          </div>
-        </div>
-        <h4 class="display-4 text-muted" style="filter: blur(0); font-size: 2.5vh; margin-bottom: 3vh">Create new file/workspace</h4>
-        <div class="filedir_view" id="add_new_file_view">
-          <div style="width: 100%; height: 6vh; display: flex; flex-direction: row; justify-content: center; align-items: first baseline;">
-            <p class="unselectable modern-font" style="width: 30%; font-size: calc(0.5vw + 1vh); color: var(--display-4-color); text-align: center;">Select a workspace: </p>
-            <select id="selworkspace"></select>
-          </div>
-          <div style="width: 100%; height: 6vh; display: flex; flex-direction: row; justify-content: center; align-items: first baseline;">
-            <p class="unselectable modern-font" style="width: 30%; font-size: calc(0.5vw + 1vh); color: var(--display-4-color); text-align: center;">Enter a filename: </p>
-          <input style="width: 55%; margin-left: 5%; height: 3.4vh; border-radius: 6px; font-size: calc(0.25vw + 1vh); border: 1px solid var(--display-4-color); background: transparent; color: var(--display-4-color)" onkeydown="(function (e) { if (e.key == 'Enter') browserEventAddFile() })(event)" id="createfilename">
-            <button style="width: 7%; height: 3.3vh; margin-left: -7%; background: transparent; color: var(--display-4-color); border:0; border-left: 1px solid var(--display-4-color); display: flex; align-items: center; justify-content: center; border-radius: 0 6px 6px 0;" onclick="browserEventAddFile()">
+                    </div>
+                </div>
+                <h4 class="display-4 text-muted" style="filter: blur(0); font-size: 2.5vh; margin-bottom: 3vh">Create new file/workspace</h4>
+                <div class="filedir_view" id="add_new_file_view">
+                    <div style="width: 100%; height: 6vh; display: flex; flex-direction: row; justify-content: center; align-items: first baseline;">
+                        <p class="unselectable modern-font" style="width: 30%; font-size: calc(0.5vw + 1vh); color: var(--display-4-color); text-align: center;">Select a workspace: </p>
+                        <select id="selworkspace"></select>
+                    </div>
+                    <div style="width: 100%; height: 6vh; display: flex; flex-direction: row; justify-content: center; align-items: first baseline;">
+                        <p class="unselectable modern-font" style="width: 30%; font-size: calc(0.5vw + 1vh); color: var(--display-4-color); text-align: center;">Enter a filename: </p>
+                        <input style="width: 55%; margin-left: 5%; height: 3.4vh; border-radius: 6px; font-size: calc(0.25vw + 1vh); border: 1px solid var(--display-4-color); background: transparent; color: var(--display-4-color)" onkeydown="(function (e) { if (e.key == 'Enter') browserEventAddFile() })(event)"
+                            id="createfilename">
+                        <button style="width: 7%; height: 3.3vh; margin-left: -7%; background: transparent; color: var(--display-4-color); border:0; border-left: 1px solid var(--display-4-color); display: flex; align-items: center; justify-content: center; border-radius: 0 6px 6px 0;"
+                            onclick="browserEventAddFile()">
               <i class="fa fa-paper-plane" style="color: var(--display-4-color); font-size: calc(0.25vw + 0.5vh)"></i>
             </button>
-          </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="overlay align-items-center justify-content-center" id="overlay_2">
-    <div class="container inner_overlay" style="height: 65%; justify-content: space-evenly;">
-      <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h4 class="display-4 text-muted" style="width: 100%; font-size: 2.5vh">Settings</h4>
-        <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:closeOverlay(); closeSettings()">
-          <svg viewBox="0 0 512 512" style="color: white">
+    <div class="overlay align-items-center justify-content-center" id="overlay_2">
+        <div class="container inner_overlay" style="height: 65%; justify-content: space-evenly;">
+            <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                <h4 class="display-4 text-muted" style="width: 100%; font-size: 2.5vh">Settings</h4>
+                <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:closeOverlay(); closeSettings()">
+                    <svg viewBox="0 0 512 512" style="color: white">
             <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
             <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
           </svg>
-        </div>
-      </div>
-      <div style="width: 100%;">
-        <h4 class="display-4 text-muted" style="float: left; font-size: 2vh; margin-top: 10px">Dark Mode</h4>
-        <div style="float: right; width: 3.125vw; cursor: pointer">
-          <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40" >
+                </div>
+            </div>
+            <div style="width: 100%;">
+                <h4 class="display-4 text-muted" style="float: left; font-size: 2vh; margin-top: 10px">Dark Mode</h4>
+                <div style="float: right; width: 3.125vw; cursor: pointer">
+                    <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
             <g>
               <rect x="-1" y="-1" width="62" height="42" id="canvas_background_2" fill="#fff"/>
               <g id="canvasGrid" display="none">
@@ -459,13 +482,13 @@
               <ellipse fill="#eee" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="64.53441" cy="68.42894" id="svg_7" rx="12" ry="12.33765" stroke="#000"/> -->
             </g>
           </svg>
-        </div>
-      </div>
-      <div style="display: flex; flex-direction: column; width: 100%">
-        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-          <h4 class="display-4 text-muted" style="font-size: 2vh;">Simulate-upon-Save</h4>
-          <div style="width: 3.125vw; margin-top: auto; margin-bottom: auto; float: right; cursor: pointer; height: 100%">
-            <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40" >
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <h4 class="display-4 text-muted" style="font-size: 2vh;">Simulate-upon-Save</h4>
+                    <div style="width: 3.125vw; margin-top: auto; margin-bottom: auto; float: right; cursor: pointer; height: 100%">
+                        <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
               <g>
                 <rect x="-1" y="-1" width="62" height="42" id="canvas_background_3" fill="#fff"/>
                 <g id="canvasGrid" display="none">
@@ -477,15 +500,15 @@
                 <ellipse onclick="javascript:toggleInstantSim()" id="settingsButtonInner2" fill="#444" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636" id="svg_3" rx="12" ry="12.33765" stroke="#000"/>
               </g>
             </svg>
-          </div>
-        </div>
-        <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh;">The Ctrl+S shortcut, when used inside the editor, will both save and simulate the code you've written. If you don't want this behavior, flip the slider to disable it.</h4>
-      </div>
-      <div style="width: 100%; height: 6vh; float: left; margin-top: 0.5vh; margin-bottom: 5px;">
-        <h4 class="display-4 text-muted" style="float: left; font-size: 2vh;">Change Simulation Type</h4>
-        <div style="max-width: 100%; height: 5vh; float: right">
-          <div style="width: 3.125vw; margin-top: auto; margin-bottom: auto; float: right; cursor: pointer; height: 100%">
-            <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40" >
+                    </div>
+                </div>
+                <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh;">The Ctrl+S shortcut, when used inside the editor, will both save and simulate the code you've written. If you don't want this behavior, flip the slider to disable it.</h4>
+            </div>
+            <div style="width: 100%; height: 6vh; float: left; margin-top: 0.5vh; margin-bottom: 5px;">
+                <h4 class="display-4 text-muted" style="float: left; font-size: 2vh;">Change Simulation Type</h4>
+                <div style="max-width: 100%; height: 5vh; float: right">
+                    <div style="width: 3.125vw; margin-top: auto; margin-bottom: auto; float: right; cursor: pointer; height: 100%">
+                        <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
               <g>
                 <rect x="-1" y="-1" width="62" height="42" id="canvas_background_3" fill="#fff"/>
                 <g id="canvasGrid" display="none">
@@ -497,48 +520,48 @@
                 <ellipse onclick="javascript:toggleSimType()" id="settingsButtonInnerSimType" fill="#444" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636" id="svg_3" rx="12" ry="12.33765" stroke="#000"/>
               </g>
             </svg>
-          </div>
-        </div>
-        <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh; padding-bottom: 15px">Disable this if you wish to simulate the original Verilog you've written (source simulation), or enable to simulate the synthesized version of your design (mapped simulation).</h4>
-      </div>
-      <div style="width: 100%; height: 6vh; float: left; margin-top: 0.5vh; margin-bottom: 5px;">
-        <h4 class="display-4 text-muted" style="float: left; font-size: 2vh;">Change Evaluation Board <a style="cursor: pointer; text-decoration: none;" onclick="alert('Great find!  Ask Niraj how to set custom colors on the FPGA if you\'d like them.');">Theme</a></h4>
-        <div style="max-width: 100%; height: 5vh; float: right">
-          <select id="evalthemeselector" onchange="changeBoardTheme(document.getElementById ('evalthemeselector').value)" style="height: 3.5vh; width: 6.5vw; border-radius: 5px">
+                    </div>
+                </div>
+                <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh; padding-bottom: 15px">Disable this if you wish to simulate the original Verilog you've written (source simulation), or enable to simulate the synthesized version of your design (mapped simulation).</h4>
+            </div>
+            <div style="width: 100%; height: 6vh; float: left; margin-top: 0.5vh; margin-bottom: 5px;">
+                <h4 class="display-4 text-muted" style="float: left; font-size: 2vh;">Change Evaluation Board <a style="cursor: pointer; text-decoration: none;" onclick="alert('Great find!  Ask Niraj how to set custom colors on the FPGA if you\'d like them.');">Theme</a></h4>
+                <div style="max-width: 100%; height: 5vh; float: right">
+                    <select id="evalthemeselector" onchange="changeBoardTheme(document.getElementById ('evalthemeselector').value)" style="height: 3.5vh; width: 6.5vw; border-radius: 5px">
             <option value="Modern">Modern</option>
             <option value="Original">Original</option>
             <!-- <option value="Dark Original">Dark Original</option> -->
           </select>
+                </div>
+                <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh; padding-bottom: 15px">Do you also wonder, like Rick, why the simulator board is blue when the real board is green? Change the color scheme here!</h4>
+            </div>
         </div>
-        <h4 class="display-4 text-muted" style="float: left; text-align: left; font-size: 1.5vh; padding-bottom: 15px">Do you also wonder, like Rick, why the simulator board is blue when the real board is green?  Change the color scheme here!</h4>
-      </div>
     </div>
-  </div>
-  <div class="overlay align-items-center justify-content-center" id="overlay_3">
-    <div class="inner_overlay" style="display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; height: 55%">
-        <div style="display: flex; flex-direction: row; justify-content: space-around; width: 95%">
-          <h4 class="display-4 text-muted" style="font-size: 2.75vh; width: 100%">FPGA Communication Terminal</h4>
-          <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:closeUART()">
-            <svg viewBox="0 0 512 512" style="color: white">
+    <div class="overlay align-items-center justify-content-center" id="overlay_3">
+        <div class="inner_overlay" style="display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; height: 55%">
+            <div style="display: flex; flex-direction: row; justify-content: space-around; width: 95%">
+                <h4 class="display-4 text-muted" style="font-size: 2.75vh; width: 100%">FPGA Communication Terminal</h4>
+                <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:closeUART()">
+                    <svg viewBox="0 0 512 512" style="color: white">
               <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
               <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
             </svg>
-          </div>
-        </div>
-        <h4 class="display-4 text-muted" style="float: left; text-align: left; width: 100%; font-size: 1.8vh; padding-right: 1vw">
-          In your lab sessions towards the end of the semester, you will start working on Verilog designs involving the implementation of a simple computer on the FPGA/simulator.
-          <br>
-          <br>
-          For the last few labs, we would have had you use the UART communication port on the FPGA to add the capability of communicating with your FPGA with the help of a virtual terminal.  However, since we're doing this online, we will be using a terminal to communicate with your simulations instead.
-          <br>
-          <br>
-          The purpose of the communication could be to send commands to the FPGA with the help of the terminal to display things on the LEDs and SS displays, or to read the values of certain registers by outputting them to the terminal.  We will have you implement something similar in these last two labs.
-        </h4>
-        <div style="display: flex; flex-direction: column; align-items: flex-start">
-          <div style="display: flex; flex-direction: row; justify-content: space-between; width: 98%">
-            <h4 class="display-4 text-muted" style="font-size: 2.25vh">Auto-switch to Terminal</h4>
-            <div style="float: right; width: 3.125vw; cursor: pointer">
-              <svg id="enableAutoTerminalSwitch" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40" >
+                </div>
+            </div>
+            <h4 class="display-4 text-muted" style="float: left; text-align: left; width: 100%; font-size: 1.8vh; padding-right: 1vw">
+                In your lab sessions towards the end of the semester, you will start working on Verilog designs involving the implementation of a simple computer on the FPGA/simulator.
+                <br>
+                <br> For the last few labs, we would have had you use the UART communication port on the FPGA to add the capability of communicating with your FPGA with the help of a virtual terminal. However, since we're doing this online, we will be
+                using a terminal to communicate with your simulations instead.
+                <br>
+                <br> The purpose of the communication could be to send commands to the FPGA with the help of the terminal to display things on the LEDs and SS displays, or to read the values of certain registers by outputting them to the terminal. We
+                will have you implement something similar in these last two labs.
+            </h4>
+            <div style="display: flex; flex-direction: column; align-items: flex-start">
+                <div style="display: flex; flex-direction: row; justify-content: space-between; width: 98%">
+                    <h4 class="display-4 text-muted" style="font-size: 2.25vh">Auto-switch to Terminal</h4>
+                    <div style="float: right; width: 3.125vw; cursor: pointer">
+                        <svg id="enableAutoTerminalSwitch" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
                 <g>
                   <rect x="-1" y="-1" width="62" height="42" id="canvas_background_2" fill="#fff"/>
                   <g id="canvasGrid" display="none">
@@ -550,83 +573,85 @@
                   <ellipse onclick="javascript:toggleAutoTerminal()" id="autoTerminalButtonInner" fill="#444" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636" id="svg_3" rx="12" ry="12.33765" stroke="#000"/>
                 </g>
               </svg>
+                    </div>
+                </div>
+                <h4 class="display-4 text-muted" style="float: left; text-align: left; width: 85%; font-size: 1.75vh;">If this option is enabled when the simulation starts, the view immediately changes to the terminal. Disable if you want to keep the code in view when the simulation starts.</h4>
             </div>
-          </div>
-          <h4 class="display-4 text-muted" style="float: left; text-align: left; width: 85%; font-size: 1.75vh;">If this option is enabled when the simulation starts, the view immediately changes to the terminal.  Disable if you want to keep the code in view when the simulation starts.</h4>
         </div>
     </div>
-  </div>
-  <div class="overlay align-items-center justify-content-center" id="overlay_4">
-    <div class="inner_overlay" style="width: 35%; height: 50%; padding: 2vh 2vw 2vh 2vw">
-        <div style="display: flex; flex-direction: row; justify-content: flex-end; width: 100%">
-          <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:toggleProfile()">
-            <svg viewBox="0 0 512 512" style="color: white">
+    <div class="overlay align-items-center justify-content-center" id="overlay_4">
+        <div class="inner_overlay" style="width: 35%; height: 50%; padding: 2vh 2vw 2vh 2vw">
+            <div style="display: flex; flex-direction: row; justify-content: flex-end; width: 100%">
+                <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:toggleProfile()">
+                    <svg viewBox="0 0 512 512" style="color: white">
               <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
               <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
             </svg>
-          </div>
+                </div>
+            </div>
+            <h4 class="display-4 text-muted" style="font-size: 2.75vh; width: 100%; margin-bottom: 2vh">Your User Profile</h4>
+            <h4 class="display-4 text-muted" id="loading" style="font-size: 2.25vh;">Loading profile data... (this can take a while if you've been using the simulator extensively.)</h4>
+            <div class="profile_table">
+                <table style="width: 100%; height: 99%">
+                    <tbody>
+                        <tr>
+                            <th class="profile_text" id="profile_visits1">Visits</th>
+                            <th class="profile_text" id="profile_visits2">Visits</th>
+                        </tr>
+                        <tr>
+                            <th class="profile_text" id="profile_sims1">Simulations</th>
+                            <th class="profile_text" id="profile_sims2">Simulations</th>
+                        </tr>
+                        <tr>
+                            <th class="profile_text" id="profile_demoes1">Demoes</th>
+                            <th class="profile_text" id="profile_demoes2">Demoes</th>
+                        </tr>
+                        <tr>
+                            <th class="profile_text" id="profile_errors1">Errors</th>
+                            <th class="profile_text" id="profile_errors2">Errors</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4 class="display-4 text-muted profile_data" style="font-size: 1.5vh;">(Keep in mind that more errors does not necessarily mean you are doing badly!)</h4>
+            <h4 class="display-4 text-muted profile_data" id="profile_json" style="text-align: center; font-size: 1.75vh;">To get the full details of all the errors you have made on the simulator, <a style="cursor: pointer; color: lightskyblue;" onclick="downloadJSON()">click here to download the raw JSON data.</a></h4>
+            <h4 class="display-4 text-muted profile_data" id="storage_zip" style="text-align: center; font-size: 1.75vh;">To get a ZIP file of all your work, <a style="cursor: pointer; color: lightskyblue;" onclick="zipStorage()">click here.</a></h4>
         </div>
-        <h4 class="display-4 text-muted" style="font-size: 2.75vh; width: 100%; margin-bottom: 2vh">Your User Profile</h4>
-        <h4 class="display-4 text-muted" id="loading" style="font-size: 2.25vh;">Loading profile data... (this can take a while if you've been using the simulator extensively.)</h4>
-        <div class="profile_table">
-          <table style="width: 100%; height: 99%"><tbody>
-            <tr>
-              <th class="profile_text" id="profile_visits1">Visits</th>
-              <th class="profile_text" id="profile_visits2">Visits</th>
-            </tr>
-            <tr>
-              <th class="profile_text" id="profile_sims1">Simulations</th>
-              <th class="profile_text" id="profile_sims2">Simulations</th>
-            </tr>
-            <tr>
-              <th class="profile_text" id="profile_demoes1">Demoes</th>
-              <th class="profile_text" id="profile_demoes2">Demoes</th>
-            </tr>
-            <tr>
-              <th class="profile_text" id="profile_errors1">Errors</th>
-              <th class="profile_text" id="profile_errors2">Errors</th>
-            </tr>
-          </tbody></table>
-        </div>
-        <h4 class="display-4 text-muted profile_data" style="font-size: 1.5vh;">(Keep in mind that more errors does not necessarily mean you are doing badly!)</h4>
-        <h4 class="display-4 text-muted profile_data" id="profile_json" style="text-align: center; font-size: 1.75vh;">To get the full details of all the errors you have made on the simulator, <a style="cursor: pointer; color: lightskyblue;" onclick="downloadJSON()">click here to download the raw JSON data.</a></h4>
-        <h4 class="display-4 text-muted profile_data" id="storage_zip" style="text-align: center; font-size: 1.75vh;">To get a ZIP file of all your work, <a style="cursor: pointer; color: lightskyblue;" onclick="zipStorage()">click here.</a></h4>
     </div>
-  </div>
-  <div class="overlay align-items-center justify-content-center" id="overlay_6">
-    <div class="inner_overlay" style="width: 50%; height: 80%; padding: 2vh 2vw 2vh 2vw">
-      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85%">
-        <div style="display: flex; flex-direction: row; justify-content: flex-end; width: 100%">
-          <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:toggleWorkspaceSettings(event, false)">
-            <svg viewBox="0 0 512 512" style="color: white">
+    <div class="overlay align-items-center justify-content-center" id="overlay_6">
+        <div class="inner_overlay" style="width: 50%; height: 80%; padding: 2vh 2vw 2vh 2vw">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85%">
+                <div style="display: flex; flex-direction: row; justify-content: flex-end; width: 100%">
+                    <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:toggleWorkspaceSettings(event, false)">
+                        <svg viewBox="0 0 512 512" style="color: white">
               <path id="close1" style="fill: #888" d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
               <path id="close2" style="fill: #888" d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
             </svg>
-          </div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: row; justify-content: space-around; width: 95%">
+                    <h4 id='wksp_settings_title' class="display-4 text-muted" style="font-size: 2.75vh; width: 100%; margin-bottom: 2vh">Workspace Settings for 'workspace'</h4>
+                </div>
+                <h4 class="display-4 text-muted" id="loading" style="font-size: 2vh; margin-bottom: 3vh">This panel allows you to configure workspace-specific settings for support modules. (The testbench option is not available since we are in demo mode.)</h4>
+                <div id="wksp_module_enable">
+                    <p id='moduleinitial' class="display-4 text-muted" style="font-size: calc(0.75vw + 1vh); padding: 2vh 1vw 0 1vw">No modules are currently available. Create a support folder in the simulator root directory, and put some Verilog/SystemVerilog files there.</p>
+                </div>
+                <div style="display: flex; flex-direction: row; width: 85%; height: 5vh;align-items: center;margin-top: 2vh;">
+                    <h4 class="display-4 text-muted" id="loading" style="font-size: 2.25vh; margin-bottom: 0; margin-right: 2vw">Select testbench</h4>
+                    <select id="select_testbench" style="flex-grow: 1;border: 1px solid var(--display-4-color);border-radius: 3px;height: 4vh;"></select>
+                </div>
+            </div>
         </div>
-        <div style="display: flex; flex-direction: row; justify-content: space-around; width: 95%">
-          <h4 id='wksp_settings_title' class="display-4 text-muted" style="font-size: 2.75vh; width: 100%; margin-bottom: 2vh">Workspace Settings for 'workspace'</h4>
-        </div>
-        <h4 class="display-4 text-muted" id="loading" style="font-size: 2vh; margin-bottom: 3vh">This panel allows you to configure workspace-specific settings for support modules.  (The testbench option is not available since we are in demo mode.)</h4>
-        <div id="wksp_module_enable">
-          <p id='moduleinitial' class="display-4 text-muted" style="font-size: calc(0.75vw + 1vh); padding: 2vh 1vw 0 1vw">No modules are currently available.  Create a support folder in the simulator root directory, and put some Verilog/SystemVerilog files there.</p>
-        </div>
-        <div style="display: flex; flex-direction: row; width: 85%; height: 5vh;align-items: center;margin-top: 2vh;">
-          <h4 class="display-4 text-muted" id="loading" style="font-size: 2.25vh; margin-bottom: 0; margin-right: 2vw">Select testbench</h4>
-          <select id="select_testbench" style="flex-grow: 1;border: 1px solid var(--display-4-color);border-radius: 3px;height: 4vh;"></select>
-        </div>
-      </div>
     </div>
-  </div>
-  <script>
-    window.CURRENT_USER = "<<username>>";
-    window.CONVERGENCE_UUID = "<<uuid>>";
-  </script>
-  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-  <script src="assets/js/xterm.js"></script>
-  <script src="assets/js/simulator_backend.js"></script>
-  <script src="assets/js/workspaces.js"></script>
-  <!-- <script src="assets/convergence/js/ace-collab-ext.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        window.CURRENT_USER = "<<username>>";
+        window.CONVERGENCE_UUID = "<<uuid>>";
+    </script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/xterm.js"></script>
+    <script src="assets/js/simulator_backend.js"></script>
+    <script src="assets/js/workspaces.js"></script>
+    <!-- <script src="assets/convergence/js/ace-collab-ext.js" type="text/javascript" charset="utf-8"></script>
   <script src="assets/convergence/js/color-assigner.js" type="text/javascript" charset="utf-8"></script>
   <script src="assets/convergence/js/rxjs.umd.min.js"></script>
   <script src="assets/convergence/js/convergence.global.js"></script>
@@ -634,4 +659,5 @@
   <script src="assets/convergence/js/converge_ace.js" type="text/javascript" charset="utf-8"></script>
   <script src="assets/js/plotly-latest.min.js"></script> -->
 </body>
+
 </html>

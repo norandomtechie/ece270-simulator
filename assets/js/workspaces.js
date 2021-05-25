@@ -545,21 +545,6 @@ window.onload = function () {
 		document.getElementById("evalthemeselector").value = window.localStorage.evalboardtheme
 	}
 
-	if (window.localStorage.ice40DarkMode == "true") {
-		// we need to move the button too, so we set dark mode manually
-		window.localStorage.ice40DarkMode = "false"
-		darkMode()
-		update_status(CURRENT_STATUS[0], CURRENT_STATUS[1])
-	}
-	else if (!window.localStorage.ice40DarkMode) {
-		// users will by default see light mode, so we'll set dark mode 
-		// options when they load the page
-		window.localStorage.ice40DarkMode = "false"
-	}
-	if (window.localStorage.ice40DarkMode == "false") {
-		lightMode()
-	}
-
 	$('#localport').on ('keydown', e => {
 		console.log (e)
 	})
@@ -925,6 +910,21 @@ window.onload = function () {
 	else {
 		editor.setOptions(JSON.parse (window.localStorage.ace_options))
 		editor.setOption ("theme", localStorage.ice40DarkMode == "true" ? localStorage.ace_dark_theme : localStorage.ace_light_theme)
+	}
+
+	if (window.localStorage.ice40DarkMode == "true") {
+		// we need to move the button too, so we set dark mode manually
+		window.localStorage.ice40DarkMode = "false"
+		darkMode()
+		update_status(CURRENT_STATUS[0], CURRENT_STATUS[1])
+	}
+	else if (!window.localStorage.ice40DarkMode) {
+		// users will by default see light mode, so we'll set dark mode 
+		// options when they load the page
+		window.localStorage.ice40DarkMode = "false"
+	}
+	if (window.localStorage.ice40DarkMode == "false") {
+		lightMode()
 	}
 
 	setTimeout (() => {
