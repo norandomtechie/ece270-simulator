@@ -135,6 +135,47 @@ $(document).bind("keydown", "ctrl+o", function (e) {
 	}
 });
 
+function updateKeys(e) {
+	var no_overlay_open = Array.from(document.querySelectorAll("div")).filter(x => /^overlay/.test(x.id)).filter(x => x.style.display == "flex").length == 0;
+	var code_editor_active = !(document.activeElement.className.includes("ace"));
+	var not_editing_tab_names = !(document.activeElement.className.includes("tab-label"));
+	var body_active = (document.activeElement == document.body);
+	if (code_editor_active && not_editing_tab_names && no_overlay_open && body_active) 
+	{
+		var isNum = e.which >= 48 && e.which <= 57
+		var isHex = (e.which >= 65 && e.which <= 70) || (e.which >= 97 && e.which <= 102)
+		var isWXYZ = (e.which >= 87 && e.which <= 90) || (e.which >= 119 && e.which <= 122)
+		var isNumpad = e.code != undefined && e.code.includes ("Numpad")
+		if (e.key && e.key.match (/^[0-9a-fw-z]$/i) || ((isNum || isHex || isWXYZ || isNumpad) && (e.shiftKey || curmap ["Shift"]))) {// all button options
+			toggle_button(e)
+		}
+		else if (document.getElementsByClassName("btn-info")[0].isMouseOver == true && e.ctrlKey)
+			load_button.innerHTML = "Load Template"
+	}
+	else if (document.activeElement.id == "passwd" && e.which == 13 && e.type == "keydown")
+		change_password()
+
+	if (e.which == 27) {
+		$('.overlay').css ('display', 'none')
+		$('.overlay').css ('opacity', '0')
+		blurMainView(1)
+
+		if (localStorage.ice40DarkMode == "false") {
+			while (document.getElementsByClassName("ace-line-error-dark").length != 0)
+				document.getElementsByClassName("ace-line-error-dark")[0].classList.replace("ace-line-error-dark", "ace-line-error-light")
+		}
+		else {
+			while (document.getElementsByClassName("ace-line-error-light").length != 0)
+				document.getElementsByClassName("ace-line-error-light")[0].classList.replace("ace-line-error-light", "ace-line-error-dark")
+		}
+	}
+	else if (e.which == 46 && $('#overlay_workspace').css ('display') == 'flex') {
+		e.preventDefault()
+		browserDeleteSelectedFiledirs()
+	}
+	bakmap = JSON.parse (JSON.stringify (curmap))
+}
+
 function populateKeystate(e) {
 	e = e || event;
 	if (curmap[e.key] && e.type == "keydown" || e.altKey)
@@ -151,49 +192,11 @@ function populateKeystate(e) {
 	btn0 = document.getElementById("key0").getAttribute("pressed")
 	btn3 = document.getElementById("key3").getAttribute("pressed")
 	btnW = document.getElementById("keyW").getAttribute("pressed")
+	if (!window.populatingKeystates) {
+		window.populatingKeystates = [];
+	}
 	if (bakmap[e.key] != curmap[e.key])
-		setTimeout(function () {
-			if (!(document.activeElement.className.includes("ace")) &&
-				!(document.activeElement.className.includes("tab-label")) &&
-				!(document.getElementById("overlay").style.display == "flex") &&
-				!(document.getElementById("overlay_2").style.display == "flex") &&
-				!(document.getElementById("overlay_3").style.display == "flex") &&
-				!(document.getElementById("overlay_4").style.display == "flex") &&
-				 (document.activeElement == document.body) 
-			    ) 
-			{
-				var isNum = e.which >= 48 && e.which <= 57
-				var isHex = (e.which >= 65 && e.which <= 70) || (e.which >= 97 && e.which <= 102)
-				var isWXYZ = (e.which >= 87 && e.which <= 90) || (e.which >= 119 && e.which <= 122)
-				var isNumpad = e.code != undefined && e.code.includes ("Numpad")
-				if (e.key && e.key.match (/^[0-9a-fw-z]$/i) || ((isNum || isHex || isWXYZ || isNumpad) && (e.shiftKey || curmap ["Shift"]))) // all button options
-					toggle_button(e)
-				else if (document.getElementsByClassName("btn-info")[0].isMouseOver == true && e.ctrlKey)
-					load_button.innerHTML = "Load Template"
-			}
-			else if (document.activeElement.id == "passwd" && e.which == 13 && e.type == "keydown")
-				change_password()
-
-			if (e.which == 27) {
-				$('.overlay').css ('display', 'none')
-				$('.overlay').css ('opacity', '0')
-				blurMainView(1)
-
-				if (localStorage.ice40DarkMode == "false") {
-					while (document.getElementsByClassName("ace-line-error-dark").length != 0)
-						document.getElementsByClassName("ace-line-error-dark")[0].classList.replace("ace-line-error-dark", "ace-line-error-light")
-				}
-				else {
-					while (document.getElementsByClassName("ace-line-error-light").length != 0)
-						document.getElementsByClassName("ace-line-error-light")[0].classList.replace("ace-line-error-light", "ace-line-error-dark")
-				}
-			}
-			else if (e.which == 46 && $('#overlay_workspace').css ('display') == 'flex') {
-				e.preventDefault()
-				browserDeleteSelectedFiledirs()
-			}
-			bakmap = JSON.parse (JSON.stringify (curmap))
-		}, 10)
+		setTimeout(updateKeys, 10, e)
 }
 
 onkeyup = onkeydown =
@@ -326,7 +329,7 @@ function send_inputs() {
 var saved_txclk = '-1';
 var txdata_fifo = [];
 
-function set_outputs(json_out) {
+function setOutputs(json_out) {
 	/*  {LFTRED: x, RGTRED: x, RGBLED: x, SS7: x, SS6: x, SS5: x ... SS0: x}  */
 	//  also includes {TXDATA: x, TXCLK: x, RXCLK: x}
 	lftred = document.getElementsByClassName("lftred")
@@ -371,8 +374,32 @@ function set_outputs(json_out) {
 	saved_txclk = json_out ['TXCLK']
 }
 
+function appendVCD(chunk) {
+	if (!window.vcd || window.vcd.startsWith("No traces have been")) {
+		window.vcd = chunk;
+	} else {
+		window.vcd += "\n" + chunk;
+	}
+}
+
+function downloadVCD() {
+	if (!window.vcd || window.vcd.startsWith('No traces have been')) {
+		alert("A simulation needs to complete before traces can be produced.")
+		return;
+	}
+	var link = document.createElement("a");
+	link.href = URL.createObjectURL(new Blob([window.vcd], { type: 'text/vcd' }));
+	link.download = `${window.vcdworkspace}_simulation.vcd`; 
+	link.style.display = 'none'; 
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+}
+
 function ice40hx8k_handler() {
 	time = new Date().getTime() / 1000;
+	window.vcdworkspace = window.active_workspace;
+	window.vcd = "No traces have been generated from a simulation yet.";
 
 	if (editor.session.getValue().includes("’")) {
 		alert("Copying code from the notes without typing it out? Tsk tsk...\n" +
@@ -396,12 +423,12 @@ function ice40hx8k_handler() {
 		ws.onmessage = function () { }
 		ws.onclose = function () { }
 		ws.close()
-		set_outputs({
+		setOutputs({
 			"LFTRED": 0, "RGTRED": 0, "RGBLED": 0, "SS7": 0, "SS6": 0,
 			"SS5": 0, "SS4": 0, "SS3": 0, "SS2": 0, "SS1": 0, "SS0": 0
 		})
 	}
-	ws = new WebSocket("ws://" + window.location.host + "/")
+	ws = new WebSocket(window.location.protocol.replace("http", "ws") + window.location.host + "/")
 	ws.currentWorkspace = window.active_tab.getAttribute ('workspace')
 	Array.from ($('.editor-tab')).forEach (e => e.removeAttribute ('errors'))
 
@@ -444,9 +471,6 @@ function ice40hx8k_handler() {
 			clearEditorErrors()
 			errors = []
 			update_status("SIM_RUNNING", "Status: Simulation is running")
-			messages += event.data
-			// window.alert (messages)
-			messages = ""
 		}
 		else if (event.data.includes("Error occurred in")) {
 			alert(event.data);
@@ -529,7 +553,15 @@ function ice40hx8k_handler() {
 		else {
 			try {
 				if ("LFTRED" in JSON.parse (event.data)) {
-					set_outputs(JSON.parse(event.data))
+					setOutputs(JSON.parse(event.data));
+				}
+				else if ("vcd" in JSON.parse (event.data)) {
+					// vcd appears right after simulation has been stopped.  Safe to update status variable here.
+					appendVCD(JSON.parse (event.data).vcd);
+					update_status("CODE_ERROR", "Status: Simulation ended")
+					this.pending = setTimeout(() => {
+						update_status("STATUS_READY", "Status: Ready")
+					}, 1000);
 				}
 			}
 			catch (err)
@@ -676,7 +708,8 @@ window.onbeforeunload = function () {
 		localStorage.ace_dark_theme = editor.getOption("theme");
 	else if (localStorage.ice40DarkMode == "false")
 		localStorage.ace_light_theme = editor.getOption("theme");
-	reset_handler()
+	if (ws)
+		ws.close();
 };
 
 function closeOverlay() {
@@ -774,19 +807,18 @@ function stop_handler() {
 function reset_handler() {
 	if (typeof ws != "undefined" && ws.readyState == ws.OPEN) {
 		ws.onclose = function () { }
-		ws.close()
-		update_status("CODE_ERROR", "Status: Simulation reset")
+		ws.send("END SIMULATION")
+		// ws.close()
+		// update_status("CODE_ERROR", "Status: Simulation reset")
 		difftime = (new Date().getTime() / 1000) - time
 		var minutes = Math.floor(difftime / 60);
 		var seconds = difftime - minutes * 60;
 		console.log("Simulation ended at " + minutes.toString() + " minutes and " + seconds.toString() + " seconds.")
-		this.pending = setTimeout(() => {
-			update_status("STATUS_READY", "Status: Ready")
-		}, 1100)
+		update_status("SYNTHESIS", "Status: Waiting for trace data..")
 	}
 	clearEditorErrors()
 	errors = []
-	set_outputs({
+	setOutputs({
 		"LFTRED": 0, "RGTRED": 0, "RGBLED": 0, "SS7": 0, "SS6": 0,
 		"SS5": 0, "SS4": 0, "SS3": 0, "SS2": 0, "SS1": 0, "SS0": 0
 	})
@@ -797,13 +829,13 @@ function demo_handler() {
 		ws.onmessage = function () { }
 		ws.onclose = function () { }
 		ws.close()
-		set_outputs({
+		setOutputs({
 			"LFTRED": 0, "RGTRED": 0, "RGBLED": 0, "SS7": 0, "SS6": 0,
 			"SS5": 0, "SS4": 0, "SS3": 0, "SS2": 0, "SS1": 0, "SS0": 0
 		})
 	}
 
-	ws = new WebSocket("ws://" + window.location.host + "/")
+	ws = new WebSocket(window.location.protocol.replace("http", "ws") + window.location.host + "/")
 	update_status("CONNECTING", "Status: Connecting...")
 	var synthesis_interval = ""
 	ws.onmessage = function (event) {
@@ -840,7 +872,7 @@ function demo_handler() {
 		}
 		else {
 			try {
-				set_outputs(JSON.parse(event.data))
+				setOutputs(JSON.parse(event.data))
 			}
 			catch (err) {
 				if (typeof event.data == "string" && event.data.includes("timing violation")) {
@@ -1261,15 +1293,22 @@ $.get({
 	contentType: 'application/json',
 	success: function (response) {
 		window.supportModules = response; 
-		var fs = getFilesystem();
-		for (var wksp in fs) {
-			var wksp_saved = getWkspSettings(wksp); 
-			wksp_saved["support"].forEach (s => {
-				if (!window.supportModules.includes(s)) {
-					wksp_saved["support"] = wksp_saved["support"].filter (f => f != s); 
-				}
-			}); 
-			setWkspSettings(wksp, wksp_saved); 
+		try {
+			var fs = getFilesystem();
+		} 
+		catch(err) {
+			var fs = {};
+		}
+		if (Object.keys(fs).length > 0) {
+			for (var wksp in fs) {
+				var wksp_saved = getWkspSettings(wksp) || {"support": [], "testbench": ""}; 
+				wksp_saved["support"].forEach (s => {
+					if (!window.supportModules.includes(s)) {
+						wksp_saved["support"] = wksp_saved["support"].filter (f => f != s); 
+					}
+				}); 
+				setWkspSettings(wksp, wksp_saved); 
+			}
 		}
 	}
 }); 
@@ -1329,6 +1368,8 @@ function toggleWorkspaceSettings(event, tgl) {
 function selectWorkspaceByElement(elm, force) {
 	// don't accidentally select the workspace-add button if this is somehow called
 	if (elm.id == 'editor-tab-workspace-add') return
+	// tell everyone that workspace has changed
+	window.active_workspace = $('.editor-tab-workspace').filter((i,e) => e.style.background).attr('name');
 	// add settings icon for this workspace:
 	document.querySelector('#div_workspace_gear')?.remove();
 	document.querySelector('#workspace_gear')?.remove();
@@ -1526,10 +1567,10 @@ function initializeTerminalSafe() {
 		});
 	}
 	if (window.localStorage.ice40DarkMode == "true")
-			term.setOption('theme', { background: '#111', foreground: '#ddd' });
-		else
+	term.setOption('theme', { background: '#111', foreground: '#ddd' });
+	else
 			term.setOption('theme', { background: '#ddd', foreground: '#111' });
-}
+		}
 
 function switchView (sw, opt='nf') {
 	switch (sw) {
@@ -1563,11 +1604,11 @@ function switchView (sw, opt='nf') {
 			$("#resize-editor").css ('display', 'none');
 			$("#editor-tab-header,#editor-tab-workspace-header").animate ({'opacity': '0'}, opt ? 10 : 1000);
 			$("#terminal").css ('display', 'none');
-			$("#outputview").width($("#editor-workspace").width())
 			$("#outputview").css ('display', '');
+			$("#outputview").width($("#editor-workspace").width())
 			break;
 	}
-	$("#outputview")[0].scrollTop = $("#outputview")[0].scrollHeight
+	$("#outputview")[0].scrollTop = $("#outputview")[0].scrollHeight;
 }
 
 function resizeHandler() {
@@ -1601,9 +1642,9 @@ function downloadJSON() {
 
 function toggleProfile() {
 	if ($("#overlay_4").css ('opacity') == "0") {
-		blurMainView(0)
-		$("#overlay_4").css ('display', 'flex')
-		$("#overlay_4").animate ({'opacity': '1'}, 200)
+		blurMainView(0);
+		$("#overlay_4").css ('display', 'flex');
+		$("#overlay_4").animate ({'opacity': '1'}, 200);
 		$.get({ url: "/profile", cache: false }, function (data) {
 			window.profile_json = data
 			$("#loading").animate ({'opacity': '0'}, 200, () => {
