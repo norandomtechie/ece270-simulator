@@ -138,6 +138,11 @@ function connection(ws, request) {
                             if (err) throw err;
                         });
                     }
+                    if (file.code.includes("give us a uart demo please")) {
+                        file.code = fs.readFileSync(`${__dirname}/sim_modules/uart_fpgademo.v`, 'utf8', function (err, data) {
+                            if (err) throw err;
+                        });
+                    }
                     fs.writeFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, file.name), file.code, 'utf8', function (err) {
                         if (err) { throw err; }
                     });

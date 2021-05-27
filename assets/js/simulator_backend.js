@@ -29,7 +29,7 @@ var LIT_RED = "#f00";
 var BLANK_RED = "#300";
 
 var TUTORIAL_DESCS = [{
-        description: `Should use from HTML, no need to place here.`,
+        description: `If this text appears, something went wrong.  Restart the tutorial and/or refresh the webpage.`,
         top: '10vh',
         left: '10vw',
         width: '80vw',
@@ -38,7 +38,7 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `The simulator is quite simple to work with - all you need to do is type in your SystemVerilog design in the lower-right code editor, and click the 
-	Simulate button below the virtual FPGA board on the lower left.  Go ahead and type <br><br><code>assign right[0] = hz100;</code><br><br> beneath the commented line
+	Simulate button below the virtual FPGA board on the lower left.  Go ahead and type: <br><br><code>assign right[0] = hz100;</code><br><br> beneath the commented line
 	that says "Your code goes here".  Then, press the Simulate button, and after your SystemVerilog code is processed, synthesized and has started 
 	simulating, you should see the rightmost small red LED start to blink very rapidly.  Congratulations on running your first SystemVerilog simulation!`,
         top: '20vh',
@@ -50,7 +50,8 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `The Demo button showcases the full capability of the virtual board by running a design that will flash all the LEDs available on the board.  Go ahead 
-	and click it, and it should start the demo simulation.  Some of the behavior you see here will be taught in your upcoming labs!`,
+	                  and click it, and it should start the demo simulation.  Some of the behavior you see here will be taught in your upcoming labs!  Press 0/1/2/3 to change the speed of 
+                      the simulation.`,
         top: '20vh',
         left: '62vw',
         width: '30vw',
@@ -64,12 +65,25 @@ var TUTORIAL_DESCS = [{
     you're likely to be working, so you may find it helpful to customize it to your preferences.  
     <br><br> You can try setting these now by clicking inside the editor, and pressing Ctrl+Comma (or Cmd+Comma on a Mac).  Change some settings, and press 
     anywhere outside the panel - do NOT hit the Escape button!  These settings should persist the next time you open the simulator.`,
-        top: '20vh',
-        left: '1vw',
-        width: '30vw',
-        height: '70vh',
+        top: '15vh',
+        left: '3.5vw',
+        width: '25vw',
+        height: '80vh',
         fade: false,
         noEscape: true
+    },
+
+    {
+        description: `If you typically keep windows in split-screen mode (for example, when you only have one screen) and then change back to 
+                      a maximized window, you might find that the code editor is suddenly much smaller - this occurs in order to accomodate it 
+                      in the narrower view.  You can expand the editor by dragging the slider (it's flashing on the right side of the page!) to 
+                      the left/right so you can see less/more of your code.`,
+        top: '15vh',
+        left: '3.5vw',
+        width: '25vw',
+        height: '80vh',
+        fade: false,
+        highlight: '#resize-editor'
     },
 
     {
@@ -81,49 +95,53 @@ var TUTORIAL_DESCS = [{
         height: '40vh',
         top: '20vh',
         left: '31vw',
-        fade: false
+        fade: false,
+        highlight: '#editor-tab-workspace-add'
     },
 
     {
         description: `You should now be in your shiny new workspace!  You can also perform operations like adding, removing and renaming files within a workspace, as well 
-	as removing and renaming workspaces.  Add a file by clicking the second Add button, in the second row.  Rename it by holding down the Shift key and double-clicking on 
-	the newly added file tab, typing in a new filename (for SystemVerilog files, end it with .sv) and hitting Enter.  You can "hide" the file by clicking on the X, and 
-    restoring it from the file manager panel (which we'll look at next, so do not close the newly created file for now)`,
-        top: '20vh',
-        left: '1vw',
-        width: '30vw',
-        height: '70vh',
+	                  as removing and renaming workspaces.  Add a file by clicking the second Add button, in the second row.  Rename it by holding down the Shift key and double-clicking on 
+	                  the newly added file tab, typing in a new filename (for SystemVerilog files, end it with .sv) and hitting Enter.  You can "hide" the file by clicking on the X, and 
+                      restoring it from the file manager panel - which we'll look at next`,
+        top: '15vh',
+        left: '3.5vw',
+        width: '25vw',
+        height: '80vh',
         fade: false
     },
 
     {
         description: `Removing the file is intentionally a little more difficult, because we don't want you to lose your code!  Click on the Open Icon above (the second one 
-            from the left that looks like a folder).  The shortcut for Open File (typical of any program) is (Ctrl/Cmd)-O.`,
+                      from the left that looks like a folder).  The shortcut for Open File (typical of any program) is (Ctrl/Cmd)-O.`,
         top: '10vh',
         left: '5vw',
         width: '25vw',
         height: '45vh',
-        fade: false
+        fade: false,
+        highlight: '.fa-folder-open'
     },
 
     {
         description: `This is your File Manager.  Here, you can view file data (including creation/modification times), delete files or entire workspaces, or create new ones.  
-        <br>Bear in mind: files are saved only in your browser - NOT on the server!  That means if you accidentally wipe your browser data, your code will disappear.`,
+                      <br>Bear in mind: files are saved only in your browser - NOT on the server!  That means if you accidentally wipe your browser data, your code will disappear.`,
         top: '1vh',
         left: '2.5vw',
         width: '92.5vw',
         height: '17.5vh',
-        fade: false
+        fade: false,
+        noEscape: true
     },
 
     {
         description: `With that in mind, let's delete the file.  Highlight the file you want to delete by clicking it (a border should appear) and either click the Trash icon, 
-        or press the Delete key.  A confirmation dialog will appear so you're absolutely sure you want to delete a file/workspace.`,
+                      or press the Delete key.  A confirmation dialog will appear so you're absolutely sure you want to delete a file/workspace.`,
         top: '1vh',
         left: '2.5vw',
         width: '92.5vw',
         height: '17.5vh',
-        fade: false
+        fade: false,
+        noEscape: true
     },
 
     {
@@ -132,18 +150,94 @@ var TUTORIAL_DESCS = [{
         left: '2.5vw',
         width: '92.5vw',
         height: '17.5vh',
+        fade: false,
+        noEscape: true
+    },
+
+    {
+        description: `Back to simulations - let's take a look at how the pushbuttons work.  Open a new file, and type: <br><br><code>assign right[0] = pb[0];</code><br><br> 
+                      This is going to connect pushbutton 0 (called pb[0]) to the rightmost red LED on the board (called right[0]).  Start the simulation, and observe that 
+                      right[0] lights up when you press pb[0], and goes back to dim when you release it.  <br><br> This button behavior is intended to behave exactly the 
+                      same way as the FPGA in lab does.<br><br>`,
+        top: '20vh',
+        left: '62vw',
+        width: '30vw',
+        height: '70vh',
+        fade: false
+    },
+
+    
+    {
+        description: `Suppose you make a mistake in your code - for example, you forget a semicolon somewhere.  Go ahead and remove that from after pb[0] in the line you 
+                      just entered, and click Simulate.  You will find that an error appears on the line where you removed the semicolon.  You can hover on the line number to get details 
+                      about the error.<br><br>  Review these carefully, fix your mistake, and just hit Simulate again (or Ctrl-S if you enabled the shortcut in Settings).`,
+        top: '20vh',
+        left: '62vw',
+        width: '30vw',
+        height: '70vh',
         fade: false
     },
 
     {
-        description: `Back to simulations - let's take a look at how the pushbuttons work.  `,
-        top: '1vh',
-        left: '2.5vw',
-        width: '92.5vw',
-        height: '17.5vh',
+        description: `Sometimes, errors in your design appear in the synthesis process, as a result of which a few errors are unable to be mapped to a specific line.  To help with that, 
+                      we provide you with the full output of the tools used to lint and synthesize your code in the Tool Output tab at the bottom of the editor, so that you can analyze 
+                      the Verilog tool dump to find your error. <br><br> Click the Tool Output tab to view the dump from your last simulation.  Depending on what design you send, it 
+                      should show you:
+                      <br><br> 1) The Verilator error log 
+                      <br><br> 2) The JSON netlist of your design (you'll see this in lecture)
+                      <br><br> 3) The output from the Yosys synthesis tool.`,
+        top: '15vh',
+        left: '1vw',
+        width: '28vw',
+        height: '80vh',
         fade: false
-    }
+    },
 
+    {
+        description: `A really awesome extension we added in Spring 2020 was the serial communication interface, which allows you to send/receive data to a simulated terminal window,
+                     similar to how you would communicate with a device using its serial port via a computer terminal.  While this is much more interesting on the real FPGA, we provide 
+                     a simulated version should you wish to create your design outside of lab.  To see a "Hello world" demo of how this serial communication would work, type anywhere in your 
+                     code: 
+                     <br><br>
+                     <code>// give us a uart demo please</code>
+                     <br><br> Then hit Simulate and switch to the Terminal View tab.  Do not include this comment in any of your actual lab assignments, or we will not be able to check them!`,
+        top: '15vh',
+        left: '1vw',
+        width: '28vw',
+        height: '80vh',
+        fade: false,
+        highlight: "#view_terminal"
+    },
+
+    {
+        description: `When working in a workspace, you have the advantage of segregating your code into separate files.  Sometimes, however, you might want to use multiple modules all in the 
+        same file, and don't want to include the other tabs in the workspace.  The File/Workspace Simulation button solves this by having select the type of simulation:
+        <br><br> A Workspace Simulation will send the code from all the files in a workspace.
+        <br><br> A File Simulation will only send the currently opened tab at the time when the Simulate button was clicked.
+        <br><br> <b>This is very important to remember</b>, otherwise you're going to try to send multiple file tabs with the same modules, or send one file without the modules in other file tabs.
+        A lot of users make these mistakes, and end up creating a workspace for every single file (not a good idea on a small screen).`,
+        top: '25vh',
+        left: '32vw',
+        width: '60vw',
+        height: '60vh',
+        fade: false,
+        highlight: "#switchsim"
+    },
+
+    {
+        description: `A crucial component of Verilog design and verification is trace analysis and debugging.  The seasoned hardware designer utilizes waveforms from a simulation in order to find 
+        potential problems with their hardware design.  For the web-simulator, we've added the capability of getting the traces from your simulation as a VCD file that you can open in GTKwave - 
+        you'll do this in lab as well.  Make sure to get <a href="">GTKwave</a> so you're able to view these traces.  Further instructions on how to work with GTKwave will be provided in assignments.`,
+        top: '25vh',
+        left: '32vw',
+        width: '60vw',
+        height: '60vh',
+        fade: false,
+        highlight: "#tracedown"
+    },
+
+    // introduce trace data file
+    // ending shows IPoAC as a joke
 ]
 
 var EDITOR_DARK_THEME = "ace/theme/chaos"; // localStorage.ace_dark_theme
@@ -221,10 +315,11 @@ $(document).bind("keydown", "ctrl+o", function(e) {
 
 function updateKeys(e) {
     var no_overlay_open = Array.from(document.querySelectorAll("div")).filter(x => /^overlay/.test(x.id)).filter(x => x.style.display == "flex").length == 0;
+    var tutorial_not_running = $('#tutorial').css('display') != 'flex';
     var code_editor_active = !(document.activeElement.className.includes("ace"));
     var not_editing_tab_names = !(document.activeElement.className.includes("tab-label"));
     var body_active = (document.activeElement == document.body);
-    if (code_editor_active && not_editing_tab_names && no_overlay_open && body_active) {
+    if (code_editor_active && tutorial_not_running && not_editing_tab_names && no_overlay_open && body_active) {
         var isNum = e.which >= 48 && e.which <= 57
         var isHex = (e.which >= 65 && e.which <= 70) || (e.which >= 97 && e.which <= 102)
         var isWXYZ = (e.which >= 87 && e.which <= 90) || (e.which >= 119 && e.which <= 122)
@@ -236,10 +331,12 @@ function updateKeys(e) {
     } else if (document.activeElement.id == "passwd" && e.which == 13 && e.type == "keydown")
         change_password()
 
-    if (e.which == 27) {
+    if (e.which == 27 && !(window?.noEscapeTutorial)) {
         $('.overlay').css('display', 'none')
         $('.overlay').css('opacity', '0')
         blurMainView(1)
+        tutorialAction("stop")
+        toggleTutorial(1)
 
         if (localStorage.ice40DarkMode == "false") {
             while (document.getElementsByClassName("ace-line-error-dark").length != 0)
@@ -248,15 +345,26 @@ function updateKeys(e) {
             while (document.getElementsByClassName("ace-line-error-light").length != 0)
                 document.getElementsByClassName("ace-line-error-light")[0].classList.replace("ace-line-error-light", "ace-line-error-dark")
         }
-    } else if (e.which == 46 && $('#overlay_workspace').css('display') == 'flex') {
-        e.preventDefault()
-        browserDeleteSelectedFiledirs()
+    } 
+    else if ((e.key == "ArrowLeft" || e.key == "ArrowRight") && (e.type == "keydown") && !tutorial_not_running && window?.tutorialStep) {
+        e.preventDefault();
+        if (e.key == "ArrowLeft") {
+            $('.btn-tutorial')[0].click();
+        }
+        else {
+            $('.btn-tutorial')[2].click();
+        }
     }
-    bakmap = JSON.parse(JSON.stringify(curmap))
+    else if (e.which == 46 && $('#overlay_workspace').css('display') == 'flex') {
+        e.preventDefault();
+        browserDeleteSelectedFiledirs();
+    }
+    console.log ("curmap", curmap, "bakmap", bakmap);
+    bakmap = JSON.parse(JSON.stringify(curmap));
 }
 
 function populateKeystate(e) {
-    e = e || event;
+    e = e || event;     // included for IE compatibility, even though this probably would never work on IE
     if (curmap[e.key] && e.type == "keydown" || e.altKey)
         return false
     if (e.key == "Shift" && e.type == 'keyup') {
@@ -1063,13 +1171,14 @@ function tutorialButtonAction(button) {
 
 function tutorialAction(action) {
     localStorage.tutorialTaken = 'true';
+    
     if(!window.tutorialStep) {
         // starting tutorial now
         window.tutorialStep = 0;
 
         tutorial_button_functions[0] = (()=>{tutorialAction("prev")})
         $('.btn-tutorial')[0].innerHTML = "Back"
-        $('.btn-tutorial')[0].title = "Need to revisit a feature?  Go back to the previous step!"
+        $('.btn-tutorial')[0].title = "Need to revisit something?  Go back a page!"
         $('.btn-tutorial')[1].innerHTML = "Stop"
         $('.btn-tutorial')[1].title = "Tired of going through all this information?  Stop now and return when you can!"
         tutorial_button_functions[2] = (()=>{tutorialAction("next")})
@@ -1079,7 +1188,15 @@ function tutorialAction(action) {
         $('.tutorial_actions').css ('flex-direction', 'row');
         $('.tutorial_actions').css ('justify-content', 'space-evenly');
         $('.btn-tutorial').css ('width', '10vw');
+        $('.btn-tutorial').blur();  // allowing Left/Right arrow movement
     }
+
+    if (window?.tutorialFlashInterval) {
+        window.attElm.style.opacity = '1';
+        clearInterval(window.tutorialFlashInterval);
+        delete window.tutorialFlashInterval;
+    }
+    
     switch (action) {
         case 'prev':
             window.tutorialStep--;
@@ -1100,6 +1217,27 @@ function tutorialAction(action) {
     }
     $('.btn-tutorial')[0].disabled = window.tutorialStep == 1 ? true : false;
     $('.btn-tutorial')[2].disabled = window.tutorialStep == (TUTORIAL_DESCS.length - 1) ? true : false;
+
+    window.noEscapeTutorial = TUTORIAL_DESCS[window.tutorialStep]?.noEscape ? true : false;
+
+    if (TUTORIAL_DESCS[window.tutorialStep]?.highlight) {
+        window.attElm = document.querySelector(TUTORIAL_DESCS[window.tutorialStep].highlight);
+        window.attElm.style.transition = 'opacity 0.25s';
+        window.tutorialFlashInterval = setInterval(() => {
+            window.attElm.style.opacity = window.attElm.style.opacity == '1' ? '0' : '1'
+        }, 250);
+        window.attElm.addEventListener ('mousedown', () => {
+            window.attElm.style.opacity = '1';
+            clearInterval(window.tutorialFlashInterval);
+            delete window.tutorialFlashInterval;
+        });
+    }
+
+    if (action == "stop" && window?.tutorialFlashInterval) {
+        window.attElm.style.opacity = '1';
+        clearInterval(window.tutorialFlashInterval);
+        delete window.tutorialFlashInterval;
+    }
     
     $("#tutorial").css("top", TUTORIAL_DESCS[window.tutorialStep].top);
     $("#tutorial").css("left", TUTORIAL_DESCS[window.tutorialStep].left);

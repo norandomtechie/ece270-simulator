@@ -61,7 +61,8 @@
             <br> <br> It came in extremely handy for when the course was forced online during the pandemic, ensuring that students continued to be able to gain experience with Verilog/SystemVerilog in an online environment. We've since returned to in-person
             classes, but we will continue to use it for the class to help reduce the overall demand for limited physical lab resources.
             <br> <br> Starting this semester, we'd like for you to be able to gain a better understanding of how to use this tool, to navigate and utilize it to its full extent, and most importantly, to avoid mistakes and accidental data loss. We have
-            therefore designed a tutorial system to teach you how to use this. You have three options on how to continue from here.
+            therefore designed a tutorial system to teach you how to use this. You have three options on how to continue from here.  
+            <br> <br> (BTW we're all about shortcuts here!  You can use the Left/Right arrow keys to navigate through the tutorial.)
         </p>
         <div class="tutorial_actions">
             <button class="btn btn-tutorial" onclick='tutorialButtonAction(0)'>Start the tutorial.  (Highly recommended even if you've used the simulator before - a lot has changed!)</button>
@@ -84,7 +85,7 @@
                     <i class="fal fa-terminal top-icon" title="Manage virtual FPGA terminal settings" onclick="javascript:openUART()"></i>
                     <!-- <i class="fal fa-podcast top-icon" title="Share editor with course staff" onclick="javascript:toggleLiveSessionPanel()"></i> -->
                     <!-- <a style="margin-left: 10px; text-decoration: none; color: black" target="_blank" href="/help"></a> -->
-                    <!-- <i class="fal fa-laptop-code top-icon" title="Feature WIP" onclick="javascript:alert('Still working on whatever should go here.  Try later.')"></i> -->
+                    <i class="fal fa-laptop-code top-icon" title="Learn how to use the simulator" onclick="javascript:toggleTutorial(0)"></i>
                     <i class="fal fa-question-circle top-icon" title="Opens simulator handbook in new tab" onclick="window.open ('/help', '_blank')"></i>
                     <input id="open_elm" type="file" name="name" style="display: none" />
                     <a id="downlink" href="none" download="verilog.sv" style="display: none"></a>
@@ -330,23 +331,8 @@
                         </div>
                         <div class="d-xl-flex justify-content-xl-center">
                             <div class="row justify-content-xl-center" style="padding-top: 10px;font-size: 32px;padding-bottom: 20px;width: 95%;height:max-content;">
-                                <style>
-                                    .lowerbtn {
-                                        color: var(--display-4-color);
-                                        border: 1px solid var(--display-4-color);
-                                        width: 45%;
-                                        height: calc(2vh+1vw);
-                                        margin-right: 15px;
-                                        margin-bottom: 6px;
-                                        font-size: 0.9vw;
-                                        white-space: nowrap;
-                                        display: flex;
-                                        justify-content: center;
-                                        align-items: center;
-                                    }
-                                </style>
                                 <button class="btn btn-bevel btn-filter lowerbtn" id="switchsim" type="button" onclick="javascript:switchWorkspaceSim()">Workspace Simulation</button>
-                                <button class="btn btn-bevel btn-filter lowerbtn" type="button" onclick="javascript:downloadVCD();">Download Traces</button>
+                                <button class="btn btn-bevel btn-filter lowerbtn" id="tracedown" type="button" onclick="javascript:downloadVCD();">Download Traces</button>
                             </div>
                         </div>
                     </div>
