@@ -52,7 +52,13 @@ app.get ('/support', function (req, res) {
 });
 
 function debugLog (message) {
-    console.log (getTime() + ": " + message)
+    try {
+        console.log (getTime() + ": " + message)
+    }
+    catch(err) {
+        console.log (getTime())
+        console.log (message)
+    }
 }
 
 String.prototype.replaceAll = function(search, replacement) {
@@ -72,7 +78,7 @@ process.on ('SIGTERM', function () {
 
 process.on ('SIGINT', exitHandler.bind (null, {exit: true}))
 process.on ('uncaughtException', function (err) {
-    debugLog ('uncaughtException! Details: \n')
+    debugLog ('uncaughtException in code! Details: \n')
     console.error (err)
 })
 

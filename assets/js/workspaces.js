@@ -934,63 +934,7 @@ window.onload = function () {
 			editor.renderer.scrollBarV.element.style ['display'] = ""
 			editor.renderer.scrollBarH.element.style ['display'] = ""
 		})
-	}, 250)
-
-	/**************************************************************************** */
-
-	function receiveMessage(event)
-	{
-		// Do we trust the sender of this message?
-		if ((event.origin !== "https://verilog.ecn.purdue.edu" && event.origin !== "https://engineering.purdue.edu") && event.isTrusted)
-			return;
-		
-		if (event.origin == "https://verilog.ecn.purdue.edu") {
-			event.source.postMessage (editor.getValue() + "\n")
-		}
-		// else {
-		// 	try {
-		// 		var student = JSON.parse (event.data)
-		// 		if (!('code' in student) || !('assignment' in student))
-		// 			throw "Invalid format."
-				
-		// 		var filesystem = JSON.parse (localStorage.filesystem)
-		// 		var result = JSON.parse (filesystem ['default']).filter (e => e.name == "grader.sv").length > 0
-		// 		if (Object.keys (editor_tab_list).length == 0)
-		// 			openTabsFromStorage()
-		// 		if (!result) {
-		// 			var sess = new EditSession(student.code)
-		// 			var tab = 0
-		// 			editor_tab_list ["default"]["grader.sv"] = sess
-		// 			addTab({
-		// 				name: "grader.sv",
-		// 				session: tab.toString(),
-		// 				ctime: new Date(),
-		// 				mtime: new Date(),
-		// 				workspace: 'default',
-		// 				state: 'open',
-		// 			})
-		// 			new_tab = $('.editor-tab').get().slice($('.editor-tab').length - 2)[0]
-		// 			selectTabByElement(new_tab)
-		// 		}
-		// 		else {
-		// 			selectTabByElement($('[name="grader.sv"]')[0])
-		// 		}
-				
-		// 		editor.session.setValue (student.code, -1)
-		// 		saveAllFilesToStorage()
-		// 		setTimeout (ice40hx8k_handler, 1000)
-		// 	}
-		// 	catch (err) {
-		// 		alert ("Nope. " + err.toString())
-		// 		console.error (err)
-		// 	}
-		// 	event.source.postMessage ("Simulating!", event.origin)
-		// }
-	}
-
-	window.addEventListener("message", receiveMessage, false);
-
-	/**************************************************************************** */
+	}, 250);
 
 	// lil welcome message for the JS programmers in devtools
 	console.log("%c\n\n\nFellow DigiJocks and DigiJockettes, thanks for checking out the code!\n\n\n" +
@@ -1004,6 +948,10 @@ window.onload = function () {
 		localStorage.announcement_count = 1
 	}
 
+	if (!window.localStorage.tutorialTaken || window.localStorage.tutorialTaken != 'true') {
+		toggleTutorial(0);
+	}
+
 	window.editor.on ('change', (e) => {
 		try {
 			editor_tab_list [window.active_tab.getAttribute ('workspace')][window.active_tab.getAttribute ('name')].setValue (editor.getValue())
@@ -1014,8 +962,5 @@ window.onload = function () {
 			console.log ('name', window.active_tab.getAttribute ('name'))
 		}
 		saveAllFilesToStorage()
-	})
-
-	if (window.opener)
-		window.opener.postMessage ("Ready", "https://engineering.purdue.edu")
+	});
 }

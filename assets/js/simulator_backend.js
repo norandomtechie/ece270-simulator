@@ -103,12 +103,13 @@ var TUTORIAL_DESCS = [{
         description: `You should now be in your shiny new workspace!  You can also perform operations like adding, removing and renaming files within a workspace, as well 
 	                  as removing and renaming workspaces.  Add a file by clicking the second Add button, in the second row.  Rename it by holding down the Shift key and double-clicking on 
 	                  the newly added file tab, typing in a new filename (for SystemVerilog files, end it with .sv) and hitting Enter.  You can "hide" the file by clicking on the X, and 
-                      restoring it from the file manager panel - which we'll look at next`,
+                      restoring it from the file manager panel - which we'll look at next.`,
         top: '15vh',
         left: '3.5vw',
         width: '25vw',
         height: '80vh',
-        fade: false
+        fade: false,
+        highlight: '#editor-tab-add'
     },
 
     {
@@ -145,7 +146,7 @@ var TUTORIAL_DESCS = [{
     },
 
     {
-        description: `Great job!  Now, close the File Manager by clicking the X icon below to the right - but not the Escape key!  You'll close the tutorial!`,
+        description: `Great job!  Now, close the File Manager by clicking the X icon below to the right.  `,
         top: '1vh',
         left: '2.5vw',
         width: '92.5vw',
@@ -169,8 +170,9 @@ var TUTORIAL_DESCS = [{
     
     {
         description: `Suppose you make a mistake in your code - for example, you forget a semicolon somewhere.  Go ahead and remove that from after pb[0] in the line you 
-                      just entered, and click Simulate.  You will find that an error appears on the line where you removed the semicolon.  You can hover on the line number to get details 
-                      about the error.<br><br>  Review these carefully, fix your mistake, and just hit Simulate again (or Ctrl-S if you enabled the shortcut in Settings).`,
+                      just entered, and click Simulate.  You will find that an error appears on the line (or even the one right after it) where you removed the semicolon.  
+                      You can hover on the red-highlighted line number to get details about the error.<br><br>  Review these carefully, fix your intentional mistake, and 
+                      just hit Simulate again (or Ctrl-S if you enabled the shortcut in Settings) to restart the simulation.`,
         top: '20vh',
         left: '62vw',
         width: '30vw',
@@ -183,13 +185,13 @@ var TUTORIAL_DESCS = [{
                       we provide you with the full output of the tools used to lint and synthesize your code in the Tool Output tab at the bottom of the editor, so that you can analyze 
                       the Verilog tool dump to find your error. <br><br> Click the Tool Output tab to view the dump from your last simulation.  Depending on what design you send, it 
                       should show you:
-                      <br><br> 1) The Verilator error log 
-                      <br><br> 2) The JSON netlist of your design (you'll see this in lecture)
-                      <br><br> 3) The output from the Yosys synthesis tool.`,
-        top: '15vh',
+                      <br><br> 1) The Verilator error log (if you had no errors, it will be empty). 
+                      <br><br> 2) The JSON netlist of your design (this is effectively a list of the gates and sequential cells it takes to produce your hardware design)
+                      <br><br> 3) The output from the Yosys synthesis tool that produces this netlist.`,
+        top: '5vh',
         left: '1vw',
         width: '28vw',
-        height: '80vh',
+        height: '90vh',
         fade: false
     },
 
@@ -212,32 +214,56 @@ var TUTORIAL_DESCS = [{
     {
         description: `When working in a workspace, you have the advantage of segregating your code into separate files.  Sometimes, however, you might want to use multiple modules all in the 
         same file, and don't want to include the other tabs in the workspace.  The File/Workspace Simulation button solves this by having select the type of simulation:
-        <br><br> A Workspace Simulation will send the code from all the files in a workspace.
-        <br><br> A File Simulation will only send the currently opened tab at the time when the Simulate button was clicked.
+        <br><br> A Workspace Simulation will send the code from all the file tabs in a workspace.
+        <br><br> A File Simulation will only send the currently active tab at the time when the Simulate button was clicked.
         <br><br> <b>This is very important to remember</b>, otherwise you're going to try to send multiple file tabs with the same modules, or send one file without the modules in other file tabs.
-        A lot of users make these mistakes, and end up creating a workspace for every single file (not a good idea on a small screen).`,
+        Both result in possibly confusing errors.  A lot of users make these mistakes, and end up creating a workspace for every single file - that makes the simulator very hard to use, and is not 
+        a good thing to do on a small screen.`,
         top: '25vh',
         left: '32vw',
         width: '60vw',
-        height: '60vh',
+        height: '62.5vh',
         fade: false,
         highlight: "#switchsim"
     },
 
+    // introduce trace data file
     {
         description: `A crucial component of Verilog design and verification is trace analysis and debugging.  The seasoned hardware designer utilizes waveforms from a simulation in order to find 
         potential problems with their hardware design.  For the web-simulator, we've added the capability of getting the traces from your simulation as a VCD file that you can open in GTKwave - 
-        you'll do this in lab as well.  Make sure to get <a href="">GTKwave</a> so you're able to view these traces.  Further instructions on how to work with GTKwave will be provided in assignments.`,
+        you'll do this in lab as well.  Make sure to get <a target="_blank" href="https://sourceforge.net/projects/gtkwave/">GTKwave</a> so you're able to view these traces.  Further instructions on how to work 
+        with GTKwave will be provided in assignments.`,
         top: '25vh',
         left: '32vw',
         width: '60vw',
-        height: '60vh',
+        height: '62.5vh',
         fade: false,
         highlight: "#tracedown"
     },
 
-    // introduce trace data file
     // ending shows IPoAC as a joke
+    {
+        description: `And so we come to the end of our tutorial.  That's all, folks!  
+                      <br><br>
+                      There's still a bit more stuff, but we'd like to conserve your time and let you discover those on your own later.  To revisit this again, we highly recommend that you go through the Help page as well 
+                      - specifically <a onclick="javascript:window.location.href=window.location.href + 'help?md=tipstricks'">the Tips and Tricks section</a> to help you type up your design faster.  
+                      There's also GIFs for different features if you'd like to see things in action rather than reading about it.  
+                      <br><br>
+                      Good luck with your upcoming lab assignments!  We sincerely hope that you find them informative and engaging.
+                      <br><br>
+                      We're always looking for more help.  This entire project was done by a single TA in 1.5 semesters, with no background knowledge of web development when he started.  If you see the 
+                      source code, that fact is very clear.  If you're experienced at this sort of thing, and you'd like to have the satisfaction of telling us off for incorporating horribly 
+                      inefficient/outdated code into this page, you can either contact course staff or, even better, open an issue on the 
+                      <a href="https://github.com/norandomtechie/ece270-simulator" target="_blank">simulator's GitHub repository</a> with details of what should be added/improved/removed.  
+                      <br><br>
+                      As a kind-of-reward for finishing this tutorial (hopefully you weren't just clicking through to the end), here's  
+                      <a href="https://en.wikipedia.org/wiki/IP_over_Avian_Carriers" target="_blank">a great article</a> we found over the summer.`,
+        top: '10vh',
+        left: '10vw',
+        width: '80vw',
+        height: '80vh',
+        fade: true
+    }
 ]
 
 var EDITOR_DARK_THEME = "ace/theme/chaos"; // localStorage.ace_dark_theme
@@ -359,7 +385,6 @@ function updateKeys(e) {
         e.preventDefault();
         browserDeleteSelectedFiledirs();
     }
-    console.log ("curmap", curmap, "bakmap", bakmap);
     bakmap = JSON.parse(JSON.stringify(curmap));
 }
 
@@ -1172,7 +1197,7 @@ function tutorialButtonAction(button) {
 function tutorialAction(action) {
     localStorage.tutorialTaken = 'true';
     
-    if(!window.tutorialStep) {
+    if(!window.tutorialStep && action != 'stop') {
         // starting tutorial now
         window.tutorialStep = 0;
 
@@ -1217,6 +1242,8 @@ function tutorialAction(action) {
     }
     $('.btn-tutorial')[0].disabled = window.tutorialStep == 1 ? true : false;
     $('.btn-tutorial')[2].disabled = window.tutorialStep == (TUTORIAL_DESCS.length - 1) ? true : false;
+    $('.btn-tutorial')[2].style.opacity = window.tutorialStep == (TUTORIAL_DESCS.length - 1) ? "0" : "1";
+    $('.btn-tutorial')[1].innerHTML = window.tutorialStep == (TUTORIAL_DESCS.length - 1) ? "Finish" : $('.btn-tutorial')[1].innerHTML
 
     window.noEscapeTutorial = TUTORIAL_DESCS[window.tutorialStep]?.noEscape ? true : false;
 
@@ -1239,12 +1266,14 @@ function tutorialAction(action) {
         delete window.tutorialFlashInterval;
     }
     
-    $("#tutorial").css("top", TUTORIAL_DESCS[window.tutorialStep].top);
-    $("#tutorial").css("left", TUTORIAL_DESCS[window.tutorialStep].left);
-    $("#tutorial").css("width", TUTORIAL_DESCS[window.tutorialStep].width);
-    $("#tutorial").css("height", TUTORIAL_DESCS[window.tutorialStep].height);
-    $("#tutorial p").html(TUTORIAL_DESCS[window.tutorialStep].description);
-    fadeWholeMainView(TUTORIAL_DESCS[window.tutorialStep].fade ? 0 : 1);
+    if (window?.tutorialStep && TUTORIAL_DESCS[window.tutorialStep]) {
+        $("#tutorial").css("top", TUTORIAL_DESCS[window.tutorialStep].top);
+        $("#tutorial").css("left", TUTORIAL_DESCS[window.tutorialStep].left);
+        $("#tutorial").css("width", TUTORIAL_DESCS[window.tutorialStep].width);
+        $("#tutorial").css("height", TUTORIAL_DESCS[window.tutorialStep].height);
+        $("#tutorial p").html(TUTORIAL_DESCS[window.tutorialStep].description);
+        fadeWholeMainView(TUTORIAL_DESCS[window.tutorialStep].fade ? 0 : 1);
+    }
 }
 
 function closeSettings() {

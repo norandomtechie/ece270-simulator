@@ -138,7 +138,7 @@ function connection(ws, request) {
                             if (err) throw err;
                         });
                     }
-                    if (file.code.includes("give us a uart demo please")) {
+                    else if (file.code.includes("give us a uart demo please")) {
                         file.code = fs.readFileSync(`${__dirname}/sim_modules/uart_fpgademo.v`, 'utf8', function (err, data) {
                             if (err) throw err;
                         });
@@ -519,7 +519,7 @@ function connection(ws, request) {
                     }
                     
                     ws.send("Simulation successfully started!\nVerilator log:\n" + (ws.verilatorLog || 'Verilator produced no logs.') + 
-                            "\nYosys-produced JSON:\n" + ws.yosysJSON + "\nYosys log:\n" + (yosys_out || 'Yosys did not run - might be a source simulation.'))
+                            "\nYosys-produced JSON:\n" + ws.yosysJSON + "\nYosys log:\n" + (typeof(yosys_out) == "undefined" ? 'Yosys did not run - might be a source simulation.' : yosys_out))
                     ws.simTimeout = false; 
                     ws.error_caught = false; 
 
