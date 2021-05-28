@@ -1,4 +1,4 @@
-`timescale 1ns/1ns
+`timescale 1ms/1ms
 
 module main;
     logic hz100, reset;
@@ -58,7 +58,7 @@ module main;
         rxready = recv[28];
         txready = recv[29];
         hz100 = recv[30];
-        #1;
+        #5;
         // if (pb[1]) begin
         //   for (i = 0; i < 8; i++)
         //     $write("ss[%1d] = %d, ", i, ss[i]);

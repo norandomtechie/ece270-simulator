@@ -28,6 +28,20 @@
     color: var(--open-icon-color);
 }
 
+.lowerbtn {
+    color: var(--display-4-color);
+    border: 1px solid var(--display-4-color);
+    width: 45%;
+    height: calc(2vh+1vw);
+    margin-right: 15px;
+    margin-bottom: 6px;
+    font-size: 0.9vw;
+    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .ace_gutter,
 .ace_scrollbar {
     z-index: 0
@@ -157,6 +171,16 @@
 #settingsButtonInner2 {
     fill: var(--sos-inner-fill);
     cx: var(--simulate-on-save-switch-position);
+    transition: all 0.5s;
+}
+
+#settingsButtonOuterSimType {
+    fill: var(--st-outer-fill);
+}
+
+#settingsButtonInnerSimType {
+    fill: var(--st-inner-fill);
+    cx: var(--simulation-type-switch-position);
     transition: all 0.5s;
 }
 
@@ -1170,4 +1194,68 @@ Apple screws everything up for everyone who tries to develop on its platforms */
 #findallmore {
     margin-right: 15px;
     font-size: calc(1vw + 1vh);
+}
+
+
+/************************************************/
+
+
+/* Tutorial System */
+
+
+/************************************************/
+
+#tutorial {
+    display: none;
+    opacity: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 80vw;
+    height: 80vh;
+    border: var(--tutorial-btn-border);
+    border-radius: 5px;
+    background: var(--tutorial-background);
+    position: absolute;
+    left: 10vw;
+    top: 10vh;
+    padding: 2%;
+    transition: all 0.3s;
+    z-index: 4;
+}
+
+#ipoac {
+    width: 95%;
+    height: auto;
+}
+
+#tutorial p {
+    color: var(--display-4-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: calc(0.75vw + 0.7vh);
+}
+
+.tutorial_actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.btn-tutorial {
+    margin: 10px 0 10px 0;
+    width: 85%;
+    height: 6vh;
+    font-size: calc(0.8vw + 0.65vh);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--display-4-color);
+    border: var(--tutorial-btn-border);
+    border-radius: 5px;
+    transition: all 0.3s!important;
+}
+
+.btn-tutorial:hover {
+    color: var(--display-4-color);
+    filter: brightness(1.5);
 }

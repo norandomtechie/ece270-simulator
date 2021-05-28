@@ -1,7 +1,7 @@
-:root { 
+:root {
+    --tutorial-background: rgba(200, 200, 215, 0.96);
+    --tutorial-btn-border: 2px solid #444;
     --tutorial-fade: #eee;
-    --tutorial-btn-bg-hover: #222;
-    --tutorial-btn-hover: #eee;
     --navbar-upper-bg: #e9e9e9;
     --desc-navbar-bg: #e0e0e0;
     --navbar-lower-bg: #e0e0e0;
@@ -12,7 +12,6 @@
     --document-body-bg: #e9e9e9;
     /* add text-muted class to all display-4 elements */
     --display-4-color: #6c757d;
-    --codemirror-border: 1px solid #ddd;
     /* set ace editor theme to chrome */
     --inner-overlay-bg: #eee;
     --inner-overlay-bg-tutorial: rgba(240, 240, 255, 0.95);
@@ -24,18 +23,18 @@
     --ace-scrollbar-color: #999 #e0e0e0;
     --ace-scrollbar-color-hover: #666 #e0e0e0;
     --action-btn-color: #fff;
-    --btn-info-bg:  #6091ef;
-    --btn-info-border:  #6091ef;
-    --btn-info-color:  #fff;
-    --btn-primary-bg:  #0ea0ff;
-    --btn-primary-border:  #0ea0ff;
-    --btn-primary-color:  #fff;
-    --btn-dark-bg:  #343a40;
-    --btn-dark-border:  #343a40;
-    --btn-dark-color:  #fff;
-    --btn-danger-bg:  #dc3545;
-    --btn-danger-border:  #dc3545;
-    --btn-danger-color:  #fff;
+    --btn-info-bg: #6091ef;
+    --btn-info-border: #6091ef;
+    --btn-info-color: #fff;
+    --btn-primary-bg: #0ea0ff;
+    --btn-primary-border: #0ea0ff;
+    --btn-primary-color: #fff;
+    --btn-dark-bg: #343a40;
+    --btn-dark-border: #343a40;
+    --btn-dark-color: #fff;
+    --btn-danger-bg: #dc3545;
+    --btn-danger-border: #dc3545;
+    --btn-danger-color: #fff;
     --hover-filter: brightness(1.25);
     --editor-tab-border: #aaa;
     --logout-hover: #ffcece;
@@ -49,16 +48,12 @@
     --scrollbar-thumb-hover: #333;
     --settings-button-outer-fill: #fff;
     --settings-button-inner-fill: #444;
-
     --local-simulation-outer-fill: #fff;
     --local-simulation-inner-fill: #444;
-
     --close-btn-fill: #444;
     --ace-line-error-color: #ffadad;
     --special-text-coloration: #6c757d;
-
     --terminal-output-bg: #ddd;
-
     --fpga-editor-border: #333;
     --editor-tab-bg: inherit;
     --editor-tab-bg-hover: #eee;
@@ -70,11 +65,9 @@
     --dark-mode-switch-position: 19px;
     --local-simulation-switch-position: 19px;
     --autocomplete-switch-position: 19px;
-
     --file-browser-row-odd: #e0e0e0;
     --file-browser-row-eve: transparent;
     --file-browser-col-border: #555;
-
     --etw-bg-hover: rgba(100, 100, 100, 0.05);
     --etw-bg-selected: rgba(100, 100, 100, 0.1);
 }
@@ -127,6 +120,18 @@
     --simulate-on-save-switch-position: 42px;
 }
 
+[simulation-type="source"] {
+    --st-inner-fill: #444;
+    --st-outer-fill: #fff;
+    --simulation-type-switch-position: 19px;
+}
+
+[simulation-type="mapped"] {
+    --st-inner-fill: #fff;
+    --st-outer-fill: #444;
+    --simulation-type-switch-position: 42px;
+}
+
 [code-autocomplete="false"] {
     --autocomplete-inner-fill: #444;
     --autocomplete-outer-fill: #fff;
@@ -140,6 +145,8 @@
 }
 
 [data-theme="dark"] {
+    --tutorial-background: rgba(10, 10, 12, 0.925);
+    --tutorial-btn-border: 2px solid #aaa;
     --tutorial-fade: #1d1d1d;
     --tutorial-btn-bg-hover: #eee;
     --tutorial-btn-hover: #222;
@@ -155,7 +162,6 @@
     --terminal-output-bg: #111;
     /* add text-muted class to all display-4 elements */
     --display-4-color: #ddd;
-    --codemirror-border: 1px solid #444;
     /* set ace editor theme to chrome */
     --inner-overlay-bg: #223;
     --inner-overlay-bg-tutorial: rgba(10, 10, 30, 0.8);
@@ -170,18 +176,18 @@
     --hover-filter: brightness(1.75);
     --editor-tab-border: #555;
     --logout-hover: #700;
-    --btn-info-bg:  #011535;
-    --btn-info-border:  #011535;
-    --btn-info-color:  #eee;
-    --btn-primary-bg:  #1a4d9e;
-    --btn-primary-border:  #1a4d9e;
-    --btn-primary-color:  #eee;
-    --btn-dark-bg:  #a9a9a9;
-    --btn-dark-border:  #a9a9a9;
-    --btn-dark-color:  #333;
-    --btn-danger-bg:  #b00020;
-    --btn-danger-border:  #b00020;
-    --btn-danger-color:  #eee;
+    --btn-info-bg: #011535;
+    --btn-info-border: #011535;
+    --btn-info-color: #eee;
+    --btn-primary-bg: #1a4d9e;
+    --btn-primary-border: #1a4d9e;
+    --btn-primary-color: #eee;
+    --btn-dark-bg: #a9a9a9;
+    --btn-dark-border: #a9a9a9;
+    --btn-dark-color: #333;
+    --btn-danger-bg: #b00020;
+    --btn-danger-border: #b00020;
+    --btn-danger-color: #eee;
     --autosave-evaltheme-passwd-border: 1px solid #228;
     --autosave-evaltheme-passwd-bg: #113;
     --autosave-evaltheme-passwd-color: #bbb;
@@ -192,10 +198,8 @@
     --scrollbar-thumb-hover: #999;
     --settings-button-outer-fill: #444;
     --settings-button-inner-fill: #fff;
-
     --close-btn-fill: #ccc;
     --ace-line-error-color: #550000;
-
     --fpga-editor-border: #ccc;
     --editor-tab-bg: inherit;
     --editor-tab-bg-hover: #353535;
@@ -204,11 +208,9 @@
     --editor-tab-hover: brightness(1.25);
     --editor-tab-selected: brightness(3)!important;
     --dark-mode-switch-position: 42px;
-
     --file-browser-row-odd: #445;
     --file-browser-row-eve: transparent;
     --file-browser-col-border: #555;
-
     --etw-bg-hover: rgba(255, 255, 255, 0.05);
     --etw-bg-selected: rgba(255, 255, 255, 0.1);
 }
