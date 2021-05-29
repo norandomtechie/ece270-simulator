@@ -6,8 +6,8 @@ for hosting the ECE 270 simulator developed for Purdue University"
 # Update container
 ARG DEBIAN_FRONTEND=noninteractive
 ARG INSIDE_DOCKER=YES
-RUN apt-get update
-RUN apt-get upgrade
+RUN apt-get update -y
+RUN apt-get upgrade -y
 # Install git
 RUN apt-get install -y git wget
 # Download simulator codebase

@@ -5,9 +5,9 @@ then
 fi
 printf "ECE 270 simulator setup\n\n"
 
-declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["yosys"]="https://github.com/YosysHQ/yosys" ["cvc64"]="https://github.com/CambridgeHackers/open-src-cvc" ["iverilog"]="https://github.com/steveicarus/iverilog" )
+declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["yosys"]="https://github.com/YosysHQ/yosys" ["iverilog"]="https://github.com/steveicarus/iverilog" )
 
-declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["cvc64"]="open-src-cvc" ["iverilog"]="iverilog" )
+declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["iverilog"]="iverilog" )
 
 echo "Setting up folders..."
 for folder in ../error_log /tmp/tmpcode
@@ -59,12 +59,6 @@ do
             sleep 5
             make -j$(nproc) || (echo "Compiling yosys failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
             make install
-            cd -
-            ;;
-        "cvc64")
-            cd open-src-cvc/src
-            make -f makefile.cvc64 || (echo "Compiling cvc failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
-            cp cvc64 /usr/bin/cvc64
             cd -
             ;;
         "iverilog")
