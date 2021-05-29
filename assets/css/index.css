@@ -487,7 +487,7 @@ body {
 }
 
 #status-text {
-    font-size: calc(0.35rem + 0.2vh + 0.7vw);
+    font-size: calc(0.3rem + 0.2vh + 0.65vw);
 }
 
 .desc.display-4.text-center.text-muted {
@@ -495,7 +495,7 @@ body {
     border-right: 1px solid gray;
     padding-left: 2.25vw;
     padding-right: 2.25vw;
-    font-size: calc(0.35rem + 0.2vh + 0.7vw);
+    font-size: calc(0.3rem + 0.2vh + 0.65vw);
 }
 
 #desctext {

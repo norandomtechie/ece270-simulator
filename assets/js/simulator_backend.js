@@ -1216,7 +1216,7 @@ function tutorialAction(action) {
         $('.btn-tutorial').blur();  // allowing Left/Right arrow movement
     }
 
-    if (window?.tutorialFlashInterval) {
+    if (window?.tutorialFlashInterval && window?.attElm) {
         window.attElm.style.opacity = '1';
         clearInterval(window.tutorialFlashInterval);
         delete window.tutorialFlashInterval;
