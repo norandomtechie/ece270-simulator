@@ -37,10 +37,10 @@ var TUTORIAL_DESCS = [{
     },
 
     {
-        description: `The simulator is quite simple to work with - all you need to do is type in your SystemVerilog design in the lower-right code editor, and click the 
-	Simulate button below the virtual FPGA board on the lower left.  Go ahead and type: <br><br><code>assign right[0] = hz100;</code><br><br> beneath the commented line
-	that says "Your code goes here".  Then, press the Simulate button, and after your SystemVerilog code is processed, synthesized and has started 
-	simulating, you should see the rightmost small red LED start to blink very rapidly.  Congratulations on running your first SystemVerilog simulation!`,
+        description: `The simulator is quite simple to work with - all you need to do is type in your SystemVerilog design in this code editor, and click the 
+        Simulate button below the virtual FPGA board on the lower left.  Go ahead and type: <br><br><code>assign right[0] = hz100;</code><br><br> beneath the commented line
+        that says "Your code goes here".  Then, press the Simulate button (or Ctrl-S), and after your SystemVerilog code is processed, synthesized and has started 
+        simulating, you should see the rightmost small red LED start to blink very rapidly.  Congratulations on running your first SystemVerilog simulation!`,
         top: '20vh',
         left: '62vw',
         width: '30vw',
@@ -244,20 +244,20 @@ var TUTORIAL_DESCS = [{
     // ending shows IPoAC as a joke
     {
         description: `And so we come to the end of our tutorial.  That's all, folks!  
-                      <br><br>
-                      There's still a bit more stuff, but we'd like to conserve your time and let you discover those on your own later.  To revisit this again, we highly recommend that you go through the Help page as well 
-                      - specifically <a onclick="javascript:window.location.href=window.location.href + 'help?md=tipstricks'">the Tips and Tricks section</a> to help you type up your design faster.  
-                      There's also GIFs for different features if you'd like to see things in action rather than reading about it.  
-                      <br><br>
-                      Good luck with your upcoming lab assignments!  We sincerely hope that you find them informative and engaging.
-                      <br><br>
-                      We're always looking for more help.  This entire project was done by a single TA in 1.5 semesters, with no background knowledge of web development when he started.  If you see the 
-                      source code, that fact is very clear.  If you're experienced at this sort of thing, and you'd like to have the satisfaction of telling us off for incorporating horribly 
-                      inefficient/outdated code into this page, you can either contact course staff or, even better, open an issue on the 
-                      <a href="https://github.com/norandomtechie/ece270-simulator" target="_blank">simulator's GitHub repository</a> with details of what should be added/improved/removed.  
-                      <br><br>
-                      As a kind-of-reward for finishing this tutorial (hopefully you weren't just clicking through to the end), here's  
-                      <a href="https://en.wikipedia.org/wiki/IP_over_Avian_Carriers" target="_blank">a great article</a> we found over the summer.`,
+                          <br><br>
+                          There's still a bit more stuff, but we'd like to conserve your time and let you discover those on your own later.  We highly recommend that you go through the Help page as well 
+                          - specifically <a href="/help?md=tipstricks" target="_blank">the Tips and Tricks section</a> to help you type up your design faster.  
+                          There's also GIFs for different features if you'd like to see things in action rather than reading about it.  
+                          <br><br>
+                          Good luck with your upcoming lab assignments!  We sincerely hope that you find them informative and engaging.
+                          <br><br>
+                          We're always looking for more help.  This entire project was done by a single TA (with his instructor's invaluable guidance!) in 1.5 semesters, with no background knowledge of web 
+                          development when he started.  You can see the evidence in the source code.  If you dabble in web/server development yourself, and you'd like to have the satisfaction of telling us 
+                          off for incorporating horribly inefficient/outdated code into this page (we've had complaints), you can either contact course staff or, even better, open an issue on the 
+                          <a href="https://github.com/norandomtechie/ece270-simulator" target="_blank">simulator's GitHub repository</a> with details of what should be added/improved/removed.  
+                          <br><br>
+                          As a kind-of-reward for finishing this tutorial (hopefully you weren't just clicking through to the end), here's  
+                          <a href="https://en.wikipedia.org/wiki/IP_over_Avian_Carriers" target="_blank">a fun article</a> we found over the summer.`,
         top: '10vh',
         left: '10vw',
         width: '80vw',
@@ -265,6 +265,71 @@ var TUTORIAL_DESCS = [{
         fade: true
     }
 ]
+
+/* ************************************************************* */
+// Undo manager handling
+window.undoManagers = {};
+
+/* 
+	Format will be as follows:
+	{
+		'workspace1': {
+			'filename1.sv': UndoManager(),
+			'filename2.sv': UndoManager(),
+			'filename3.sv': UndoManager(),
+			'filename4.sv': UndoManager()
+		},
+		'workspace2': {
+			'filename4.sv': UndoManager(),
+			'filename5.sv': UndoManager(),
+			'filename6.sv': UndoManager(),
+			'filename7.sv': UndoManager()
+		}, ...
+	}
+
+	No need to save this to localStorage, avoiding circular 
+	object error in JSON.stringify.
+*/
+
+/* ************************************************************* */
+
+function showFullscreen(elem) {
+	if (elem.requestFullscreen) {
+		elem.requestFullscreen();
+	} else if (elem.webkitRequestFullscreen) {
+		elem.webkitRequestFullscreen();
+	} else if (elem.msRequestFullscreen) {
+		elem.msRequestFullscreen();
+	}
+}
+function hideFullscreen(elem) {
+	if (elem.exitFullscreen) {
+		elem.exitFullscreen();
+	} else if (elem.webkitExitFullscreen) {
+		elem.webkitExitFullscreen();
+	} else if (elem.msExitFullscreen) {
+		elem.msExitFullscreen();
+	}
+}
+
+function focusMode() {
+	var elem = document.querySelector("#simview");
+	if (window.focusModeState) {
+		hideFullscreen(elem);
+	} else if (elem.requestFullscreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen) {
+		showFullscreen(elem);
+	} else {
+		alert ("Sorry, it doesn't look like your browser supports this feature.  Contact course staff or use another browser.");
+	}
+}
+
+document.addEventListener("fullscreenchange", function() {
+	if (window.focusModeState) {
+		window.focusModeState = false;
+	} else {
+		window.focusModeState = true;
+	}
+}); 
 
 var EDITOR_DARK_THEME = "ace/theme/chaos"; // localStorage.ace_dark_theme
 var EDITOR_LIGHT_THEME = "ace/theme/chrome"; // localStorage.ace_light_theme
@@ -287,7 +352,7 @@ var opacityChange;
 
 CURRENT_STATUS = ["STATUS_READY", "Status: Ready"]
 
-String.prototype.replaceAll = function(search, replacement) {
+String.prototype.replaceAll = function (search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, "g"), replacement);
 };
@@ -327,16 +392,15 @@ if (localStorage.codeAutocomplete == "true") {
 button = document.getElementsByClassName("btn-info")[0]
 button.isMouseOver = false
 
-
 // a-f, w-z, 0-9, ctrl, alt, shift
 curmap = {}
 bakmap = {}
 
-$(document).bind("keydown", "ctrl+o", function(e) {
-    if (e.ctrlKey && e.which == 79) {
-        e.preventDefault();
-        openWorkspaceManager('open')
-    }
+$(document).bind("keydown", "ctrl+o", function (e) {
+	if (e.ctrlKey && e.which == 79) {
+		e.preventDefault();
+		openWorkspaceManager('open')
+	}
 });
 
 function updateKeys(e) {
@@ -411,9 +475,9 @@ function populateKeystate(e) {
 }
 
 onkeyup = onkeydown =
-    function(e) {
-        setTimeout(function() { populateKeystate(e) }, 1)
-    };
+	function (e) {
+		setTimeout(function () { populateKeystate(e) }, 1)
+	};
 
 function togglePassword() {
     if (document.getElementById("passwd").type == "password") {
@@ -558,14 +622,14 @@ function setOutputs(json_out) {
         }
 
         if ((parseInt(json_out["LFTRED"]) & Math.pow(2, i)) > 0)
-            lftred[i].setAttribute("fill", LIT_RED) // LIT_RED = "#f00"
-        else
-            lftred[i].setAttribute("fill", BLANK_RED) // BLANK_RED = "#300"
+			lftred[i].setAttribute("fill", LIT_RED)	// LIT_RED = "#f00"
+		else
+			lftred[i].setAttribute("fill", BLANK_RED)	// BLANK_RED = "#300"
 
-        if ((parseInt(json_out["RGTRED"]) & Math.pow(2, i)) > 0)
-            rgtred[i].setAttribute("fill", LIT_RED) // LIT_RED = "#f00"
-        else
-            rgtred[i].setAttribute("fill", BLANK_RED) // BLANK_RED = "#300"
+		if ((parseInt(json_out["RGTRED"]) & Math.pow(2, i)) > 0)
+			rgtred[i].setAttribute("fill", LIT_RED)	// LIT_RED = "#f00"
+		else
+			rgtred[i].setAttribute("fill", BLANK_RED)	// BLANK_RED = "#300"
     }
 
     color = "#"
@@ -621,9 +685,6 @@ function ice40hx8k_handler(demo=false) {
             "If you really did type it out, and you're still seeing this message, " +
             "contact the head TA.");
         return;
-        // alert ("We found special characters in your code that indicate you copied it.  Considering that there is quite a lot of provided code, " + 
-        // 	   "we will permit it for Lab 13.  These characters will be automatically removed from your code before it is sent for simulation.")
-        // editor.setValue (editor.getValue().replace (/’/g, "'"))
     }
     if (!demo && editor.session.getValue().match(/\/\/ ?module top|(\/\* ?\n?)module top/)) {
         alert("It seems like you have commented out or removed the top module. Your code will not compile!")
@@ -651,25 +712,26 @@ function ice40hx8k_handler(demo=false) {
     }
     ws = new WebSocket(window.location.protocol.replace("http", "ws") + window.location.host + "/")
     ws.demoMode = demo;
-    ws.currentWorkspace = window.active_tab.getAttribute('workspace')
-    Array.from($('.editor-tab')).forEach(e => e.removeAttribute('errors'))
+    ws.currentWorkspace = window.active_tab.getAttribute('workspace');
+    Array.from($('.editor-tab')).forEach(e => e.removeAttribute('errors'));
 
     update_status("CONNECTING", "Status: Connecting...")
     var messages = ""
     var synthesis_interval = ""
     ws.onmessage = function(event) {
         if (event.data.includes("Processing Verilog code...")) {
-            update_status("SYNTHESIS", "Status: Synthesizing...")
+            var msg = document.documentElement.getAttribute('simulation-type') == 'mapped' ? "Synthesizing" : "Compiling";
+			update_status("SYNTHESIS", `Status: ${msg}...`)
             messages = event.data + "\n"
-            synthesis_interval = setInterval(function() {
-                if (document.getElementById("status-text").innerHTML == "Status: Synthesizing...")
-                    update_status("SYNTHESIS", "Status: Synthesizing..")
-                else if (document.getElementById("status-text").innerHTML == "Status: Synthesizing..")
-                    update_status("SYNTHESIS", "Status: Synthesizing.")
-                else if (document.getElementById("status-text").innerHTML == "Status: Synthesizing.")
-                    update_status("SYNTHESIS", "Status: Synthesizing")
-                else if (document.getElementById("status-text").innerHTML == "Status: Synthesizing")
-                    update_status("SYNTHESIS", "Status: Synthesizing...")
+            synthesis_interval = setInterval(function () {
+				if (document.getElementById("status-text").innerHTML == `Status: ${msg}...`)
+					update_status("SYNTHESIS", `Status: ${msg}..`)
+				else if (document.getElementById("status-text").innerHTML == `Status: ${msg}..`)
+					update_status("SYNTHESIS", `Status: ${msg}.`)
+				else if (document.getElementById("status-text").innerHTML == `Status: ${msg}.`)
+					update_status("SYNTHESIS", `Status: ${msg}`)
+				else if (document.getElementById("status-text").innerHTML == `Status: ${msg}`)
+					update_status("SYNTHESIS", `Status: ${msg}...`)
             }, 500)
         } else if (event.data.includes("Simulation successfully started!") || (event.data.includes("warning") && !event.data.includes("Error"))) {
             if (window.localStorage.autoTerminalSwitch == "true" && $('#terminal').css('display') == 'none') {
@@ -695,20 +757,27 @@ function ice40hx8k_handler(demo=false) {
             else {
                 update_status("SIM_RUNNING", "Status: Simulation is running")
             }
-        } else if (event.data.includes("Error occurred in")) {
-            alert(event.data);
-            update_status("CODE_ERROR", "Status: Simulation error")
-            this.pending = setTimeout(function() { update_status("STATUS_READY", "Status: Ready") }, 1000);
-            return;
         } else if (event.data.includes("Error") || event.data.includes("failed")) {
             clearInterval(synthesis_interval)
             clearEditorErrors()
             errors = []
             messages = event.data.split("\n")
-            console.log(messages)
+            console.log(messages);
             var endoflog = false
             for (var elm in messages) {
-                if (messages[elm].match(/^[\w]+\.sv: Line/)) {
+                if (event.data.startsWith("Error occurred in Icarus compile step") && /.sv:[0-9]+: .+/.test(messages[elm])) {
+					var matches = messages[elm].match(/\/([^\/]+\.sv):([0-9]+): (.+)/);
+					[filename, num, msg] = [matches[1], parseInt(matches[2]), matches[3]];
+					errors.push({
+						file: filename,
+						workspace: ws.currentWorkspace,
+						row: (num - 1).toString(),
+						column: 0,
+						text: msg,
+						type: "error"
+					});
+				}
+				else if (messages[elm].match(/^[\w]+\.sv: Line/)) {
                     var data = messages[elm].replace("Line ", "").replace(/\:/g, "").split(" ")
                     var filename = data[0]
                     var num = parseInt(data[1])
@@ -758,17 +827,18 @@ function ice40hx8k_handler(demo=false) {
         } else if (event.data.includes("Unauthorized WebSocket")) {
             update_status("CODE_ERROR", "Status: Unauthorized simulation")
                 // alert("Your simulator session has either expired, or not been started.  Refresh the page.");
-            alert("Your simulator session has either expired, or not been started.  THIS IS NEW - READ THIS!  We'll now open a new tab to let you log in again without having to refresh this page.  " +
-                "(Borrowed this idea from Brightspace.  It's one of the (few) good things they do).");
-            window.open("https://verilog.ecn.purdue.edu/portal?return", "_blank", "toolbar=yes,top=500,left=500,width=600,height=800");
-            window.rerunSimulation = setInterval(async() => {
-                var resp = await fetch('/');
-                if (!resp.redirected) {
-                    clearInterval(window.rerunSimulation);
-                    delete window.rerunSimulation;
-                    ice40hx8k_handler();
-                }
-            }, 500);
+            alert("Your simulator session has either expired, or not been started.  We'll open a new tab to let you log in again without having to refresh this page.  " +
+				"(Borrowed this idea from Brightspace.  It's one of the (few) good things they do).");
+			window.open("https://verilog.ecn.purdue.edu/portal?return", "_blank", "toolbar=yes,top=500,left=500,width=600,height=800");
+			window.rerunSimulation = setInterval(async () => {
+				var resp = await fetch('/', {cache: 'no-store'});
+				console.log("resp", resp);
+				if (!resp.redirected) {
+					clearInterval(window.rerunSimulation);
+					delete window.rerunSimulation;
+					ice40hx8k_handler();
+				}
+			}, 1000);
         } else {
             try {
                 if ("LFTRED" in JSON.parse(event.data)) {
@@ -866,7 +936,7 @@ function ice40hx8k_handler(demo=false) {
 function load_template(e) {
     $.get({ url: "/assets/" + template_code, cache: false }, function(data) {
         window.localStorage.original_code = data
-        editor.setValue(window.localStorage.original_code, -1);
+        editor.setValue(window.localStorage.original_code);
         editor.session.setMode("ace/mode/verilog")
     });
 }
@@ -908,8 +978,8 @@ function display_info(sect) {
             setTimeout(() => { if (document.querySelector('#nevergonnagiveyouup')) document.querySelector('#nevergonnagiveyouup').style['color'] = ''; }, 1000)
             break;
         case 3:
-            p_elm.innerHTML = "The simulator couldn't have been made possible without the guidance and support of my fellow UTAs, GTAs, my overly critical friends in ECE, numerous posts on StackOverflow, Reddit, Mozilla \
-    Web Docs and, of course - Rick."
+            p_elm.innerHTML = "The simulator couldn't have been made possible without my fellow UTAs, GTAs, my overly critical friends in ECE, students and their invaluable feedback, numerous posts on StackOverflow, Reddit, \
+            Mozilla Web Docs and, of course - Rick."
             break;
         case 4:
             p_elm.innerHTML = "We analyze what students do on the site, \
@@ -1110,7 +1180,7 @@ function codescroll(event) {
 function selectTabByEvent(event) {
     if (event.target.classList.contains('tab-close') || event.target.classList.contains('wksp-tab-close') || event.target.id == "editor-tab-add" || $(event.target).nodeName == "PATH")
         return
-    else if ($(event.target).prop('tagName') != "LABEL" && $(event.target).css('background') != 'var(--etw-bg-selected)') {
+        else if ($(event.target).prop('tagName') != "LABEL" && $(event.target).classList.includes('editor-tab-selected')) {
         selectTabByElement(event.target)
     }
 }
@@ -1197,22 +1267,22 @@ function tutorialButtonAction(button) {
 function tutorialAction(action) {
     localStorage.tutorialTaken = 'true';
     
-    if(!window.tutorialStep && action != 'stop') {
-        // starting tutorial now
-        window.tutorialStep = 0;
+    if (!window.tutorialStep && !['stop', 'aska'].includes(action)) {
+		// starting tutorial now
+		window.tutorialStep = 0;
 
-        tutorial_button_functions[0] = (()=>{tutorialAction("prev")})
-        $('.btn-tutorial')[0].innerHTML = "Back"
-        $('.btn-tutorial')[0].title = "Need to revisit something?  Go back a page!"
-        $('.btn-tutorial')[1].innerHTML = "Stop"
-        $('.btn-tutorial')[1].title = "Tired of going through all this information?  Stop now and return when you can!"
-        tutorial_button_functions[2] = (()=>{tutorialAction("next")})
-        $('.btn-tutorial')[2].innerHTML = "Next"
-        $('.btn-tutorial')[2].title = "All good?  Keep going!"
-        
-        $('.tutorial_actions').css ('flex-direction', 'row');
-        $('.tutorial_actions').css ('justify-content', 'space-evenly');
-        $('.btn-tutorial').css ('width', '10vw');
+		tutorial_button_functions[0] = (() => { tutorialAction("prev") })
+		$('.btn-tutorial')[0].innerHTML = "Back"
+		$('.btn-tutorial')[0].title = "Need to revisit something?  Go back a page!"
+		$('.btn-tutorial')[1].innerHTML = "Stop"
+		$('.btn-tutorial')[1].title = "Tired of going through all this information?  Stop now and return when you can!"
+		tutorial_button_functions[2] = (() => { tutorialAction("next") })
+		$('.btn-tutorial')[2].innerHTML = "Next"
+		$('.btn-tutorial')[2].title = "All good?  Keep going!"
+
+		$('.tutorial_actions').css('flex-direction', 'row');
+		$('.tutorial_actions').css('justify-content', 'space-evenly');
+		$('.btn-tutorial').css('width', '10vw');
         $('.btn-tutorial').blur();  // allowing Left/Right arrow movement
     }
 
@@ -1253,7 +1323,7 @@ function tutorialAction(action) {
         window.tutorialFlashInterval = setInterval(() => {
             window.attElm.style.opacity = window.attElm.style.opacity == '1' ? '0' : '1'
         }, 250);
-        window.attElm.addEventListener ('mousedown', () => {
+        window.attElm.addEventListener('mousedown', () => {
             window.attElm.style.opacity = '1';
             clearInterval(window.tutorialFlashInterval);
             delete window.tutorialFlashInterval;
@@ -1402,15 +1472,15 @@ function openTabsFromStorage() {
 }
 
 function openFileFromStorage(f, ws, force) {
-    if (!force && f.state == 'closed') return
+    if (!force && f.state == 'closed') return;
     if (f.name.endsWith('.v')) {
-        f.name = f.name.replace(/\.v/g, '.sv')
+        f.name = f.name.replace(/\.v/g, '.sv');
     }
-    f.workspace = ws
-    var sess = new EditSession(f.code)
-    editor_tab_list[f.workspace][f.name] = sess
-    delete f.code
-    addTab(f)
+    f.workspace = ws;
+    var sess = new EditSession(f.code);
+    editor_tab_list[f.workspace][f.name] = sess;
+    delete f.code;
+    addTab(f);
 }
 
 // added spring 2021 for archival reasons
@@ -1524,9 +1594,9 @@ function getWkspSettings(wksp, all = getGlobalWkspSettings()) {
     }
 }
 
-function setWkspSettings(wksp, val, all = JSON.parse(localStorage['workspace_settings'])) {
-    all[wksp] = val;
-    localStorage['workspace_settings'] = JSON.stringify(all);
+function setWkspSettings(wksp, val, all=JSON.parse(localStorage['workspace_settings'])) {
+	all[wksp] = val;
+	localStorage['workspace_settings'] = JSON.stringify(all);
 }
 
 // first-time load, check in on support modules
@@ -1537,7 +1607,7 @@ $.get({
         window.supportModules = response;
         try {
             var fs = getFilesystem();
-        } catch (err) {
+        } catch(err) {
             var fs = {};
         }
         if (Object.keys(fs).length > 0) {
@@ -1605,7 +1675,7 @@ function toggleWorkspaceSettings(event, tgl) {
 
 function selectWorkspaceByElement(elm, force) {
     // don't accidentally select the workspace-add button if this is somehow called
-    if (elm.id == 'editor-tab-workspace-add') return
+    if (elm.id == 'editor-tab-workspace-add') return;
         // tell everyone that workspace has changed
     window.active_workspace = $('.editor-tab-workspace').filter((i, e) => e.style.background).attr('name');
     // add settings icon for this workspace:
@@ -1622,59 +1692,87 @@ function selectWorkspaceByElement(elm, force) {
         // open workspace tabs
     return new Promise((resolve, reject) => {
         browserOpenWorkspace(elm.getAttribute('name'), force).then(res => {
-            resolve(true)
+            resolve(true);
         }).catch(err => {
-            reject(err)
-        })
-    })
+            reject(err);
+        });
+    });
 }
 
 function selectTabByElement(elm) {
-    // save last tab hopefully?
-    if (window.active_tab && $(window.active_tab).attr('workspace') in editor_tab_list && editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')]) {
-        editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].setValue(editor.session.getValue())
-    }
+	// save last tab hopefully?
+	if (window.active_tab && $(window.active_tab).attr('workspace') in editor_tab_list && editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')]) {
+		// save tab undo/redo history
+		var historyStack = [JSON.stringify(editor.getSession().getUndoManager().$undoStack), JSON.stringify(editor.getSession().getUndoManager().$redoStack)];
+		window.undoManagers[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].historyStack = historyStack;
+		// save tab cursor position
+		window.undoManagers[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].cursorPos = editor.getCursorPosition();
+		editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].setValue(editor.session.getValue());
+	}
+	// clears background attr from all tabs
+	$('.editor-tab').removeClass('editor-tab-selected');
+	elm.classList.add('editor-tab-selected');
 
-    $('.editor-tab').css('background', '')
-    $(elm).css('background', 'var(--etw-bg-selected)')
+	window.active_tab = elm;
 
-    window.active_tab = elm
+	// set ace editor mode based on file extension
+	if (elm.getAttribute('name').endsWith('.mem')) {
+		editor.session.setMode("ace/mode/text");
+	} else if (elm.getAttribute('name').endsWith('.json')) {
+		editor.session.setMode("ace/mode/json");
+	} else {
+		editor.session.setMode("ace/mode/verilog");
+	}
+	
+	// make sure undomanager for tab exists before setting it, otherwise create a new one
+	// it is CRUCIAL that this happen before code is changed - otherwise the actual code swap will be saved in the UndoManager
+	if (!($(elm).attr('workspace') in window.undoManagers)) {
+		window.undoManagers[$(elm).attr('workspace')] = {};
+	}
+	if (!($(elm).attr('name') in window.undoManagers[$(elm).attr('workspace')])) {
+		window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')] = {'historyStack': ["[]", "[]"], 'cursorPos': {'row': 0, 'column': 0}};
+	}
 
-    // set ace editor mode based on file extension
-    if (elm.getAttribute('name').endsWith('.mem')) {
-        editor.session.setMode("ace/mode/text")
-    } else if (elm.getAttribute('name').endsWith('.json')) {
-        editor.session.setMode("ace/mode/json")
-    } else {
-        editor.session.setMode("ace/mode/verilog")
-    }
+	// if tab exists, find its code and load it
+	if ($(elm).attr('workspace') in editor_tab_list && editor_tab_list[$(elm).attr('workspace')][$(elm).attr('name')]) {
+		var code = (editor_tab_list[$(elm).attr('workspace')][$(elm).attr('name')]).getValue();
+		var cursorPos = window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')].cursorPos;
+		editor.getSession().setValue(code);
+		editor.moveCursorToPosition(cursorPos);
+		// otherwise load the template code
+	} else {
+		editor.getSession().setValue(window.localStorage.original_code, -1);
+	}
+	
+	// once value is set, NOW bring back the undo/redo history
+	var undo_mgr = editor.getSession().getUndoManager();
+	undo_mgr.$undoStack = JSON.parse(window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')].historyStack[0]);
+	undo_mgr.$redoStack = JSON.parse(window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')].historyStack[1]);
+	editor.getSession().setUndoManager(undo_mgr);
+	
+	// set up errors for tab
+	if (elm.getAttribute('errors') != null) {
+		$(elm).css('border', '')
+		clearEditorErrors()
+		JSON.parse(elm.getAttribute("errors")).forEach(n => {
+			var num = parseInt(n)
+			error_id.push(editor.session.addMarker(new Range(num - 1, 0, num - 1, 1), localStorage.ice40DarkMode == "true" ? "ace-line-error-dark" : "ace-line-error-light", "fullLine"))
+		})
+		editor.getSession().setAnnotations(
+			errors.filter(e => e.file == elm.getAttribute('name') && e.workspace == elm.getAttribute('workspace'))
+		)
+	}
 
-    if ($(elm).attr('workspace') in editor_tab_list && editor_tab_list[$(elm).attr('workspace')][$(elm).attr('name')]) {
-        editor.setValue((editor_tab_list[$(elm).attr('workspace')][$(elm).attr('name')]).getValue(), -1)
-    } else {
-        editor.setValue(window.localStorage.original_code, -1)
-    }
-
-    // set up errors for tab
-    if (elm.getAttribute('errors') != null) {
-        $(elm).css('border', '')
-        clearEditorErrors()
-        JSON.parse(elm.getAttribute("errors")).forEach(n => {
-            var num = parseInt(n)
-            error_id.push(editor.session.addMarker(new Range(num - 1, 0, num - 1, 1), localStorage.ice40DarkMode == "true" ? "ace-line-error-dark" : "ace-line-error-light", "fullLine"))
-        })
-        editor.getSession().setAnnotations(
-            errors.filter(e => e.file == elm.getAttribute('name') && e.workspace == elm.getAttribute('workspace'))
-        )
-    }
+	// finally, make sure the cursor is active (setValue removes focus)
+	editor.focus();
 }
 
 function selectTabByEvent(event) {
-    if (event.target.classList.contains('tab-close') || event.target.classList.contains('wksp-tab-close') || event.target.id == "editor-tab-add" || $(event.target).nodeName == "PATH")
-        return
-    else if ($(event.target).prop('tagName') != "LABEL" && $(event.target).css('background') != 'var(--etw-bg-selected)') {
-        selectTabByElement(event.target)
-    }
+	if (event.target.classList.contains('tab-close') || event.target.classList.contains('wksp-tab-close') || event.target.id == "editor-tab-add" || $(event.target).nodeName == "PATH")
+		return
+	else if ($(event.target).prop('tagName') != "LABEL" && !$(event.target).classList.includes('editor-tab-selected')) {
+		selectTabByElement(event.target)
+	}
 }
 
 function addTab(tabdata) {

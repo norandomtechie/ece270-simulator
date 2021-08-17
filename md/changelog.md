@@ -1,5 +1,12 @@
 # Changelog
+### This is a very badly written document.  Don't take anything you see here too seriously - it's mostly a personal log keeping track of major changes to the simulator.  For a (slightly outdated but) formalized documentation of features, contact the author.
 ### Keep in mind that not all features indicated here are relevant.  Future updates may have removed such features and they may not have been logged.  
+### 2/14/2021
+- Lab 4, the first SystemVerilog lab, starts this week for ECE 270.  
+- Please read the next note on how to install the simulator locally, if you're into that sort of thing, and you'd like to be able to have access to simulation software when offline.  If you do end up using a Docker container/localized version of the simulator, please let course staff know so we're aware and we can notify you when bug fixes have been pushed.
+### 1/1/2021
+- Happy (?) New Year!  It was a tough semester, and we need to be prepared for the next one.  
+- The updated simulator, including workspace management, bug fixes and editor updates, as of Fall 2020, has been pushed to a [GitHub repository](https://github.com/norandomtechie/ece270-simulator).  It's also now available as a Docker container!  Setting it up is as simple as downloading and running the container, and navigating to localhost:4500/ in your browser (as explained in the link).  
 ### 7/24/2020
 - Let's talk DDOSing.  In 2020, we saw a 542% increase in the number of DDOS attacks worldwide due to the pandemic.  The importance of implementing protections is therefore at an all-time high, and since we don't have the resources to build a huge worldwide CDN network to absorb DDOS attacks, we're going to go with simple rate-limiting.  
 - Primarily, we don't want attacks to slow down the server for everyone, so from today onwards, all requests to the server are rate-limited - you can't access most public resources more than 200 times per hour (like just visiting the login page), protected resources more than 100 times per hour (if you're logged in and visiting the page) while simulations will remain unlimited since there is evidence that students will simulate well over 200 times per hour in peak periods, so there's no getting around that.  It won't completely stop an attack, but it will definitely slow one down.  

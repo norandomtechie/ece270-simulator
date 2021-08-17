@@ -14,11 +14,8 @@
     <link rel="stylesheet" href="assets/css/xterm.css">
     <link rel="stylesheet" href="assets/fontawesome/css/all.css">
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <!-- <link href="assets/convergence/css/ace-converge-wrap.css" rel="stylesheet">
-  <link href="assets/convergence/css/ace-collab-ext.css" rel="stylesheet"> -->
     <style>
         /* latin */
-
         @font-face {
             font-family: 'Courier';
             font-style: normal;
@@ -44,17 +41,6 @@
 </head>
 
 <body onresize="resizeHandler()">
-    <!-- <div class="findall" style="width: 400px; height: 500px; position: absolute; top: 25vh; left: 25vw; z-index: 100; display: none; opacity: 0; transition: opacity 0.3s ease 0s; background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%; border: 2px solid var(--display-4-color); border-radius: 5px;">
-    <div class="findalltop" style="width:100%; height: 2.5%; background: #fff"></div>
-    <div class="findallbkgd" style="width:100%;height:95%;filter: blur(10px); z-index: 99; background: rgba(255, 255, 255, 0.65);"></div>
-    <div class="findallbody" style="width:100%;height:95%;filter: blur(0px); position: absolute; top: 2.5%; left: 0; z-index: 101; background: transparent; display: flex; align-items: center; padding-top: 20px; justify-content: flex-start; flex-direction: column; overflow-x: hidden; overflow-y: scroll">
-      <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; width: 95%;height: 10%;">
-        <i class="fa fa-search" aria-hidden="true" style="margin-right: 15px;font-size: calc(1vw + 1vh);"></i>
-        <input id="findallsearch" style="width: 85%;font-family: Open Sans;background: transparent;border: 1px solid #888;border-radius: 5px;padding-left: 10px;height: 100%;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" placeholder="Enter a search string...">
-      </div>
-      <p id="findallstatus" style="font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;width: 90%;margin-top: 15px;margin-bottom: 5px;">Enter at least three characters.</p>
-    </div>
-  </div> -->
     <div class="overlay" id="tutorial">
         <p>Welcome to the ECE 270 simulator! This simulator was initially created as a personal project but has since
             turned into an extremely useful tool for ECE 270 students wishing to avoid late nights in lab working on the
@@ -103,9 +89,7 @@
                         onclick="javascript:openSettings()"></i>
                     <i class="fal fa-terminal top-icon" title="Manage virtual FPGA terminal settings"
                         onclick="javascript:openUART()"></i>
-                    <!-- <i class="fal fa-podcast top-icon" title="Share editor with course staff" onclick="javascript:toggleLiveSessionPanel()"></i> -->
-                    <!-- <a style="margin-left: 10px; text-decoration: none; color: black" target="_blank" href="/help"></a> -->
-                    <i class="fal fa-laptop-code top-icon" title="Learn how to use the simulator"
+                    <i class="fal fa-laptop-code top-icon" title="Learn how to use the simulator" 
                         onclick="javascript:toggleTutorial(0)"></i>
                     <i class="fal fa-question-circle top-icon" title="Opens simulator handbook in new tab"
                         onclick="window.open ('/help', '_blank')"></i>
@@ -161,14 +145,14 @@
                     xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <filter id="svg_127_blur" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="0" />
+                          <feGaussianBlur stdDeviation="0"/>
                         </filter>
                     </defs>
                     <g>
-                        <rect x="-1" y="-1" width="610" height="702" id="canvas_background" fill="#17183f" />
+                        <rect x="-1" y="-1" width="610" height="702" id="canvas_background" fill="#17183f"/>
                         <g id="canvasGrid" display="none">
                             <rect id="svg_2" width="100%" height="100%" x="0" y="0" stroke-width="0"
-                                fill="url(#gridpattern)" />
+                                fill="url(#gridpattern)"/>
                         </g>
                     </g>
                     <rect fill="#111" stroke-width="1.5" x="29.136" y="32.413" width="64.193" height="123.425"
@@ -666,7 +650,7 @@
                             style="cursor: pointer; white-space: pre;">3</text>
                     </g>
                 </svg>
-                <div class="col align-self-center">
+                <div class="col align-self-center" id="btnarray">
                     <div class="row btn-row">
                         <button class="btn btn-info btn-bevel btn-filter" id="btn-load" type="button"
                             onclick="javascript:load_template(event)">Load Template</button>
@@ -675,7 +659,7 @@
                     </div>
                     <div class="row btn-row">
                         <button class="btn btn-dark btn-bevel btn-filter" type="button"
-                            onclick="javascript:demo_handler()">Demo</button>
+                            onclick="javascript:ice40hx8k_handler(demo=true)">Demo</button>
                         <button class="btn btn-warning btn-bevel btn-filter" type="button"
                             onclick="javascript:stop_handler()">Freeze</button>
                         <button class="btn btn-danger btn-bevel btn-filter" type="button"
@@ -693,7 +677,7 @@
                 <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
                     <div id="editor-tab-workspace-header">
                         <div class="editor-tab-workspace" id="editor-tab-workspace-add"><label
-                                class="tab-label-workspace" id="wksp-tab-add">+</label></div>
+                          class="tab-label-workspace" id="wksp-tab-add">+</label></div>
                     </div>
                     <div id="editor-tab-header">
                         <div class="editor-tab" id="editor-tab-add"><label class="tab-label" id="tab-add">+</label>
@@ -768,9 +752,9 @@
                     onclick="javascript:closeWorkspaceManager()">
                     <svg viewBox="0 0 512 512" style="color: white">
                         <path id="close1" style="fill: #888"
-                            d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z" />
+                            d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
                         <path id="close2" style="fill: #888"
-                            d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z" />
+                            d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
                     </svg>
                 </div>
             </div>
@@ -794,9 +778,9 @@
                         onclick="javascript:browserToggleNewDirfile(1)">
                         <svg viewBox="0 0 512 512" style="color: white">
                             <path id="close1" style="fill: #888"
-                                d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z" />
+                                d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
                             <path id="close2" style="fill: #888"
-                                d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z" />
+                                d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
                         </svg>
                     </div>
                 </div>
@@ -823,7 +807,7 @@
                             style="width: 7%; height: 3.3vh; margin-left: -7%; background: transparent; color: var(--display-4-color); border:0; border-left: 1px solid var(--display-4-color); display: flex; align-items: center; justify-content: center; border-radius: 0 6px 6px 0;"
                             onclick="browserEventAddFile()">
                             <i class="fa fa-paper-plane"
-                                style="color: var(--display-4-color); font-size: calc(0.25vw + 0.5vh)"></i>
+                              style="color: var(--display-4-color); font-size: calc(0.25vw + 0.5vh)"></i>
                         </button>
                     </div>
                 </div>
@@ -838,30 +822,28 @@
                     onclick="javascript:closeOverlay(); closeSettings()">
                     <svg viewBox="0 0 512 512" style="color: white">
                         <path id="close1" style="fill: #888"
-                            d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z" />
+                            d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
                         <path id="close2" style="fill: #888"
-                            d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z" />
+                            d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
                     </svg>
                 </div>
             </div>
             <div style="width: 100%;">
                 <h4 class="display-4 text-muted" style="float: left; font-size: 2vh; margin-top: 10px">Dark Mode</h4>
                 <div style="float: right; width: 3.125vw; cursor: pointer">
-                    <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
+                    <svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
                         <g>
-                            <rect x="-1" y="-1" width="62" height="42" id="canvas_background_2" fill="#fff" />
                             <g id="canvasGrid" display="none">
                                 <rect id="svg_1" width="100%" height="100%" x="0" y="0" stroke-width="0"
-                                    fill="url(#gridpattern)" />
+                                    fill="url(#gridpattern)"/>
                             </g>
                         </g>
                         <g>
-                            <rect onclick="javascript:toggleDarkMode()" id="settingsButtonOuter" fill="#fff"
-                                stroke-width="0.5" x="2.35782" y="3.97817" width="55.22964" height="31.60169" id="svg_2"
-                                rx="19" stroke="#000" />
-                            <ellipse onclick="javascript:toggleDarkMode()" id="settingsButtonInner" fill="#444"
-                                stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636"
-                                id="svg_3" rx="12" ry="12.33765" stroke="#000" />
+                            <rect onclick="javascript:toggleDarkMode()" id="settingsButtonOuter" fill="#fff" stroke-width="0.5"
+                              x="2.35782" y="3.97817" width="55.22964" height="31.60169" id="svg_2" rx="19" stroke="#000"/>
+                            <ellipse onclick="javascript:toggleDarkMode()" id="settingsButtonInner" fill="#444" stroke-width="0.5"
+                              stroke-opacity="null" fill-opacity="null" cx="19" cy="19.64636" id="svg_3" rx="12" ry="12.33765"
+                              stroke="#000"/>
                             <!-- <rect fill="#0aada5" stroke-width="0.5" x="23.64628" y="52.76076" width="55.22964" height="31.60169" id="svg_6" rx="19" stroke="#000"/>
               <ellipse fill="#eee" stroke-width="0.5" stroke-opacity="null" fill-opacity="null" cx="64.53441" cy="68.42894" id="svg_7" rx="12" ry="12.33765" stroke="#000"/> -->
                         </g>
@@ -873,7 +855,7 @@
                     <h4 class="display-4 text-muted" style="font-size: 2vh;">Simulate-upon-Save</h4>
                     <div
                         style="width: 3.125vw; margin-top: auto; margin-bottom: auto; float: right; cursor: pointer; height: 100%">
-                        <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
+                        <svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
                             <g>
                                 <rect x="-1" y="-1" width="62" height="42" id="canvas_background_3" fill="#fff" />
                                 <g id="canvasGrid" display="none">
@@ -901,7 +883,7 @@
                 <div style="max-width: 100%; height: 5vh; float: right">
                     <div
                         style="width: 3.125vw; margin-top: auto; margin-bottom: auto; float: right; cursor: pointer; height: 100%">
-                        <svg id="ice40HX8K" preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
+                        <svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 60 40">
                             <g>
                                 <rect x="-1" y="-1" width="62" height="42" id="canvas_background_3" fill="#fff" />
                                 <g id="canvasGrid" display="none">
@@ -928,7 +910,7 @@
             <div style="width: 100%; height: 6vh; float: left; margin-top: 0.5vh; margin-bottom: 5px;">
                 <h4 class="display-4 text-muted" style="float: left; font-size: 2vh;">Change Evaluation Board <a
                         style="cursor: pointer; text-decoration: none;"
-                        onclick="alert('Great find!  Ask Niraj how to set custom colors on the FPGA if you\'d like them.');">Theme</a>
+                        onclick="alert('Great find!  Ask Niraj how to set custom colors on the FPGA if you\'d like them. :)');">Theme</a>
                 </h4>
                 <div style="max-width: 100%; height: 5vh; float: right">
                     <select id="evalthemeselector"
@@ -954,9 +936,9 @@
                 <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:closeUART()">
                     <svg viewBox="0 0 512 512" style="color: white">
                         <path id="close1" style="fill: #888"
-                            d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z" />
+                            d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
                         <path id="close2" style="fill: #888"
-                            d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z" />
+                            d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
                     </svg>
                 </div>
             </div>
@@ -1010,9 +992,9 @@
                 <div style="width: 1.5vw; float: right; cursor: pointer" onclick="javascript:toggleProfile()">
                     <svg viewBox="0 0 512 512" style="color: white">
                         <path id="close1" style="fill: #888"
-                            d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z" />
+                            d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
                         <path id="close2" style="fill: #888"
-                            d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z" />
+                            d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
                     </svg>
                 </div>
             </div>
@@ -1047,7 +1029,7 @@
             <h4 class="display-4 text-muted profile_data" id="profile_json"
                 style="text-align: center; font-size: 1.75vh;">To get the full details of all the errors you have made
                 on the simulator, <a style="cursor: pointer; color: lightskyblue;" onclick="downloadJSON()">click here
-                    to download the raw JSON data.</a></h4>
+                to download the raw JSON data.</a></h4>
             <h4 class="display-4 text-muted profile_data" id="storage_zip"
                 style="text-align: center; font-size: 1.75vh;">To get a ZIP file of all your work, <a
                     style="cursor: pointer; color: lightskyblue;" onclick="zipStorage()">click here.</a></h4>
@@ -1055,16 +1037,15 @@
     </div>
     <div class="overlay align-items-center justify-content-center" id="overlay_6">
         <div class="inner_overlay" style="width: 50%; height: 80%; padding: 2vh 2vw 2vh 2vw">
-            <div
-                style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85%">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85%">
                 <div style="display: flex; flex-direction: row; justify-content: flex-end; width: 100%">
                     <div style="width: 1.5vw; float: right; cursor: pointer"
                         onclick="javascript:toggleWorkspaceSettings(event, false)">
                         <svg viewBox="0 0 512 512" style="color: white">
                             <path id="close1" style="fill: #888"
-                                d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z" />
+                                d="M256 90c44.3 0 86 17.3 117.4 48.6C404.7 170 422 211.7 422 256s-17.3 86-48.6 117.4C342 404.7 300.3 422 256 422s-86-17.3-117.4-48.6C107.3 342 90 300.3 90 256s17.3-86 48.6-117.4C170 107.3 211.7 90 256 90m0-42C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"/>
                             <path id="close2" style="fill: #888"
-                                d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z" />
+                                d="M360 330.9L330.9 360 256 285.1 181.1 360 152 330.9l74.9-74.9-74.9-74.9 29.1-29.1 74.9 74.9 74.9-74.9 29.1 29.1-74.9 74.9z"/>
                         </svg>
                     </div>
                 </div>

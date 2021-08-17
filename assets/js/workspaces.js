@@ -144,40 +144,40 @@ function browserAddFile (folder, name, ctime, mtime) {
 
 function browserOpenSelectedFiledirs() {
 	Array.from ($('.browser_row_file.browser_row_selected')).forEach (fdiv => {
-		selectWorkspaceByElement ($('.editor-tab-workspace[name="' + fdiv.parentNode.querySelector ('p').innerHTML + '"]')[0], false)
-		browserOpenFile (fdiv.parentNode.querySelector ('p').innerHTML, fdiv.querySelector ('div').innerHTML, true)
+		selectWorkspaceByElement ($('.editor-tab-workspace[name="' + fdiv.parentNode.querySelector ('p').innerHTML + '"]')[0], false);
+		browserOpenFile (fdiv.parentNode.querySelector ('p').innerHTML, fdiv.querySelector ('div').innerHTML, true);
 	})
 	Array.from ($('.browser_row.browser_row_selected')).map (e => e.querySelector ('p').innerHTML).forEach (wksp => {
-		browserOpenWorkspace (wksp, true)
+		browserOpenWorkspace (wksp, true);
 	})
 }
 
 function browserOpenWorkspace (folder, force) {
-	$('.editor-tab-workspace').css ('background', '')
-	$('.editor-tab-workspace[name="' + folder + '"]:not(#editor-tab-workspace-add)').css ('background', 'var(--etw-bg-selected)')
+	$('.editor-tab-workspace').removeClass('editor-tab-workspace-selected');
+	$('.editor-tab-workspace[name="' + folder + '"]:not(#editor-tab-workspace-add)').addClass('editor-tab-workspace-selected');
 	return new Promise ((resolve, reject) => {
-		var workspace = getWorkspace (getFilesystem(), folder)
-		setCurrentWorkspace (folder)
+		var workspace = getWorkspace (getFilesystem(), folder);
+		setCurrentWorkspace (folder);
 		Promise.all (browserOpenFile (folder, workspace.map (e => e.name), force)).then (arr => {
 			Array.from ($('.editor-tab[workspace!="' + folder + '"]')).forEach (e => {
-				if (e.id == 'editor-tab-add') return
+				if (e.id == 'editor-tab-add') return;
 				var deleted = $(e);
-				var workspace = deleted.attr ('workspace')
-				var load = getWorkspace (getFilesystem(), workspace)
+				var workspace = deleted.attr ('workspace');
+				var load = getWorkspace (getFilesystem(), workspace);
 				if (deleted.attr('workspace') in editor_tab_list) {
-					delete editor_tab_list[deleted.attr('workspace')][deleted.attr('name')]
+					delete editor_tab_list[deleted.attr('workspace')][deleted.attr('name')];
 				}
 				load.forEach ((f, i) => {
 					if (deleted.attr ('name') == f.name) {
-						f.state = 'closed'
+						f.state = 'closed';
 					}
-				})
-				saveWorkspace (workspace, load)
-				deleted.remove()
+				});
+				saveWorkspace (workspace, load);
+				deleted.remove();
 			})
-			resolve (true)
+			resolve (true);
 		}).catch (err => {
-			reject (err)
+			reject (err);
 		})
 	})
 }
@@ -196,10 +196,10 @@ function browserToggleNewDirfile(opt) {
 }
 
 function getFilesystem() {
-	return JSON.parse (localStorage.filesystem)
+	return JSON.parse(localStorage.filesystem);
 }
 function saveFilesystem(fs) {
-	localStorage.filesystem = JSON.stringify (fs)
+	localStorage.filesystem = JSON.stringify (fs);
 }
 
 // expects a filesystem object and a folder string name
@@ -214,13 +214,13 @@ function saveWorkspace(name, ws) {
 }
 
 function browserDeleteSelectedFiledirs() {
-	var del_wksps = Array.from ($('.browser_row.browser_row_selected')).map (e => $(e)[0].querySelector ('p').innerHTML)
-	var wksps = Array.from ($('.browser_row_file.browser_row_selected')).map (e => $(e).parent()[0].querySelector ('p').innerHTML)
-	var names = Array.from ($('.browser_row_file.browser_row_selected')).map (e => e.querySelector ('.browser_row_col').innerHTML)
-	var num_of_default_elms = $('#browser_default > .browser_row_file').length == $('#browser_default > .browser_row_selected').length
+	var del_wksps = Array.from ($('.browser_row.browser_row_selected')).map (e => $(e)[0].querySelector ('p').innerHTML);
+	var wksps = Array.from ($('.browser_row_file.browser_row_selected')).map (e => $(e).parent()[0].querySelector ('p').innerHTML);
+	var names = Array.from ($('.browser_row_file.browser_row_selected')).map (e => e.querySelector ('.browser_row_col').innerHTML);
+	var num_of_default_elms = $('#browser_default > .browser_row_file').length == $('#browser_default > .browser_row_selected').length;
 	var all_default_files_sel = Array.from ($('#browser_default > .browser_row_file'))
-										.map (e => names.includes (e.querySelector ('.browser_row_col').innerHTML))
-										.reduce ((p, n) => { return p && n }, num_of_default_elms)
+                                     .map (e => names.includes (e.querySelector ('.browser_row_col').innerHTML))
+                                     .reduce ((p, n) => { return p && n }, num_of_default_elms);
 
 	if (del_wksps.includes ('default') || all_default_files_sel) {
 		alert ("It seems as though you are attempting to delete all the files in the 'default' workspace, which is not permitted.  At least one file must be present at all times in this workspace.  Please deselect at least one file and try again.")
@@ -231,39 +231,39 @@ function browserDeleteSelectedFiledirs() {
 	if (!check) return
 	
 	wksps.forEach ((e, i) => {
-		browserDeleteFile (e, names[i])
-		delete editor_tab_list[e][names[i]]
-		var wksp_row = $(Array.from ($('.browser_row p')).filter (r => r.innerHTML == e)[0]).parent().parent()
-		Array.from (wksp_row.find ('.browser_row_file')).filter (f => f.querySelector ('.browser_row_col').innerHTML == names[i])[0].remove()
+		browserDeleteFile (e, names[i]);
+		delete editor_tab_list[e][names[i]];
+		var wksp_row = $(Array.from ($('.browser_row p')).filter (r => r.innerHTML == e)[0]).parent().parent();
+		Array.from (wksp_row.find ('.browser_row_file')).filter (f => f.querySelector ('.browser_row_col').innerHTML == names[i])[0].remove();
 	})
 	del_wksps.forEach ((e) => {
 		if (e == 'default') {
-			alert ("You cannot delete the default workspace so that we can ensure at least one tab is open.")
-			return
+			alert ("You cannot delete the default workspace so that we can ensure at least one tab is open.");
+			return;
 		}
 
-		var names = Array.from ($('#browser_' + e + ' > .browser_row_file')).map (e => e.querySelector ('.browser_row_col').innerHTML)
+		var names = Array.from ($('#browser_' + e + ' > .browser_row_file')).map (e => e.querySelector ('.browser_row_col').innerHTML);
 		names.forEach (n => {
-			browserDeleteFile (e, n)
-			delete editor_tab_list[e][n]
-			var wksp_row = $(Array.from ($('.browser_row p')).filter (r => r.innerHTML == e)[0]).parent().parent()
-			Array.from (wksp_row.find ('.browser_row_file')).filter (f => f.querySelector ('.browser_row_col').innerHTML == n)[0].remove()
+			browserDeleteFile (e, n);
+			delete editor_tab_list[e][n];
+			var wksp_row = $(Array.from ($('.browser_row p')).filter (r => r.innerHTML == e)[0]).parent().parent();
+			Array.from (wksp_row.find ('.browser_row_file')).filter (f => f.querySelector ('.browser_row_col').innerHTML == n)[0].remove();
 		})
-		$(Array.from ($('.browser_row p')).filter (r => r.innerHTML == e)[0]).parent().parent().remove()
-		Array.from ($('#selworkspace').find ('option')).filter (op => op.innerHTML == e).length > 0 ? Array.from ($('#selworkspace').find ('option')).filter (op => op.innerHTML == e)[0].remove() : 0
+		$(Array.from ($('.browser_row p')).filter (r => r.innerHTML == e)[0]).parent().parent().remove();
+		Array.from ($('#selworkspace').find ('option')).filter (op => op.innerHTML == e).length > 0 ? Array.from ($('#selworkspace').find ('option')).filter (op => op.innerHTML == e)[0].remove() : 0;
 		// remove workspace from storage
-		var fs = getFilesystem()
-		delete fs[e]
+		var fs = getFilesystem();
+		delete fs[e];
 
-		$('.editor-tab-workspace[name="' + e + '"]').remove()
-		delete editor_tab_list[e]
-		saveFilesystem (fs)
+		$('.editor-tab-workspace[name="' + e + '"]').remove();
+		delete editor_tab_list[e];
+		saveFilesystem (fs);
 
 		if (localStorage.currentWorkspace == e) {
-			selectWorkspaceByElement ($('.editor-tab-workspace[id!="editor-tab-workspace-add"]').last()[0])
+			selectWorkspaceByElement ($('.editor-tab-workspace[id!="editor-tab-workspace-add"]').last()[0]);
 		}
 	})
-	browserLoadFilesystem()
+	browserLoadFilesystem();
 }
 
 function browserDeleteFile (folder, file) {
@@ -524,17 +524,13 @@ function switchTabHandler (e) {
 	}
 }
 
-function openHDLwave() {
-	var popup = window.open('https://verilog.ecn.purdue.edu/hdlwave/', '_blank');		
-}
-
 window.onload = function () {
 	if (window.localStorage.editor_width) {
 		$("#editor-workspace").css("flex", "none")
 		$('#editor-workspace').width (window.localStorage.editor_width || '65%')
 		$('#outputview').width (window.localStorage.editor_width || '65%')
 	}
-    var last_page_x = $('#resize-editor').position().left;
+	var last_page_x = $('#resize-editor').position().left;
 
 	window.addEventListener("mousewheel", codescroll, { passive: false })
 	// load_button.innerHTML = load_btn_text
@@ -804,15 +800,17 @@ window.onload = function () {
 			}
 			if (e.pageX < last_page_x) {
 				// left
-				$("#editor-workspace").width($("#editor-workspace").width() - (last_page_x - e.pageX))
-				$("#outputview").width($("#editor-workspace").width() - (last_page_x - e.pageX))
+				var diff = (last_page_x - e.pageX)*2;	//doubled to try to match width diff to fast cursor movement
+				$("#editor-workspace").width($("#editor-workspace").width() - diff)
+				$("#outputview").width($("#editor-workspace").width() - diff)
 			}
 			else {
 				// right - make sure not to drag it larger than the width of the window!
-				if ($("#status-navbar").width() - $("#editor-workspace").width() - (e.pageX - last_page_x) >= 700
-						|| ($("#status-navbar").width() < 1675 &&  $("#editor-workspace").width() + (e.pageX - last_page_x) < 1600)) {
-					$("#editor-workspace").width($("#editor-workspace").width() + (e.pageX - last_page_x))
-					$("#outputview").width($("#editor-workspace").width() + (e.pageX - last_page_x))
+				var diff = (e.pageX - last_page_x)*2;	//doubled to try to match width diff to fast cursor movement
+				if ($("#status-navbar").width() - $("#editor-workspace").width() - diff >= 700
+						|| ($("#status-navbar").width() < 1675 &&  $("#editor-workspace").width() + diff < 1600)) {
+					$("#editor-workspace").width($("#editor-workspace").width() + diff)
+					$("#outputview").width($("#editor-workspace").width() + diff)
 				}
 			}
 			last_page_x = e.pageX
@@ -886,16 +884,6 @@ window.onload = function () {
 
 	if(/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) 
 		alert ("This site is not currently optimized for mobile devices. You can tap around, but full functionality may not be available, specifically interaction with the FPGA.")
-	if (!window.localStorage.tab_data && !window.localStorage.filesystem) {
-		alert ("If you have never visited this page before, welcome! Glad to have you try this page out for the first time!\nIf you've used the simulator before, however, you might be browsing incognito. Take care to save your code to your computer, because the webpage will not be able to save it when your incognito session closes.")
-	}
-	if (window.localStorage.uartmode) {
-		alert ("The simulator's UART option has now been permanently turned on since there is really no need to switch between two modes of simulation.  The UART panel will only include the Auto-Switch option, and the template code (updated to SystemVerilog!) will now always include the UART ports.")
-		document.documentElement.setAttribute("uart-option", "true")
-		$('#uart_view').css ('display', 'flex')
-		template_code = "270sim_source_uart.sv"
-		delete window.localStorage.uartmode
-	}
 	if (window.localStorage.autoTerminalSwitch == "false" || !window.localStorage.autoTerminalSwitch) {
 		document.documentElement.setAttribute("autoterminal-option", "false")
 		window.localStorage.autoTerminalSwitch = "false"

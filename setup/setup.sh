@@ -16,7 +16,7 @@ do
 done
 
 echo "Checking for dependencies..."
-for command in "verilator" "yosys" "cvc64" "iverilog" "node"
+for command in "verilator" "yosys" "iverilog" "node"
 do
     which $command
     if [[ $? == 1 ]]

@@ -1,4 +1,8 @@
 # Feature List
+### Changing options within Ace Editor:  
+- The Ace editor embedded for code editing within the simulator comes with a very comprehensive set of options, including ones for typing styles, autocomplete, and code themes.  
+- You can change these by clicking inside the editor to activate the cursor, and then pressing Ctrl+Comma.  The following pane should appear on the right (further options are available if you scroll down):  
+<img src="md/acesettings.PNG" width="30%" height="auto"/>  
 ### The top set of icons:  
 - ![new.PNG](md/new.PNG) New - Pulls an empty template with the top module declaration from the server. Be very careful - you cannot recover any unsaved work after clicking it!  
 - ![open.PNG](md/open.PNG) Open - Opens up a list of previously saved code files, from both autosaves and manual saves. Double clicking on an option loads the code into the editor.  
