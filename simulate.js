@@ -200,12 +200,12 @@ function connection(ws, request) {
                 })
 
                 if (modded_error.length > 0) {
-                    if (!fs.existsSync("error_log/" + username)) {
-                        fs.mkdirSync(path.resolve("error_log/", username), (err) => {
+                    if (!fs.existsSync(__dirname + "/error_log/" + username)) {
+                        fs.mkdirSync(path.resolve(__dirname + "/error_log/", username), (err) => {
                             if (err) { throw err; }
                         })
                     }
-                    fs.moveSync("/tmp/tmpcode/" + ws.unique_client, "error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
+                    fs.moveSync("/tmp/tmpcode/" + ws.unique_client, __dirname + "/error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
                     ws.send(ws.verilatorLog + "\nYosys did not run." + "\nCompilation failed with the following error:\n" + modded_error.join('\n'))
                     ws.close()
                     return
@@ -438,12 +438,12 @@ function connection(ws, request) {
 
                 if (ws.simType == 'mapped' && error.length != '0') {
                     modded_error = []
-                    if (!fs.existsSync("error_log/" + username)) {
-                        fs.mkdirSync(path.resolve("error_log/", username), (err) => {
+                    if (!fs.existsSync(__dirname + "/error_log/" + username)) {
+                        fs.mkdirSync(path.resolve(__dirname + "/error_log/", username), (err) => {
                             if (err) { throw err; }
                         })
                     }
-                    fs.moveSync("/tmp/tmpcode/" + ws.unique_client, "error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
+                    fs.moveSync("/tmp/tmpcode/" + ws.unique_client, __dirname + "/error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
                     error.forEach(function (element) {
                         modded_err_rgx = /\*?\*?\/tmp\/tmpcode\/[a-z0-9]+\/([\w]+\.sv):?\(? ?([0-9]+)\)?/
                         colon_check = /\.sv\([0-9]+\)\:/
