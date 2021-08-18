@@ -1,4 +1,4 @@
-# ECE 270 Simulator (updated Spring 2021)
+# ECE 270 Simulator (updated Summer 2021)
 
 ## Changes made during Summer 2021 (updated Aug 2021)
 - 08/18 - VCD file generation with each simulation
