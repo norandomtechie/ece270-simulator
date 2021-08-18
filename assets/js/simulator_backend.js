@@ -766,16 +766,22 @@ function ice40hx8k_handler(demo=false) {
             var endoflog = false
             for (var elm in messages) {
                 if (event.data.startsWith("Error occurred in Icarus compile step") && /.sv:[0-9]+: .+/.test(messages[elm])) {
-					var matches = messages[elm].match(/\/([^\/]+\.sv):([0-9]+): (.+)/);
-					[filename, num, msg] = [matches[1], parseInt(matches[2]), matches[3]];
-					errors.push({
-						file: filename,
-						workspace: ws.currentWorkspace,
-						row: (num - 1).toString(),
-						column: 0,
-						text: msg,
-						type: "error"
-					});
+					try {
+						var matches = messages[elm].match(/([^ \/]+\.sv):([0-9]+): (.+)/);
+						[filename, num, msg] = [matches[1], parseInt(matches[2]), matches[3]];
+						errors.push({
+							file: filename,
+							workspace: ws.currentWorkspace,
+							row: (num - 1).toString(),
+							column: 0,
+							text: msg,
+							type: "error"
+						});
+					}
+					catch(err) {
+						// no line number information?
+						console.error("Unable to map message: " + messages[elm]);
+					}
 				}
 				else if (messages[elm].match(/^[\w]+\.sv: Line/)) {
                     var data = messages[elm].replace("Line ", "").replace(/\:/g, "").split(" ")
