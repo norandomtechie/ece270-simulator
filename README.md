@@ -62,7 +62,7 @@ If you're UNIX-proficient and you're used to downloading and managing GitHub pro
 1. Install the following software packages (preferably manually, because apt doesn't have the latest versions that we're using now):
     - [Verilator](https://github.com/verilator/verilator) - checkout the stable branch when you clone the repo.
     - [Yosys](https://github.com/YosysHQ/yosys) - currently the script clones the latest version from the master branch, but it is recommended that you confirm that the current commit was successfully built and passed checks (indicated by a green checkmark next to the 'Latest commit' tag on the Yosys GitHub page).  If it's a red cross (X), go through commits and find the last successfully built version, then checkout from that commit.  I'll be closely monitoring for a good version and update the script to only use that version later on.
-    - [CVC](https://github.com/CambridgeHackers/open-src-cvc) - Clone the repo as-is, cd to src/, and run "make -f makefile.cvc64", and copying the resulting cvc64 executable to /usr/bin, or adding the src directory to your path.  We recommend installing CVC only after installing the dependencies from apt for the above two tools.
+    - [Icarus Verilog](https://github.com/steveicarus/iverilog) - Read section 2.2 - Compilation - on the GitHub page for Icarus, and install it to your preferred location.
     - [node](https://nodejs.org/en/download) - Fairly straightforward - download the tarball for your OS, extract it, and copy over the binaries from bin/ to /usr/bin or add it to your PATH.
 
 2. Install the node modules with "npm i".  
