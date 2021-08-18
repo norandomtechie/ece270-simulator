@@ -1,8 +1,11 @@
 # ECE 270 Simulator (updated Spring 2021)
 
-## Changes made during Summer 2021
+## Changes made during Summer 2021 (updated Aug 2021)
+- 08/18 - VCD file generation with each simulation
+- 08/18 - Support for both source-only (source) and synthesized (mapped) simulations
+- 08/18 - Tutorial v1.0.0
 - Support for IcarusVerilog simulations
-- Easter egg!
+- Some easter eggs!
 - Under-the-hood optimizations and code clean-up
 - Docker image updated to use current version (should remain updated via Git, do a 'git pull' inside the container to receive updates)
 
