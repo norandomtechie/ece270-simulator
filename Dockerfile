@@ -17,4 +17,4 @@ RUN sh -c "sed -i 's/127.0.0.1/0.0.0.0/g' $HOME/ece270-simulator/cluster.js"
 # Run setup.sh script
 RUN sh -c "cd $HOME/ece270-simulator && bash setup/setup.sh"
 # start server
-CMD cd $HOME/ece270-simulator && node cluster.js
+CMD cd /root/ece270-simulator && node cluster.js
