@@ -8,7 +8,7 @@
     "dotenv": "^8.6.0",
     "express": "^4.17.1",
     "express-http-to-https": "^1.1.4",
-    "follow-redirects": "^1.14.7",
+    "follow-redirects": "^1.14.8",
     "fs-extra": "^8.1.0",
     "geoip-lite": "^1.4.2",
     "http-proxy": "^1.18.1",
