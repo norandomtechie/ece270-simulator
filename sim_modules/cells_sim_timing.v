@@ -137,7 +137,7 @@ module SB_LUT4 (output O, input I0, I1, I2, I3);
 	wire [7:0] s3 = I3 ? LUT_INIT[15:8] : LUT_INIT[7:0];
 	wire [3:0] s2 = I2 ?       s3[ 7:4] :       s3[3:0];
 	wire [1:0] s1 = I1 ?       s2[ 3:2] :       s2[1:0];
-	assign O = I0 ? s1[1] : s1[0];
+	assign #0.00000730 O = I0 ? s1[1] : s1[0];
 endmodule
 
 (* lib_whitebox *)
@@ -161,7 +161,7 @@ module SB_DFF (
 	wire Dd;
 	assign #1.1 Dd = D;
 	always @(posedge C)
-		Q <= Dd;
+		Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFE (
@@ -175,7 +175,7 @@ module SB_DFFE (
 	assign #1.1 Dd = D;
 	always @(posedge C)
 		if (E)
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFSR (
@@ -189,9 +189,9 @@ module SB_DFFSR (
 	assign #1.1 Dd = D;
 	always @(posedge C)
 		if (R)
-			Q <= 0;
+			Q <= #0.00000541 0;
 		else
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFR (
@@ -205,9 +205,9 @@ module SB_DFFR (
 	assign #1.1 Dd = D;
 	always @(posedge C, posedge R)
 		if (R)
-			Q <= 0;
+			Q <= #0.00000541 0;
 		else
-			Q <= D;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFSS (
@@ -221,9 +221,9 @@ module SB_DFFSS (
 	assign #1.1 Dd = D;
 	always @(posedge C)
 		if (S)
-			Q <= 1;
+			Q <= #0.00000541 1;
 		else
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFS (
@@ -237,9 +237,9 @@ module SB_DFFS (
 	assign #1.1 Dd = D;
 	always @(posedge C, posedge S)
 		if (S)
-			Q <= 1;
+			Q <= #0.00000541 1;
 		else
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFESR (
@@ -254,9 +254,9 @@ module SB_DFFESR (
 	always @(posedge C)
 		if (E) begin
 			if (R)
-				Q <= 0;
+				Q <= #0.00000541 0;
 			else
-				Q <= Dd;
+				Q <= #0.00000541 Dd;
 		end
 endmodule
 
@@ -271,9 +271,9 @@ module SB_DFFER (
 	assign #1.1 Dd = D;
 	always @(posedge C, posedge R)
 		if (R)
-			Q <= 0;
+			Q <= #0.00000541 0;
 		else if (E)
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFESS (
@@ -288,9 +288,9 @@ module SB_DFFESS (
 	always @(posedge C)
 		if (E) begin
 			if (S)
-				Q <= 1;
+				Q <= #0.00000541 1;
 			else
-				Q <= Dd;
+				Q <= #0.00000541 Dd;
 		end
 endmodule
 
@@ -305,9 +305,9 @@ module SB_DFFES (
 	assign #1.1 Dd = D;
 	always @(posedge C, posedge S)
 		if (S)
-			Q <= 1;
+			Q <= #0.00000541 1;
 		else if (E)
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 // Negative Edge SiliconBlue FF Cells
@@ -322,7 +322,7 @@ module SB_DFFN (
 	wire Dd;
 	assign #1.1 Dd = D;
 	always @(negedge C)
-		Q <= Dd;
+		Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFNE (
@@ -336,7 +336,7 @@ module SB_DFFNE (
 	assign #1.1 Dd = D;
 	always @(negedge C)
 		if (E)
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFNSR (
@@ -350,9 +350,20 @@ module SB_DFFNSR (
 	assign #1.1 Dd = D;
 	always @(negedge C)
 		if (R)
-			Q <= 0;
+			Q <= #0.00000541 0;
 		else
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
+endmodule
+
+module SB_DFFRN (
+        output `SB_DFF_REG,
+        input C, R, D
+);
+        always @(posedge C, negedge R)
+                if (~R)
+                        Q <= #0.00000541 0;
+                else
+                        Q <= D;
 endmodule
 
 module SB_DFFNR (
@@ -366,9 +377,9 @@ module SB_DFFNR (
 	assign #1.1 Dd = D;
 	always @(negedge C, posedge R)
 		if (R)
-			Q <= 0;
+			Q <= #0.00000541 0;
 		else
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFNSS (
@@ -382,9 +393,9 @@ module SB_DFFNSS (
 	assign #1.1 Dd = D;
 	always @(negedge C)
 		if (S)
-			Q <= 1;
+			Q <= #0.00000541 1;
 		else
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFNS (
@@ -398,9 +409,9 @@ module SB_DFFNS (
 	assign #1.1 Dd = D;
 	always @(negedge C, posedge S)
 		if (S)
-			Q <= 1;
+			Q <= #0.00000541 1;
 		else
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFNESR (
@@ -415,9 +426,9 @@ module SB_DFFNESR (
 	always @(negedge C)
 		if (E) begin
 			if (R)
-				Q <= 0;
+				Q <= #0.00000541 0;
 			else
-				Q <= Dd;
+				Q <= #0.00000541 Dd;
 		end
 endmodule
 
@@ -432,9 +443,9 @@ module SB_DFFNER (
 	assign #1.1 Dd = D;
 	always @(negedge C, posedge R)
 		if (R)
-			Q <= 0;
+			Q <= #0.00000541 0;
 		else if (E)
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 module SB_DFFNESS (
@@ -449,9 +460,9 @@ module SB_DFFNESS (
 	always @(negedge C)
 		if (E) begin
 			if (S)
-				Q <= 1;
+				Q <= #0.00000541 1;
 			else
-				Q <= Dd;
+				Q <= #0.00000541 Dd;
 		end
 endmodule
 
@@ -466,9 +477,9 @@ module SB_DFFNES (
 	assign #1.1 Dd = D;
 	always @(negedge C, posedge S)
 		if (S)
-			Q <= 1;
+			Q <= #0.00000541 1;
 		else if (E)
-			Q <= Dd;
+			Q <= #0.00000541 Dd;
 endmodule
 
 // SiliconBlue RAM Cells

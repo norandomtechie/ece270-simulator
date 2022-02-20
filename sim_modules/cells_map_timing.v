@@ -56,7 +56,7 @@ module \$lut (A, Y);
       wire _TECHMAP_FAIL_ = 1;
     end
   endgenerate
-  assign #1 Y = Yp;
+  assign Y = Yp;
 endmodule
 `endif
 
