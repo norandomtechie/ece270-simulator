@@ -17,6 +17,5 @@ COPY . /root/ece270-simulator/
 RUN sh -c "sed -i 's/127.0.0.1/0.0.0.0/g' /root/ece270-simulator/cluster.js"
 # Run setup.sh script
 RUN sh -c "cd /root/ece270-simulator && bash setup/setup.sh"
-RUN sh -c "mkdir /var/tmp/tmpcode"
 # start server
 CMD cd /root/ece270-simulator && node cluster.js
