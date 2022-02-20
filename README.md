@@ -1,10 +1,15 @@
-# ECE 270 Simulator (updated Summer 2021)
+# ECE 27000 Verilog Simulator
 
-The changelog continues to grow, so it has been moved to a CHANGELOG Markdown file.  
+Updated for Spring 2022.  The changelog continues to grow, so it has been moved to a CHANGELOG Markdown file.  
 
-**If you're a student in ECE 27000 in the current semester, do not fall prey to academic integrity issues.**  It's likely that you may find example code in here that you may feel tempted to use in lab assignments for classes if you dig deep enough.  Please don't.  You may be cited for plagiarism, unnecessarily stain your academic record, and more importantly, you won't learn anything.
+<br>
+<p align="center">
+  <img width=900px src="snap.png"/>
+</p>
+<br>
 
-## What is this?
+**If you're a student in ECE 27000 in the current semester, read this.**  It's likely that you may find example code in here that you may feel tempted to use in lab assignments for classes if you dig deep enough.  Please don't.  You may be cited for plagiarism, unnecessarily stain your academic record, and more importantly, you won't learn anything.
+
 This repository is essentially a backup of the ECE 270 simulator used at Purdue University, intended to simulate synthesized SystemVerilog on a virtual breakout board.  When installed, a user should navigate to localhost:4500 in a browser, enter some SystemVerilog targeted at the FPGA + breakout board the simulator is intended for, and click Simulate.  This processes the code for syntax errors using Verilator on the local server, synthesizes it with Yosys if the syntax check is successful to produce gate-level Verilog, and starts a real-time simulation of the gate-level Verilog, where inputs from the student are sent to the simulation, and outputs from the simulations are displayed on the virtual FPGA board on the webpage.
 
 ## Working hosted versions of the simulator
@@ -21,7 +26,9 @@ docker run -d -p 4500:4500 --name 270sim norandomtechie/ece270-simulator
 ## Requirements
 Any modern distribution of Linux.  The setup script included in the repo is targeted at Debian-flavored systems, but the software should theoretically work on any Linux distribution.  I use Ubuntu WSL extensively, and it's worked there as well, so if you're on Windows, download and install WSL (version 2 will work better once it's available to non-Insider builds of Windows).
 
-I don't use or have a Mac, so I don't know if this works on macOS.  If you can get it working, though, I look forward to your pull request!
+~~I don't use or have a Mac, so I don't know if this works on macOS.  If you can get it working, though, I look forward to your pull request!~~
+
+If you install Verilator, Yosys and IcarusVerilog using Homebrew, create a new folder under `/tmp` called `tmpcode`, install packages with `npm i` and try running the simulator with `node cluster.js` which should start it on port 4500, it *should* work.  YMMV.
 
 ## Installation
 ### The scripted way
