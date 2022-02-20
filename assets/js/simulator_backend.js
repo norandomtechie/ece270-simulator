@@ -337,7 +337,7 @@ var pending = null;
 var lftred = "";
 var rgtred = "";
 var rgbled = "";
-var template_code = "270sim_source_uart.sv";
+var template_code = "top_template.sv";
 
 var ws;
 var errors = [];
