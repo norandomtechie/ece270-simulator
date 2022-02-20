@@ -96,7 +96,7 @@ color:#00AEEF;\
 color:#58C554;\
 }\
 .ace-chaos .ace_comment {\
-color:#4094ed;\
+color:#555;\
 font-style:italic;\
 padding-bottom: 0px;\
 }\
@@ -121,7 +121,7 @@ color: #777;\
 .ace-chaos .ace_fold-widget.ace_start,\
 .ace-chaos .ace_fold-widget.ace_end,\
 .ace-chaos .ace_fold-widget.ace_closed{\
-background: none;\
+background: none !important;\
 border: none;\
 box-shadow: none;\
 }\
@@ -151,7 +151,7 @@ color: #000;\
 ";
 
 var dom = require("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+dom.importCssString(exports.cssText, exports.cssClass, false);
 
 });                (function() {
                     ace.require(["ace/theme/chaos"], function(m) {

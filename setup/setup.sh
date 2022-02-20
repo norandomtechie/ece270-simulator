@@ -6,11 +6,11 @@ fi
 printf "ECE 270 simulator setup\n\n"
 
 declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["yosys"]="https://github.com/YosysHQ/yosys" ["iverilog"]="https://github.com/steveicarus/iverilog" )
-
+declare -A relcommits=( ["verilator"]="e6554e061c0615eccab83c4ce48f280813fc8773" ["yosys"]="a4522d628296ccaea5e26b6cec1756f01475ceb5" ["iverilog"]="84b4ebee0cfcda28a242d89a07020cd70b1d3e7f" )
 declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["iverilog"]="iverilog" )
 
 echo "Setting up folders..."
-for folder in ../error_log /tmp/tmpcode
+for folder in ../error_log /var/tmp/tmpcode
 do
     mkdir -p $folder && chown $SUDO_USER:$SUDO_USER $folder
 done
@@ -50,6 +50,7 @@ do
             ;;
         "yosys")
             cd yosys/
+            git checkout "${relcommits["$command"]}"
             apt-get -y install build-essential clang bison flex \
             libreadline-dev gawk tcl-dev libffi-dev git \
             graphviz xdot pkg-config python3 libboost-system-dev \
@@ -63,6 +64,7 @@ do
             ;;
         "iverilog")
             cd iverilog
+            git checkout "${relcommits["$command"]}"
             apt-get install -y gperf
             autoconf
             ./configure
@@ -97,7 +99,6 @@ then
     /usr/bin/npm config set unsafe-perm true
 fi
 /usr/bin/npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
-mkdir -p /tmp/tmpcode
 if [ "$INSIDE_DOCKER" != "YES" ]
 then
     echo "Starting node server..."

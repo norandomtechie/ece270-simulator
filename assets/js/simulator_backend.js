@@ -48,10 +48,11 @@ var TUTORIAL_DESCS = [{
         fade: false
     },
 
+
     {
         description: `The Demo button showcases the full capability of the virtual board by running a design that will flash all the LEDs available on the board.  Go ahead 
-	                  and click it, and it should start the demo simulation.  Some of the behavior you see here will be taught in your upcoming labs!  Press 0/1/2/3 to change the speed of 
-                      the simulation.`,
+                and click it, and it should start the demo simulation.  Some of the behavior you see here will be taught in your upcoming labs!  Press 0/1/2/3 to change the speed of 
+        the simulation.<br><br>Attempting to simulate an empty top module will result in an error, so you must make at least one connection in the top module.`,
         top: '20vh',
         left: '62vw',
         width: '30vw',
@@ -61,10 +62,10 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `Now let's familiarize ourselves with the simulator's embedded code editor.  You will write your SystemVerilog designs  
-	for each lab in here, with the ability to toggle options like AutoComplete, Vim/Emacs/Sublime keybindings, tab sizes, and much more - this is where 
-    you're likely to be working, so you may find it helpful to customize it to your preferences.  
-    <br><br> You can try setting these now by clicking inside the editor, and pressing Ctrl+Comma (or Cmd+Comma on a Mac).  Change some settings, and press 
-    anywhere outside the panel - do NOT hit the Escape button!  These settings should persist the next time you open the simulator.`,
+        for each lab in here, with the ability to toggle options like AutoComplete, Vim/Emacs/Sublime keybindings, tab sizes, and much more - this is where 
+        you're likely to be working, so you may find it helpful to customize it to your preferences.  
+        <br><br> You can try setting these now by clicking inside the editor, and pressing Ctrl+Comma (or Cmd+Comma on a Mac).  Change some settings, and press 
+        anywhere outside the panel - do NOT hit the Escape button!  These settings should persist the next time you open the simulator.`,
         top: '15vh',
         left: '3.5vw',
         width: '25vw',
@@ -75,9 +76,9 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `If you typically keep windows in split-screen mode (for example, when you only have one screen) and then change back to 
-                      a maximized window, you might find that the code editor is suddenly much smaller - this occurs in order to accomodate it 
-                      in the narrower view.  You can expand the editor by dragging the slider (it's flashing on the right side of the page!) to 
-                      the left/right so you can see less/more of your code.`,
+                        a maximized window, you might find that the code editor is suddenly much smaller - this occurs in order to accomodate it 
+                        in the narrower view.  You can expand the editor by dragging the slider (it's flashing on the right side of the page!) to 
+                        the left/right so you can see less/more of your code.`,
         top: '15vh',
         left: '3.5vw',
         width: '25vw',
@@ -88,9 +89,9 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `As you move from lab to lab, you'll want to retain modules, and have separate workspaces for each lab.  This site implements a 
-        filesystem (of sorts) that will allow you to do that, to help you organize your code in seperate files, in separate workspaces (basically folders).  
-        Let's set up a new workspace and give it a unique name.  Start by clicking the Add button above (the one with a plus sign in the first row), and 
-        in the alert dialog that appears, type in a workspace name and hit Enter.`,
+            filesystem (of sorts) that will allow you to do that, to help you organize your code in seperate files, in separate workspaces (basically folders).  
+            Let's set up a new workspace and give it a unique name.  Start by clicking the Add button above (the one with a plus sign in the first row), and 
+            in the alert dialog that appears, type in a workspace name and hit Enter.`,
         width: '60vw',
         height: '40vh',
         top: '20vh',
@@ -101,9 +102,9 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `You should now be in your shiny new workspace!  You can also perform operations like adding, removing and renaming files within a workspace, as well 
-	                  as removing and renaming workspaces.  Add a file by clicking the second Add button, in the second row.  Rename it by holding down the Shift key and double-clicking on 
-	                  the newly added file tab, typing in a new filename (for SystemVerilog files, end it with .sv) and hitting Enter.  You can "hide" the file by clicking on the X, and 
-                      restoring it from the file manager panel - which we'll look at next.`,
+                        as removing and renaming workspaces.  Add a file by clicking the second Add button, in the second row.  Rename it by holding down the Shift key and double-clicking on 
+                        the newly added file tab, typing in a new filename (for SystemVerilog files, end it with .sv) and hitting Enter.  You can "hide" the file by clicking on the X, and 
+                        restoring it from the file manager panel - which we'll look at next.`,
         top: '15vh',
         left: '3.5vw',
         width: '25vw',
@@ -114,7 +115,7 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `Removing the file is intentionally a little more difficult, because we don't want you to lose your code!  Click on the Open Icon above (the second one 
-                      from the left that looks like a folder).  The shortcut for Open File (typical of any program) is (Ctrl/Cmd)-O.`,
+                        from the left that looks like a folder).  The shortcut for Open File (typical of any program) is (Ctrl/Cmd)-O.`,
         top: '10vh',
         left: '5vw',
         width: '25vw',
@@ -125,7 +126,7 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `This is your File Manager.  Here, you can view file data (including creation/modification times), delete files or entire workspaces, or create new ones.  
-                      <br>Bear in mind: files are saved only in your browser - NOT on the server!  That means if you accidentally wipe your browser data, your code will disappear.`,
+                        <br>Bear in mind: files are saved only in your browser - NOT on the server!  That means if you accidentally wipe your browser data, your code will disappear.`,
         top: '1vh',
         left: '2.5vw',
         width: '92.5vw',
@@ -136,7 +137,7 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `With that in mind, let's delete the file.  Highlight the file you want to delete by clicking it (a border should appear) and either click the Trash icon, 
-                      or press the Delete key.  A confirmation dialog will appear so you're absolutely sure you want to delete a file/workspace.`,
+                        or press the Delete key.  A confirmation dialog will appear so you're absolutely sure you want to delete a file/workspace.`,
         top: '1vh',
         left: '2.5vw',
         width: '92.5vw',
@@ -157,9 +158,9 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `Back to simulations - let's take a look at how the pushbuttons work.  Open a new file, and type: <br><br><code>assign right[0] = pb[0];</code><br><br> 
-                      This is going to connect pushbutton 0 (called pb[0]) to the rightmost red LED on the board (called right[0]).  Start the simulation, and observe that 
-                      right[0] lights up when you press pb[0], and goes back to dim when you release it.  <br><br> This button behavior is intended to behave exactly the 
-                      same way as the FPGA in lab does.<br><br>`,
+                        This is going to connect pushbutton 0 (called pb[0]) to the rightmost red LED on the board (called right[0]).  Start the simulation, and observe that 
+                        right[0] lights up when you press pb[0], and goes back to dim when you release it.  <br><br> This button behavior is intended to behave exactly the 
+                        same way as the FPGA in lab does.<br><br>`,
         top: '20vh',
         left: '62vw',
         width: '30vw',
@@ -167,12 +168,12 @@ var TUTORIAL_DESCS = [{
         fade: false
     },
 
-    
+
     {
         description: `Suppose you make a mistake in your code - for example, you forget a semicolon somewhere.  Go ahead and remove that from after pb[0] in the line you 
-                      just entered, and click Simulate.  You will find that an error appears on the line (or even the one right after it) where you removed the semicolon.  
-                      You can hover on the red-highlighted line number to get details about the error.<br><br>  Review these carefully, fix your intentional mistake, and 
-                      just hit Simulate again (or Ctrl-S if you enabled the shortcut in Settings) to restart the simulation.`,
+                        just entered, and click Simulate.  You will find that an error appears on the line (or even the one right after it) where you removed the semicolon.  
+                        You can hover on the red-highlighted line number to get details about the error.<br><br>  Review these carefully, fix your intentional mistake, and 
+                        just hit Simulate again (or Ctrl-S if you enabled the shortcut in Settings) to restart the simulation.`,
         top: '20vh',
         left: '62vw',
         width: '30vw',
@@ -182,12 +183,12 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `Sometimes, errors in your design appear in the synthesis process, as a result of which a few errors are unable to be mapped to a specific line.  To help with that, 
-                      we provide you with the full output of the tools used to lint and synthesize your code in the Tool Output tab at the bottom of the editor, so that you can analyze 
-                      the Verilog tool dump to find your error. <br><br> Click the Tool Output tab to view the dump from your last simulation.  Depending on what design you send, it 
-                      should show you:
-                      <br><br> 1) The Verilator error log (if you had no errors, it will be empty). 
-                      <br><br> 2) The JSON netlist of your design (this is effectively a list of the gates and sequential cells it takes to produce your hardware design)
-                      <br><br> 3) The output from the Yosys synthesis tool that produces this netlist.`,
+                        we provide you with the full output of the tools used to lint and synthesize your code in the Tool Output tab at the bottom of the editor, so that you can analyze 
+                        the Verilog tool dump to find your error. <br><br> Click the Tool Output tab to view the dump from your last simulation.  Depending on what design you send, it 
+                        should show you:
+                        <br><br> 1) The Verilator error log (if you had no errors, it will be empty). 
+                        <br><br> 2) The JSON netlist of your design (this is effectively a list of the gates and sequential cells it takes to produce your hardware design)
+                        <br><br> 3) The output from the Yosys synthesis tool that produces this netlist.`,
         top: '5vh',
         left: '1vw',
         width: '28vw',
@@ -197,12 +198,12 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `A really awesome extension we added in Spring 2020 was the serial communication interface, which allows you to send/receive data to a simulated terminal window,
-                     similar to how you would communicate with a device using its serial port via a computer terminal.  While this is much more interesting on the real FPGA, we provide 
-                     a simulated version should you wish to create your design outside of lab.  To see a "Hello world" demo of how this serial communication would work, type anywhere in your 
-                     code: 
-                     <br><br>
-                     <code>// give us a uart demo please</code>
-                     <br><br> Then hit Simulate and switch to the Terminal View tab.  Do not include this comment in any of your actual lab assignments, or we will not be able to check them!`,
+                        similar to how you would communicate with a device using its serial port via a computer terminal.  While this is much more interesting on the real FPGA, we provide 
+                        a simulated version should you wish to create your design outside of lab.  To see a "Hello world" demo of how this serial communication would work, type anywhere in your 
+                        code: 
+                        <br><br>
+                        <code>// give us a uart demo please</code>
+                        <br><br> Then hit Simulate and switch to the Terminal View tab.  Do not include this comment in any of your actual lab assignments, or we will not be able to check them!`,
         top: '15vh',
         left: '1vw',
         width: '28vw',
@@ -213,12 +214,12 @@ var TUTORIAL_DESCS = [{
 
     {
         description: `When working in a workspace, you have the advantage of segregating your code into separate files.  Sometimes, however, you might want to use multiple modules all in the 
-        same file, and don't want to include the other tabs in the workspace.  The File/Workspace Simulation button solves this by having select the type of simulation:
-        <br><br> A Workspace Simulation will send the code from all the file tabs in a workspace.
-        <br><br> A File Simulation will only send the currently active tab at the time when the Simulate button was clicked.
-        <br><br> <b>This is very important to remember</b>, otherwise you're going to try to send multiple file tabs with the same modules, or send one file without the modules in other file tabs.
-        Both result in possibly confusing errors.  A lot of users make these mistakes, and end up creating a workspace for every single file - that makes the simulator very hard to use, and is not 
-        a good thing to do on a small screen.`,
+            same file, and don't want to include the other tabs in the workspace.  The File/Workspace Simulation button solves this by having select the type of simulation:
+            <br><br> A Workspace Simulation will send the code from all the file tabs in a workspace.
+            <br><br> A File Simulation will only send the currently active tab at the time when the Simulate button was clicked.
+            <br><br> <b>This is very important to remember</b>, otherwise you're going to try to send multiple file tabs with the same modules, or send one file without the modules in other file tabs.
+            Both result in possibly confusing errors.  A lot of users make these mistakes, and end up creating a workspace for every single file - that makes the simulator very hard to use, and is not 
+            a good thing to do on a small screen.`,
         top: '25vh',
         left: '32vw',
         width: '60vw',
@@ -230,9 +231,9 @@ var TUTORIAL_DESCS = [{
     // introduce trace data file
     {
         description: `A crucial component of Verilog design and verification is trace analysis and debugging.  The seasoned hardware designer utilizes waveforms from a simulation in order to find 
-        potential problems with their hardware design.  For the web-simulator, we've added the capability of getting the traces from your simulation as a VCD file that you can open in GTKwave - 
-        you'll do this in lab as well.  Make sure to get <a target="_blank" href="https://sourceforge.net/projects/gtkwave/">GTKwave</a> so you're able to view these traces.  Further instructions on how to work 
-        with GTKwave will be provided in assignments.`,
+            potential problems with their hardware design.  For the web-simulator, we've added the capability of getting the traces from your simulation as a VCD file that you can open in GTKwave - 
+            you'll do this in lab as well.  Make sure to get <a target="_blank" href="https://sourceforge.net/projects/gtkwave/">GTKwave</a> so you're able to view these traces.  Further instructions on how to work 
+            with GTKwave will be provided in assignments.`,
         top: '25vh',
         left: '32vw',
         width: '60vw',
@@ -244,20 +245,20 @@ var TUTORIAL_DESCS = [{
     // ending shows IPoAC as a joke
     {
         description: `And so we come to the end of our tutorial.  That's all, folks!  
-                          <br><br>
-                          There's still a bit more stuff, but we'd like to conserve your time and let you discover those on your own later.  We highly recommend that you go through the Help page as well 
-                          - specifically <a href="/help?md=tipstricks" target="_blank">the Tips and Tricks section</a> to help you type up your design faster.  
-                          There's also GIFs for different features if you'd like to see things in action rather than reading about it.  
-                          <br><br>
-                          Good luck with your upcoming lab assignments!  We sincerely hope that you find them informative and engaging.
-                          <br><br>
-                          We're always looking for more help.  This entire project was done by a single TA (with his instructor's invaluable guidance!) in 1.5 semesters, with no background knowledge of web 
-                          development when he started.  You can see the evidence in the source code.  If you dabble in web/server development yourself, and you'd like to have the satisfaction of telling us 
-                          off for incorporating horribly inefficient/outdated code into this page (we've had complaints), you can either contact course staff or, even better, open an issue on the 
-                          <a href="https://github.com/norandomtechie/ece270-simulator" target="_blank">simulator's GitHub repository</a> with details of what should be added/improved/removed.  
-                          <br><br>
-                          As a kind-of-reward for finishing this tutorial (hopefully you weren't just clicking through to the end), here's  
-                          <a href="https://en.wikipedia.org/wiki/IP_over_Avian_Carriers" target="_blank">a fun article</a> we found over the summer.`,
+                        <br><br>
+                        There's still a bit more stuff, but we'd like to conserve your time and let you discover those on your own later.  We highly recommend that you go through the Help page as well 
+                        - specifically <a href="/help?md=tipstricks" target="_blank">the Tips and Tricks section</a> to help you type up your design faster.  
+                        There's also GIFs for different features if you'd like to see things in action rather than reading about it.  
+                        <br><br>
+                        Good luck with your upcoming lab assignments!  We sincerely hope that you find them informative and engaging.
+                        <br><br>
+                        We're always looking for more help.  This entire project was done by a single TA (with his instructor's invaluable guidance!) in 1.5 semesters, with no background knowledge of web 
+                        development when he started.  You can see the evidence in the source code.  If you dabble in web/server development yourself, and you'd like to have the satisfaction of telling us 
+                        off for incorporating horribly inefficient/outdated code into this page (we've had complaints), you can either contact course staff or, even better, open an issue on the 
+                        <a href="https://github.com/norandomtechie/ece270-simulator" target="_blank">simulator's GitHub repository</a> with details of what should be added/improved/removed.  
+                        <br><br>
+                        As a kind-of-reward for finishing this tutorial (hopefully you weren't just clicking through to the end), here's  
+                        <a href="https://en.wikipedia.org/wiki/IP_over_Avian_Carriers" target="_blank">a fun article</a> we found over the summer.`,
         top: '10vh',
         left: '10vw',
         width: '80vw',
@@ -271,64 +272,64 @@ var TUTORIAL_DESCS = [{
 window.undoManagers = {};
 
 /* 
-	Format will be as follows:
-	{
-		'workspace1': {
-			'filename1.sv': UndoManager(),
-			'filename2.sv': UndoManager(),
-			'filename3.sv': UndoManager(),
-			'filename4.sv': UndoManager()
-		},
-		'workspace2': {
-			'filename4.sv': UndoManager(),
-			'filename5.sv': UndoManager(),
-			'filename6.sv': UndoManager(),
-			'filename7.sv': UndoManager()
-		}, ...
-	}
+    Format will be as follows:
+    {
+        'workspace1': {
+            'filename1.sv': UndoManager(),
+            'filename2.sv': UndoManager(),
+            'filename3.sv': UndoManager(),
+            'filename4.sv': UndoManager()
+        },
+        'workspace2': {
+            'filename4.sv': UndoManager(),
+            'filename5.sv': UndoManager(),
+            'filename6.sv': UndoManager(),
+            'filename7.sv': UndoManager()
+        }, ...
+    }
 
-	No need to save this to localStorage, avoiding circular 
-	object error in JSON.stringify.
+    No need to save this to localStorage, avoiding circular 
+    object error in JSON.stringify.
 */
 
 /* ************************************************************* */
 
 function showFullscreen(elem) {
-	if (elem.requestFullscreen) {
-		elem.requestFullscreen();
-	} else if (elem.webkitRequestFullscreen) {
-		elem.webkitRequestFullscreen();
-	} else if (elem.msRequestFullscreen) {
-		elem.msRequestFullscreen();
-	}
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+    }
 }
 function hideFullscreen(elem) {
-	if (elem.exitFullscreen) {
-		elem.exitFullscreen();
-	} else if (elem.webkitExitFullscreen) {
-		elem.webkitExitFullscreen();
-	} else if (elem.msExitFullscreen) {
-		elem.msExitFullscreen();
-	}
+    if (elem.exitFullscreen) {
+        elem.exitFullscreen();
+    } else if (elem.webkitExitFullscreen) {
+        elem.webkitExitFullscreen();
+    } else if (elem.msExitFullscreen) {
+        elem.msExitFullscreen();
+    }
 }
 
 function focusMode() {
-	var elem = document.querySelector("#simview");
-	if (window.focusModeState) {
-		hideFullscreen(elem);
-	} else if (elem.requestFullscreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen) {
-		showFullscreen(elem);
-	} else {
-		alert ("Sorry, it doesn't look like your browser supports this feature.  Contact course staff or use another browser.");
-	}
+    var elem = document.querySelector("#simview");
+    if (window.focusModeState) {
+        hideFullscreen(elem);
+    } else if (elem.requestFullscreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen) {
+        showFullscreen(elem);
+    } else {
+        alert ("Sorry, it doesn't look like your browser supports this feature.  Contact course staff or use another browser.");
+    }
 }
 
 document.addEventListener("fullscreenchange", function() {
-	if (window.focusModeState) {
-		window.focusModeState = false;
-	} else {
-		window.focusModeState = true;
-	}
+    if (window.focusModeState) {
+        window.focusModeState = false;
+    } else {
+        window.focusModeState = true;
+    }
 }); 
 
 var EDITOR_DARK_THEME = "ace/theme/chaos"; // localStorage.ace_dark_theme
@@ -337,7 +338,7 @@ var pending = null;
 var lftred = "";
 var rgtred = "";
 var rgbled = "";
-var template_code = "270sim_source_uart.sv";
+var template_code = "top_template.sv";
 
 var ws;
 var errors = [];
@@ -397,10 +398,10 @@ curmap = {}
 bakmap = {}
 
 $(document).bind("keydown", "ctrl+o", function (e) {
-	if (e.ctrlKey && e.which == 79) {
-		e.preventDefault();
-		openWorkspaceManager('open')
-	}
+    if (e.ctrlKey && e.which == 79) {
+        e.preventDefault();
+        openWorkspaceManager('open')
+    }
 });
 
 function updateKeys(e) {
@@ -424,6 +425,7 @@ function updateKeys(e) {
     if (e.which == 27 && !(window?.noEscapeTutorial)) {
         $('.overlay').css('display', 'none')
         $('.overlay').css('opacity', '0')
+        toggleNotifs(close=true)
         blurMainView(1)
         tutorialAction("stop")
         toggleTutorial(1)
@@ -435,7 +437,7 @@ function updateKeys(e) {
             while (document.getElementsByClassName("ace-line-error-light").length != 0)
                 document.getElementsByClassName("ace-line-error-light")[0].classList.replace("ace-line-error-light", "ace-line-error-dark")
         }
-    } 
+    }
     else if ((e.key == "ArrowLeft" || e.key == "ArrowRight") && (e.type == "keydown") && !tutorial_not_running && window?.tutorialStep) {
         e.preventDefault();
         if (e.key == "ArrowLeft") {
@@ -475,9 +477,9 @@ function populateKeystate(e) {
 }
 
 onkeyup = onkeydown =
-	function (e) {
-		setTimeout(function () { populateKeystate(e) }, 1)
-	};
+    function (e) {
+        setTimeout(function () { populateKeystate(e) }, 1)
+    };
 
 function togglePassword() {
     if (document.getElementById("passwd").type == "password") {
@@ -492,13 +494,13 @@ function togglePassword() {
 function ctrl_alt_del(event, key) {
     var cad = [
         [document.getElementById("key0"),
-            document.getElementById("text0")
+        document.getElementById("text0")
         ],
         [document.getElementById("key3"),
-            document.getElementById("text3")
+        document.getElementById("text3")
         ],
         [document.getElementById("KeyW"),
-            document.getElementById("textW")
+        document.getElementById("textW")
         ]
     ];
 
@@ -622,14 +624,14 @@ function setOutputs(json_out) {
         }
 
         if ((parseInt(json_out["LFTRED"]) & Math.pow(2, i)) > 0)
-			lftred[i].setAttribute("fill", LIT_RED)	// LIT_RED = "#f00"
-		else
-			lftred[i].setAttribute("fill", BLANK_RED)	// BLANK_RED = "#300"
+            lftred[i].setAttribute("fill", LIT_RED)	// LIT_RED = "#f00"
+        else
+            lftred[i].setAttribute("fill", BLANK_RED)	// BLANK_RED = "#300"
 
-		if ((parseInt(json_out["RGTRED"]) & Math.pow(2, i)) > 0)
-			rgtred[i].setAttribute("fill", LIT_RED)	// LIT_RED = "#f00"
-		else
-			rgtred[i].setAttribute("fill", BLANK_RED)	// BLANK_RED = "#300"
+        if ((parseInt(json_out["RGTRED"]) & Math.pow(2, i)) > 0)
+            rgtred[i].setAttribute("fill", LIT_RED)	// LIT_RED = "#f00"
+        else
+            rgtred[i].setAttribute("fill", BLANK_RED)	// BLANK_RED = "#300"
     }
 
     color = "#"
@@ -639,7 +641,6 @@ function setOutputs(json_out) {
 
     if (color == "#000")
         color = "#111"
-        //     console.log (color)
     rgbled.setAttribute("fill", color)
 
     if (json_out['RXCLK'] == '1')
@@ -721,17 +722,17 @@ function ice40hx8k_handler(demo=false) {
     ws.onmessage = function(event) {
         if (event.data.includes("Processing Verilog code...")) {
             var msg = document.documentElement.getAttribute('simulation-type') == 'mapped' ? "Synthesizing" : "Compiling";
-			update_status("SYNTHESIS", `Status: ${msg}...`)
+            update_status("SYNTHESIS", `Status: ${msg}...`)
             messages = event.data + "\n"
             synthesis_interval = setInterval(function () {
-				if (document.getElementById("status-text").innerHTML == `Status: ${msg}...`)
-					update_status("SYNTHESIS", `Status: ${msg}..`)
-				else if (document.getElementById("status-text").innerHTML == `Status: ${msg}..`)
-					update_status("SYNTHESIS", `Status: ${msg}.`)
-				else if (document.getElementById("status-text").innerHTML == `Status: ${msg}.`)
-					update_status("SYNTHESIS", `Status: ${msg}`)
-				else if (document.getElementById("status-text").innerHTML == `Status: ${msg}`)
-					update_status("SYNTHESIS", `Status: ${msg}...`)
+                if (document.getElementById("status-text").innerHTML == `Status: ${msg}...`)
+                    update_status("SYNTHESIS", `Status: ${msg}..`)
+                else if (document.getElementById("status-text").innerHTML == `Status: ${msg}..`)
+                    update_status("SYNTHESIS", `Status: ${msg}.`)
+                else if (document.getElementById("status-text").innerHTML == `Status: ${msg}.`)
+                    update_status("SYNTHESIS", `Status: ${msg}`)
+                else if (document.getElementById("status-text").innerHTML == `Status: ${msg}`)
+                    update_status("SYNTHESIS", `Status: ${msg}...`)
             }, 500)
         } else if (event.data.includes("Simulation successfully started!") || (event.data.includes("warning") && !event.data.includes("Error"))) {
             if (window.localStorage.autoTerminalSwitch == "true" && $('#terminal').css('display') == 'none') {
@@ -766,24 +767,24 @@ function ice40hx8k_handler(demo=false) {
             var endoflog = false
             for (var elm in messages) {
                 if (event.data.startsWith("Error occurred in Icarus compile step") && /.sv:[0-9]+: .+/.test(messages[elm])) {
-					try {
-						var matches = messages[elm].match(/([^ \/]+\.sv):([0-9]+): (.+)/);
-						[filename, num, msg] = [matches[1], parseInt(matches[2]), matches[3]];
-						errors.push({
-							file: filename,
-							workspace: ws.currentWorkspace,
-							row: (num - 1).toString(),
-							column: 0,
-							text: msg,
-							type: "error"
-						});
-					}
-					catch(err) {
-						// no line number information?
-						console.error("Unable to map message: " + messages[elm]);
-					}
-				}
-				else if (messages[elm].match(/^[\w]+\.sv: Line/)) {
+                    try {
+                        var matches = messages[elm].match(/([^ \/]+\.sv):([0-9]+): (.+)/);
+                        [filename, num, msg] = [matches[1], parseInt(matches[2]), matches[3]];
+                        errors.push({
+                            file: filename,
+                            workspace: ws.currentWorkspace,
+                            row: (num - 1).toString(),
+                            column: 0,
+                            text: msg,
+                            type: "error"
+                        });
+                    }
+                    catch(err) {
+                        // no line number information?
+                        console.error("Unable to map message: " + messages[elm]);
+                    }
+                }
+                else if (messages[elm].match(/^[\w]+\.sv: Line/)) {
                     var data = messages[elm].replace("Line ", "").replace(/\:/g, "").split(" ")
                     var filename = data[0]
                     var num = parseInt(data[1])
@@ -821,6 +822,11 @@ function ice40hx8k_handler(demo=false) {
                         $('[name="' + filename + '"][workspace="' + ws.currentWorkspace + '"]')[0].setAttribute('errors', JSON.stringify(error_lines))
                     }
                 }
+                else {
+                    if (messages[elm].includes("modules were missing")) {
+                        alert("Modules were missing, or they were added but do not make any connections between their input and output ports.  Check the Tool Output tab.");
+                    }
+                }
             }
             editor.getSession().setAnnotations(
                 errors.filter(e => e.workspace == window.active_tab.getAttribute("workspace") && e.file == window.active_tab.getAttribute("name"))
@@ -832,19 +838,18 @@ function ice40hx8k_handler(demo=false) {
             return false
         } else if (event.data.includes("Unauthorized WebSocket")) {
             update_status("CODE_ERROR", "Status: Unauthorized simulation")
-                // alert("Your simulator session has either expired, or not been started.  Refresh the page.");
             alert("Your simulator session has either expired, or not been started.  We'll open a new tab to let you log in again without having to refresh this page.  " +
-				"(Borrowed this idea from Brightspace.  It's one of the (few) good things they do).");
-			window.open("https://verilog.ecn.purdue.edu/portal?return", "_blank", "toolbar=yes,top=500,left=500,width=600,height=800");
-			window.rerunSimulation = setInterval(async () => {
-				var resp = await fetch('/', {cache: 'no-store'});
-				console.log("resp", resp);
-				if (!resp.redirected) {
-					clearInterval(window.rerunSimulation);
-					delete window.rerunSimulation;
-					ice40hx8k_handler();
-				}
-			}, 1000);
+                "(Borrowed this idea from Brightspace.  It's one of the (few) good things they do).");
+            window.open("https://verilog.ecn.purdue.edu/portal?return", "_blank", "toolbar=yes,top=500,left=500,width=600,height=800");
+            window.rerunSimulation = setInterval(async () => {
+                var resp = await fetch('/', {cache: 'no-store'});
+                console.log("resp", resp);
+                if (!resp.redirected) {
+                    clearInterval(window.rerunSimulation);
+                    delete window.rerunSimulation;
+                    ice40hx8k_handler();
+                }
+            }, 1000);
         } else {
             try {
                 if ("LFTRED" in JSON.parse(event.data)) {
@@ -877,11 +882,6 @@ function ice40hx8k_handler(demo=false) {
                 } else if (event.data.includes("TIMING VIOLATION")) {
                     console.log(event.data);
                 }
-                // else if (event.data.includes("SIM HUNG")) {
-                // 	alert("Your simulation was killed because of a bug in your code.  Ensure that your flip flops are only changing regs as they're meant to, " + 
-                // 		  "and that you are not changing regs in different always blocks.  If you're absolutely sure your code is correct, post it privately to instructors on Piazza.")
-                // 	update_status("CODE_ERROR", "Status: Simulation hung on server")
-                // }
                 else {
                     console.error(err)
                     console.log(event.data)
@@ -966,20 +966,21 @@ function display_info(sect) {
             p_elm.innerHTML = "This simulator for ECE 270 was created by Niraj Menon initially as a personal project \
                        but has since turned into an extremely useful tool for ECE 270 students wishing to avoid \
                        late nights in lab working on the physical board. Ever since then, we have put those dark days behind us. :) <br><br>\
-                       The website runs on a node.js server, utilizing Verilog simulation and synthesis tools like CVC and Yosys."
+                       The website runs on a node.js server, utilizing Verilog simulation and synthesis tools like Verilator, Yosys and IcarusVerilog.  \
+                       You can view the source code for this yourself by going to the Source tab!"
             break;
         case 1:
             p_elm.innerHTML = "When you click Simulate or Demo, you're sending a message back to the server, which processes it. If there are errors, it reports them back to you, and quits.\
-			If not, it uses <a href='http://www.tachyon-da.com/what-is-cvc/'>CVC</a> and <a href='http://www.clifford.at/yosys/'>Yosys</a> to synthesize and then simulate the code you sent, \
-			and waits for either you to send inputs using the buttons, or the outputs to start changing, which the webpage will receive and parse to show it to you on the board. You can \
-			manually assert the input reset signal to the module by simply pressing Ctrl+Alt+R."
+            If not, it uses <a href='http://www.tachyon-da.com/what-is-cvc/'>CVC</a> and <a href='http://www.clifford.at/yosys/'>Yosys</a> to synthesize and then simulate the code you sent, \
+            and waits for either you to send inputs using the buttons, or the outputs to start changing, which the webpage will receive and parse to show it to you on the board. You can \
+            manually assert the input reset signal to the module by simply pressing Ctrl+Alt+R."
 
             break;
         case 2:
             p_elm.innerHTML = "Enter your code in the editor below. Ensure that you include the top module and that its name is top. \
-			Include any other modules referenced in your code, and then hit Simulate. Change the inputs to see the expected behavior of the board! \
-			To include more modules, simply paste them one after the other into the textbox.\
-			It's okay if you don't get it. <p id='nevergonnagiveyouup' onclick='javascript:rickroll()' style='display: inline; cursor: pointer; color: cornflowerblue; transition: all 0.3s'>Don't give up on yourself!</p>"
+            Include any other modules referenced in your code, and then hit Simulate. Change the inputs to see the expected behavior of the board! \
+            To include more modules, simply paste them one after the other into the textbox.\
+            It's okay if you don't get it. <p id='nevergonnagiveyouup' onclick='javascript:rickroll()' style='display: inline; cursor: pointer; color: cornflowerblue; transition: all 0.3s'>Don't give up on yourself!</p>"
             document.querySelector('#nevergonnagiveyouup').style['color'] = 'cornflowerblue';
             setTimeout(() => { if (document.querySelector('#nevergonnagiveyouup')) document.querySelector('#nevergonnagiveyouup').style['color'] = ''; }, 1000)
             break;
@@ -1025,12 +1026,31 @@ function closeOverlay() {
 }
 
 function switchWorkspaceSim() {
-    if ($('#switchsim')[0].innerHTML == 'Workspace Simulation') {
+    if (localStorage.switchsim == 'workspace') {
         $('#switchsim')[0].innerHTML = 'File Simulation'
         localStorage.switchsim = 'file'
     } else {
         $('#switchsim')[0].innerHTML = 'Workspace Simulation'
         localStorage.switchsim = 'workspace'
+    }
+}
+
+function onHoverSwitchsim(e, opt) {
+    if (opt == 0) {
+        if (e.currentTarget.innerHTML == 'File Simulation') {
+            e.currentTarget.innerHTML = "Use Workspace Simulation";
+        }
+        else {
+            e.currentTarget.innerHTML = "Use File Simulation";
+        }
+    }
+    else {
+        if (localStorage.switchsim == 'file') {
+            e.currentTarget.innerHTML = "File Simulation";
+        }
+        else {
+            e.currentTarget.innerHTML = "Workspace Simulation";
+        }
     }
 }
 
@@ -1109,8 +1129,6 @@ function reset_handler() {
     if (typeof ws != "undefined" && ws.readyState == ws.OPEN) {
         ws.onclose = function() {}
         ws.send("END SIMULATION")
-            // ws.close()
-            // update_status("CODE_ERROR", "Status: Simulation reset")
         difftime = (new Date().getTime() / 1000) - time
         var minutes = Math.floor(difftime / 60);
         var seconds = difftime - minutes * 60;
@@ -1185,8 +1203,8 @@ function codescroll(event) {
 
 function selectTabByEvent(event) {
     if (event.target.classList.contains('tab-close') || event.target.classList.contains('wksp-tab-close') || event.target.id == "editor-tab-add" || $(event.target).nodeName == "PATH")
-        return
-        else if ($(event.target).prop('tagName') != "LABEL" && $(event.target).classList.includes('editor-tab-selected')) {
+        return;
+    else if ($(event.target).prop('tagName') != "LABEL" && $(event.target).classList.includes('editor-tab-selected')) {
         selectTabByElement(event.target)
     }
 }
@@ -1272,23 +1290,23 @@ function tutorialButtonAction(button) {
 
 function tutorialAction(action) {
     localStorage.tutorialTaken = 'true';
-    
+
     if (!window.tutorialStep && !['stop', 'aska'].includes(action)) {
-		// starting tutorial now
-		window.tutorialStep = 0;
+        // starting tutorial now
+        window.tutorialStep = 0;
 
-		tutorial_button_functions[0] = (() => { tutorialAction("prev") })
-		$('.btn-tutorial')[0].innerHTML = "Back"
-		$('.btn-tutorial')[0].title = "Need to revisit something?  Go back a page!"
-		$('.btn-tutorial')[1].innerHTML = "Stop"
-		$('.btn-tutorial')[1].title = "Tired of going through all this information?  Stop now and return when you can!"
-		tutorial_button_functions[2] = (() => { tutorialAction("next") })
-		$('.btn-tutorial')[2].innerHTML = "Next"
-		$('.btn-tutorial')[2].title = "All good?  Keep going!"
+        tutorial_button_functions[0] = (() => { tutorialAction("prev") })
+        $('.btn-tutorial')[0].innerHTML = "Back"
+        $('.btn-tutorial')[0].title = "Need to revisit something?  Go back a page!"
+        $('.btn-tutorial')[1].innerHTML = "Stop"
+        $('.btn-tutorial')[1].title = "Tired of going through all this information?  Stop now and return when you can!"
+        tutorial_button_functions[2] = (() => { tutorialAction("next") })
+        $('.btn-tutorial')[2].innerHTML = "Next"
+        $('.btn-tutorial')[2].title = "All good?  Keep going!"
 
-		$('.tutorial_actions').css('flex-direction', 'row');
-		$('.tutorial_actions').css('justify-content', 'space-evenly');
-		$('.btn-tutorial').css('width', '10vw');
+        $('.tutorial_actions').css('flex-direction', 'row');
+        $('.tutorial_actions').css('justify-content', 'space-evenly');
+        $('.btn-tutorial').css('width', '10vw');
         $('.btn-tutorial').blur();  // allowing Left/Right arrow movement
     }
 
@@ -1297,7 +1315,7 @@ function tutorialAction(action) {
         clearInterval(window.tutorialFlashInterval);
         delete window.tutorialFlashInterval;
     }
-    
+
     switch (action) {
         case 'prev':
             window.tutorialStep--;
@@ -1341,7 +1359,7 @@ function tutorialAction(action) {
         clearInterval(window.tutorialFlashInterval);
         delete window.tutorialFlashInterval;
     }
-    
+
     if (window?.tutorialStep && TUTORIAL_DESCS[window.tutorialStep]) {
         $("#tutorial").css("top", TUTORIAL_DESCS[window.tutorialStep].top);
         $("#tutorial").css("left", TUTORIAL_DESCS[window.tutorialStep].left);
@@ -1537,12 +1555,12 @@ function changeBoardTheme(theme) {
             }
         } catch (err) {
             window.prompt(`An error occurred trying to set your custom evaluation board colors.  
-			Set them up in the dev console again.  The format is in the box below.  
-			Change the value of "cnva" for the background, "ltrs" for the letter color, "caps" for the 
-			button color, and "fnwt" for the font weight.`.replace(/[ \t\n]{2,}/g, ' '),
+            Set them up in the dev console again.  The format is in the box below.  
+            Change the value of "cnva" for the background, "ltrs" for the letter color, "caps" for the 
+            button color, and "fnwt" for the font weight.`.replace(/[ \t\n]{2,}/g, ' '),
                 `window.localStorage.evalboardcustomtheme = JSON.stringify({"cnva": "#041f05", "ltrs": 
-			"black", "caps": "#aaa", "fnwt": "bold", "lit_ss": "#f00", blank_ss: "#222", lit_red: "#f00", 
-			blank_red: "#300"}); changeBoardTheme("null")`.replace(/[ \t\n]{2,}/g, ' '));
+            "black", "caps": "#aaa", "fnwt": "bold", "lit_ss": "#f00", blank_ss: "#222", lit_red: "#f00", 
+            blank_red: "#300"}); changeBoardTheme("null")`.replace(/[ \t\n]{2,}/g, ' '));
             console.log(err);
         }
     }
@@ -1601,8 +1619,8 @@ function getWkspSettings(wksp, all = getGlobalWkspSettings()) {
 }
 
 function setWkspSettings(wksp, val, all=JSON.parse(localStorage['workspace_settings'])) {
-	all[wksp] = val;
-	localStorage['workspace_settings'] = JSON.stringify(all);
+    all[wksp] = val;
+    localStorage['workspace_settings'] = JSON.stringify(all);
 }
 
 // first-time load, check in on support modules
@@ -1652,15 +1670,15 @@ function toggleWorkspaceSettings(event, tgl) {
         window.supportModules.forEach(f => {
             if (!(existing.includes(f))) {
                 document.querySelector('#wksp_module_enable').innerHTML += `<div class="wksp_module">
-				<i class="fa fa-check-square module_check"></i>
-				<label class="module_name">${f}</label></div>`;
+                <i class="fa fa-check-square module_check"></i>
+                <label class="module_name">${f}</label></div>`;
             }
         });
         Array.from($('.wksp_module')).forEach(st => {
             if (wksp_saved["support"].includes(st.querySelector('label').innerHTML)) {
-                st.querySelector('i').style.color = 'var(--display-4-color)';
+                st.querySelector('i').classList.toggle('module_check_active', true);
             } else {
-                st.querySelector('i').style.color = '';
+                st.querySelector('i').classList.toggle('module_check_active', false);
             }
         });
         if (Array.from($('#select_testbench option')).map(e => e.textContent).includes(wksp_saved['testbench'])) {
@@ -1682,20 +1700,20 @@ function toggleWorkspaceSettings(event, tgl) {
 function selectWorkspaceByElement(elm, force) {
     // don't accidentally select the workspace-add button if this is somehow called
     if (elm.id == 'editor-tab-workspace-add') return;
-        // tell everyone that workspace has changed
+    // tell everyone that workspace has changed
     window.active_workspace = $('.editor-tab-workspace').filter((i, e) => e.style.background).attr('name');
     // add settings icon for this workspace:
     document.querySelector('#div_workspace_gear')?.remove();
     document.querySelector('#workspace_gear')?.remove();
     elm.innerHTML += `<div id="div_workspace_gear"><i class="fa fa-cog" onclick="javascript:toggleWorkspaceSettings(event, true)" id="workspace_gear"></i></div>`
-        // save last tab hopefully?
+    // save last tab hopefully?
     if (window.active_tab && $(window.active_tab).attr('workspace') in editor_tab_list && editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')]) {
         editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].setValue(editor.session.getValue())
     }
     // 
     // remove current tabs
     $('.editor-tab[id!=editor-tab-add]').remove()
-        // open workspace tabs
+    // open workspace tabs
     return new Promise((resolve, reject) => {
         browserOpenWorkspace(elm.getAttribute('name'), force).then(res => {
             resolve(true);
@@ -1706,79 +1724,79 @@ function selectWorkspaceByElement(elm, force) {
 }
 
 function selectTabByElement(elm) {
-	// save last tab hopefully?
-	if (window.active_tab && $(window.active_tab).attr('workspace') in editor_tab_list && editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')]) {
-		// save tab undo/redo history
-		var historyStack = [JSON.stringify(editor.getSession().getUndoManager().$undoStack), JSON.stringify(editor.getSession().getUndoManager().$redoStack)];
-		window.undoManagers[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].historyStack = historyStack;
-		// save tab cursor position
-		window.undoManagers[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].cursorPos = editor.getCursorPosition();
-		editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].setValue(editor.session.getValue());
-	}
-	// clears background attr from all tabs
-	$('.editor-tab').removeClass('editor-tab-selected');
-	elm.classList.add('editor-tab-selected');
+    // save last tab hopefully?
+    if (window.active_tab && $(window.active_tab).attr('workspace') in editor_tab_list && editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')]) {
+        // save tab undo/redo history
+        var historyStack = [JSON.stringify(editor.getSession().getUndoManager().$undoStack), JSON.stringify(editor.getSession().getUndoManager().$redoStack)];
+        window.undoManagers[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].historyStack = historyStack;
+        // save tab cursor position
+        window.undoManagers[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].cursorPos = editor.getCursorPosition();
+        editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].setValue(editor.session.getValue());
+    }
+    // clears background attr from all tabs
+    $('.editor-tab').removeClass('editor-tab-selected');
+    elm.classList.add('editor-tab-selected');
 
-	window.active_tab = elm;
+    window.active_tab = elm;
 
-	// set ace editor mode based on file extension
-	if (elm.getAttribute('name').endsWith('.mem')) {
-		editor.session.setMode("ace/mode/text");
-	} else if (elm.getAttribute('name').endsWith('.json')) {
-		editor.session.setMode("ace/mode/json");
-	} else {
-		editor.session.setMode("ace/mode/verilog");
-	}
-	
-	// make sure undomanager for tab exists before setting it, otherwise create a new one
-	// it is CRUCIAL that this happen before code is changed - otherwise the actual code swap will be saved in the UndoManager
-	if (!($(elm).attr('workspace') in window.undoManagers)) {
-		window.undoManagers[$(elm).attr('workspace')] = {};
-	}
-	if (!($(elm).attr('name') in window.undoManagers[$(elm).attr('workspace')])) {
-		window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')] = {'historyStack': ["[]", "[]"], 'cursorPos': {'row': 0, 'column': 0}};
-	}
+    // set ace editor mode based on file extension
+    if (elm.getAttribute('name').endsWith('.mem')) {
+        editor.session.setMode("ace/mode/text");
+    } else if (elm.getAttribute('name').endsWith('.json')) {
+        editor.session.setMode("ace/mode/json");
+    } else {
+        editor.session.setMode("ace/mode/verilog");
+    }
+    
+    // make sure undomanager for tab exists before setting it, otherwise create a new one
+    // it is CRUCIAL that this happen before code is changed - otherwise the actual code swap will be saved in the UndoManager
+    if (!($(elm).attr('workspace') in window.undoManagers)) {
+        window.undoManagers[$(elm).attr('workspace')] = {};
+    }
+    if (!($(elm).attr('name') in window.undoManagers[$(elm).attr('workspace')])) {
+        window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')] = {'historyStack': ["[]", "[]"], 'cursorPos': {'row': 0, 'column': 0}};
+    }
 
-	// if tab exists, find its code and load it
-	if ($(elm).attr('workspace') in editor_tab_list && editor_tab_list[$(elm).attr('workspace')][$(elm).attr('name')]) {
-		var code = (editor_tab_list[$(elm).attr('workspace')][$(elm).attr('name')]).getValue();
-		var cursorPos = window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')].cursorPos;
-		editor.getSession().setValue(code);
-		editor.moveCursorToPosition(cursorPos);
-		// otherwise load the template code
-	} else {
-		editor.getSession().setValue(window.localStorage.original_code, -1);
-	}
-	
-	// once value is set, NOW bring back the undo/redo history
-	var undo_mgr = editor.getSession().getUndoManager();
-	undo_mgr.$undoStack = JSON.parse(window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')].historyStack[0]);
-	undo_mgr.$redoStack = JSON.parse(window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')].historyStack[1]);
-	editor.getSession().setUndoManager(undo_mgr);
-	
-	// set up errors for tab
-	if (elm.getAttribute('errors') != null) {
-		$(elm).css('border', '')
-		clearEditorErrors()
-		JSON.parse(elm.getAttribute("errors")).forEach(n => {
-			var num = parseInt(n)
-			error_id.push(editor.session.addMarker(new Range(num - 1, 0, num - 1, 1), localStorage.ice40DarkMode == "true" ? "ace-line-error-dark" : "ace-line-error-light", "fullLine"))
-		})
-		editor.getSession().setAnnotations(
-			errors.filter(e => e.file == elm.getAttribute('name') && e.workspace == elm.getAttribute('workspace'))
-		)
-	}
+    // if tab exists, find its code and load it
+    if ($(elm).attr('workspace') in editor_tab_list && editor_tab_list[$(elm).attr('workspace')][$(elm).attr('name')]) {
+        var code = (editor_tab_list[$(elm).attr('workspace')][$(elm).attr('name')]).getValue();
+        var cursorPos = window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')].cursorPos;
+        editor.getSession().setValue(code);
+        editor.moveCursorToPosition(cursorPos);
+        // otherwise load the template code
+    } else {
+        editor.getSession().setValue(window.localStorage.original_code, -1);
+    }
+    
+    // once value is set, NOW bring back the undo/redo history
+    var undo_mgr = editor.getSession().getUndoManager();
+    undo_mgr.$undoStack = JSON.parse(window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')].historyStack[0]);
+    undo_mgr.$redoStack = JSON.parse(window.undoManagers[$(elm).attr('workspace')][$(elm).attr('name')].historyStack[1]);
+    editor.getSession().setUndoManager(undo_mgr);
+    
+    // set up errors for tab
+    if (elm.getAttribute('errors') != null) {
+        $(elm).css('border', '')
+        clearEditorErrors()
+        JSON.parse(elm.getAttribute("errors")).forEach(n => {
+            var num = parseInt(n)
+            error_id.push(editor.session.addMarker(new Range(num - 1, 0, num - 1, 1), localStorage.ice40DarkMode == "true" ? "ace-line-error-dark" : "ace-line-error-light", "fullLine"))
+        })
+        editor.getSession().setAnnotations(
+            errors.filter(e => e.file == elm.getAttribute('name') && e.workspace == elm.getAttribute('workspace'))
+        )
+    }
 
-	// finally, make sure the cursor is active (setValue removes focus)
-	editor.focus();
+    // finally, make sure the cursor is active (setValue removes focus)
+    editor.focus();
 }
 
 function selectTabByEvent(event) {
-	if (event.target.classList.contains('tab-close') || event.target.classList.contains('wksp-tab-close') || event.target.id == "editor-tab-add" || $(event.target).nodeName == "PATH")
-		return
-	else if ($(event.target).prop('tagName') != "LABEL" && !$(event.target).classList.includes('editor-tab-selected')) {
-		selectTabByElement(event.target)
-	}
+    if (event.target.classList.contains('tab-close') || event.target.classList.contains('wksp-tab-close') || event.target.id == "editor-tab-add" || $(event.target).nodeName == "PATH")
+        return
+    else if ($(event.target).prop('tagName') != "LABEL" && !$(event.target).classList.includes('editor-tab-selected')) {
+        selectTabByElement(event.target)
+    }
 }
 
 function addTab(tabdata) {

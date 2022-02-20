@@ -412,6 +412,8 @@ function browserLoadFilesystem () {
 function closeTabHandler (e) {
 	e.stopPropagation()
 	if ($('.editor-tab').length > 2) {
+		// to be clear - deleted is just a variable name
+		// this used to delete the file, now it just hides it
 		if (e.currentTarget.classList.contains ('tab-close')) {
 			var deleted = $(e.currentTarget).parent();
 		}
@@ -419,7 +421,6 @@ function closeTabHandler (e) {
 			var deleted = $(e.target);
 		}
 		var filesystem = JSON.parse (localStorage.filesystem)
-		console.log (deleted)
 		var workspace = deleted.attr ('workspace')
 		if (deleted.attr('workspace') in editor_tab_list) {
 			delete editor_tab_list[deleted.attr('workspace')][deleted.attr('name')]
@@ -450,11 +451,12 @@ function addTabHandler (e) {
 	console.log (e.target)
 	console.log ((e.target.id == 'editor-tab-workspace-add') || (e.target.id == 'wksp-tab-add'))
 	if ((e.target.id == 'editor-tab-workspace-add') || (e.target.id == 'wksp-tab-add')) {
-		pmt = window.prompt ("Enter new workspace name: ").replace (/ /g, '')
-		if (pmt == '' || !pmt || (pmt in getFilesystem())) {
+		pmt = window.prompt ("Enter new workspace name: ")
+		if (!pmt || pmt.replace (/ /g, '') == '' || (pmt.replace (/ /g, '') in getFilesystem())) {
 			alert ("Invalid/existing name.  Please enter a single name with no spaces.")
 			return
 		}
+		pmt = pmt.replace (/ /g, '');
 		var fldr = browserAddFolder (pmt);
 		var elm = $('[name="' + pmt + '"]')[0];
 		[ctime, mtime] = getCurrentTimestamps();
@@ -659,11 +661,18 @@ window.onload = function () {
                     }
                     return el
                 })
+
+				// move tab undo/redo history
+				window.undoManagers[workspace][e.target.innerHTML] = window.undoManagers[workspace][$(e.target).parent().attr ('name')];
+				delete window.undoManagers[workspace][$(e.target).parent().attr ('name')];
+
+				// then save the data for the renamed tab into localStorage
                 filesystem [workspace] = JSON.stringify (all)
                 localStorage.filesystem = JSON.stringify (filesystem)
 				
-				// let finisher code remain inside so it finishes after tab check
+				// then, confirm the tab name change
 				$(e.target).parent().attr('name', e.target.innerHTML)
+				// and reload the filesystem in File Browser to make changes visible
 				browserLoadFilesystem()
 			}
 		}
@@ -713,17 +722,17 @@ window.onload = function () {
 			new_idx = old_idx == len - 2 ? 0 : old_idx + 1
 			selectTabByElement ($('#editor-tab-header').children()[new_idx])
 		}
-		else if (e.ctrlKey && e.shiftKey && e.which == 84 && e.type == "keydown") {
-			// ctrl + shift + t support to add a tab
+		/*else if (e.ctrlKey && e.shiftKey && e.which == 84 && e.type == "keydown") {
+			// ctrl + shift + t support to add a tab - deprecated because it keeps getting in the way
 			e.preventDefault()
 			addTabHandler (e)
 		}
 		else if (e.ctrlKey && e.altKey && e.which == 87 && e.type == "keydown") {
-			// ctrl + alt + w support to close a tab
+			// ctrl + alt + w support to close a tab - deprecated because no one is using it, not even the author
 			e.preventDefault()
 			e.target = window.active_tab
 			closeTabHandler (e)
-		}
+		}*/
 		else if (editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')]) {
 			editor_tab_list[$(window.active_tab).attr('workspace')][$(window.active_tab).attr('name')].setValue(editor.session.getValue())
 		}
@@ -742,7 +751,10 @@ window.onload = function () {
 	).on ('click', '#editor-tab-workspace-add', addTabHandler
 	).on ('click', '#editor-tab-add', addTabHandler
 	).on ('click', '#tab-add', addTabHandler
-	).on ('mousedown', '#resize-editor', e => {
+	).on ('click', '#mainview > div,nav', () => {
+		if ($(".notifications").css("opacity") == "1") 
+			toggleNotifs(true);
+	}).on ('mousedown', '#resize-editor', e => {
 		e.preventDefault();
 		if (term) {
 			term.resize (parseInt ($("#editor-workspace").width() / 10.5), parseInt ($("#editor-workspace").height() / 22.5))
@@ -759,12 +771,12 @@ window.onload = function () {
 		}
 		var saved = getWkspSettings(wksp) || {"support": [], "testbench": ""};
 		var support = saved["support"];
-		if (icon.style.color == '') {
-			icon.style.color = 'var(--display-4-color)';
+		if (!icon.classList.contains("module_check_active")) {
+			icon.classList.toggle('module_check_active', true);
 			support.push(mod);
 		}
 		else {
-			icon.style.color = '';
+			icon.classList.toggle('module_check_active', false);
 			support = support.filter(e => e != mod);
 		}
 		saved["support"] = support;
@@ -938,13 +950,6 @@ window.onload = function () {
 	console.log("%c\n\n\nFellow DigiJocks and DigiJockettes, thanks for checking out the code!\n\n\n" +
 		"The main JS functions lie in assets/js/simulator_backend.js.\n\n\n",
 		"background: #eeeeee; color: black; font-size: medium")
-	
-	if (!localStorage.announcement_count || parseInt (localStorage.announcement_count) < 1) {
-		alert ("Welcome back!  Thanks for your continued interest in accessing the simulator!  This page may change radically " +
-			   "throughout the summer, so I'll try my best to document changes in the changelog on the help page.  Try them out if you're interested ("
-			   +"although there is no guarantee that they will work.)")
-		localStorage.announcement_count = 1
-	}
 
 	if (!window.localStorage.tutorialTaken || window.localStorage.tutorialTaken != 'true') {
 		toggleTutorial(0);
