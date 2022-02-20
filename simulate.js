@@ -129,7 +129,7 @@ function connection(ws, request) {
                 ws.simulator_object = null;
                 ws.filenames = [];
                 
-                fs.mkdirSync(path.resolve('/tmp/tmpcode', ws.unique_client), (err) => {
+                fs.mkdirSync(path.resolve('/var/tmp/tmpcode', ws.unique_client), (err) => {
                     if (err) { throw err; }
                 });
                 workspace.forEach (file => {
@@ -143,7 +143,7 @@ function connection(ws, request) {
                             if (err) throw err;
                         });
                     }
-                    fs.writeFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, file.name), file.code, 'utf8', function (err) {
+                    fs.writeFileSync(path.resolve('/var/tmp/tmpcode', ws.unique_client, file.name), file.code, 'utf8', function (err) {
                         if (err) { throw err; }
                     });
                     ws.filenames.push (file.name);
@@ -161,10 +161,10 @@ function connection(ws, request) {
                     const VFLAGS    = "--lint-only --top-module top"
                           SUPPORTS  = supports.reduce ((p,n) => p + " " + n, "") + " "
                           FILES     = `${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `
-                          FILES     += ws.filenames.filter (f => f.endsWith ('.sv')).map (f => path.resolve ('/tmp/tmpcode', ws.unique_client, f)).join (' ')
-                    const WARNINGS  = ['%Warning-WIDTH', '%Warning-SELRANGE']
-                    var err_regex = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)", "g")
-                    var err_regex_single = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)")
+                          FILES     += ws.filenames.filter (f => f.endsWith ('.sv')).map (f => path.resolve ('/var/tmp/tmpcode', ws.unique_client, f)).join (' ')
+                    const WARNINGS  = ['%Warning-WIDTH', '%Warning-SELRANGE', '%Warning-COMBDLY']
+                    var err_regex = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/var/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)", "g")
+                    var err_regex_single = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/var/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)")
                     var ignore_err_rgx = /(This may be because there\'s no search path specified with)/
                     
                     cp.execSync ([VERILATOR, VFLAGS, SUPPORTS, FILES].join (" "), { cwd: __dirname })
@@ -205,7 +205,7 @@ function connection(ws, request) {
                             if (err) { throw err; }
                         })
                     }
-                    fs.moveSync("/tmp/tmpcode/" + ws.unique_client, __dirname + "/error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
+                    fs.moveSync("/var/tmp/tmpcode/" + ws.unique_client, __dirname + "/error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
                     ws.send(ws.verilatorLog + "\nYosys did not run." + "\nCompilation failed with the following error:\n" + modded_error.join('\n'))
                     ws.close()
                     return
@@ -221,14 +221,14 @@ function connection(ws, request) {
                     
                     try {
                         yosys_out = cp.execSync('yosys -p ' + 
-                        (JSONS.length > 0 ? ('"read_json ' + JSONS.join (' ') + '; ') : '" ') +
-                        `read_verilog -sv ${SUPPORTS} ${FILES}; ` +
+                                                (JSONS.length > 0 ? ('"read_json ' + JSONS.join (' ') + '; ') : '" ') +
+                                                `read_verilog -sv ${SUPPORTS} ${FILES}; ` +
                                                 'synth_ice40 -top top; ' +
-                                                'write_verilog /tmp/tmpcode/' + ws.unique_client + '/struct_code.v; ' + 
-                                                'write_json /tmp/tmpcode/' + ws.unique_client + '/struct.json;" ' + 
-                                                '-l /tmp/tmpcode/' + ws.unique_client + '/yosyslog', {timeout: 60000, cwd: path.resolve ('/tmp/tmpcode', ws.unique_client)})
-                                                ws.yosysJSON = fs.readFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'struct.json')).toString()
-                                                fs.unlinkSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog'))
+                                                'write_verilog /var/tmp/tmpcode/' + ws.unique_client + '/struct_code.v; ' + 
+                                                'write_json /var/tmp/tmpcode/' + ws.unique_client + '/struct.json;" ' + 
+                                                '-l /var/tmp/tmpcode/' + ws.unique_client + '/yosyslog', {timeout: 60000, cwd: path.resolve ('/var/tmp/tmpcode', ws.unique_client)})
+                        ws.yosysJSON = fs.readFileSync(path.resolve('/var/tmp/tmpcode', ws.unique_client, 'struct.json')).toString()
+                        fs.unlinkSync(path.resolve('/var/tmp/tmpcode', ws.unique_client, 'yosyslog'))
                         ws.initYosys = true
                     }
                     catch (ex) {
@@ -261,28 +261,28 @@ function connection(ws, request) {
                             ws.close()
                             return;
                         }
-    
-                        yosys_out = fs.readFileSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog')); 
-                        ws.yosysJSON = 'No JSON was produced because Yosys ran into an error.'; 
-                        fs.unlinkSync(path.resolve('/tmp/tmpcode', ws.unique_client, 'yosyslog')); 
-                        ws.initYosys = false; 
-    
+
+                        yosys_out = fs.readFileSync(path.resolve('/var/tmp/tmpcode', ws.unique_client, 'yosyslog'));
+                        ws.yosysJSON = 'No JSON was produced because Yosys ran into an error.';
+                        fs.unlinkSync(path.resolve('/var/tmp/tmpcode', ws.unique_client, 'yosyslog'));
+                        ws.initYosys = false;
+
                         function indexOfReg(arr, search) {
                             for (var elm in arr) {
                                 try {
                                     if (typeof arr[elm] == 'string' && arr[elm].match(search)) {
                                         d = new Object();
-                                        d.message = arr[elm]; 
-                                        d.lineno = arr.indexOf(arr[elm]); 
-                                        return d; 
+                                        d.message = arr[elm];
+                                        d.lineno = arr.indexOf(arr[elm]);
+                                        return d;
                                     }
                                 }
                                 catch (ex) {
                                     debugLog('indexOfReg failed');
                                     debugLog(arr);
                                     d = new Object();
-                                    d.message = "[ERROR] Internal server error. Please try again later."; 
-                                    d.lineno = 1; 
+                                    d.message = "[ERROR] Internal server error. Please try again later.";
+                                    d.lineno = 1;
                                     return d;
                                 }
                             }
@@ -290,7 +290,7 @@ function connection(ws, request) {
                         // debugLog (yosys_out.toString())
                         logarray = yosys_out.toString().split("\n")
                         error_msg = indexOfReg(logarray, (/Error/i))
-    
+
                         if (error_msg && error_msg.message.includes("server error")) {
                             debugLog("FATAL: Yosys encountered an unknown error unrelated to code.")
                         }
@@ -301,24 +301,24 @@ function connection(ws, request) {
                             if (related_error && !related_error.message.match(skippable_error_regex)) {
                                 // Lazy catch-all for if there was an error but no other details were captured.
                                 if (related_error.message.includes('server error')) {
-                                    error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [SERVER_ERROR] Your code has errors unrecognized by the server. Make sure to check for missing semicolons, wrong flip flop declarations and so on.")
+                                    error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [SERVER_ERROR] Your code has errors unrecognized by the server. Make sure to check for missing semicolons, wrong flip flop declarations and so on.")
                                 }
                                 // If students try to pull an output low when it is already connected to a high.
                                 if (related_error.message.includes("Mismatch in directionality for cell port")) {
                                     var codeline = related_error.message.replace(/ERROR: Mismatch in directionality for cell port [^ ]+ /, '')
-                                    error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [SYNTHESIS_ERROR] You are trying to drive a signal with two different sources. More information is in: " + codeline)
+                                    error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [SYNTHESIS_ERROR] You are trying to drive a signal with two different sources. More information is in: " + codeline)
                                 }
                                 // Wrong flip flop reset logic
                                 else if (related_error.message.includes("Multiple edge sensitive events")) {
                                     var codeline = logarray[logarray.indexOf(related_error.message) - 1]
                                     var filename = codeline.match(/([\w]+\.sv):([0-9]+)/)[1]
                                     codeline = parseInt(codeline.match(/([\w]+\.sv):([0-9]+)/)[2])
-                                    error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + codeline + ") [SYNTHESIS_ERROR] This flip flop does not have correct reset logic.")
+                                    error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + codeline + ") [SYNTHESIS_ERROR] This flip flop does not have correct reset logic.")
                                 }
                                 // For all 'if (reset) perform invalid logic' statements
                                 else if (related_error.message.match(/yields non-constant value/i)) {
                                     var signal = logarray[related_error.lineno].match(/\\([\w]+) yields non-constant value/i)[1]
-                                    msg = "**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(" + related_error.lineno + ")"
+                                    msg = "**/var/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(" + related_error.lineno + ")"
                                     msg += "Two asynchronous resets not allowed in flip flop. '" + signal + "' does not appear to be a valid reset for this FF."
                                     error.push(msg)
                                 }
@@ -327,18 +327,18 @@ function connection(ws, request) {
                                     var codeline = logarray[logarray.indexOf(related_error.message)]
                                     var filename = codeline.match(/([\w]+\.sv):([0-9]+)/)[1]
                                     codeline = parseInt(codeline.match(/([\w]+\.sv):([0-9]+)/)[2])
-                                    error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + codeline + ") [SYNTHESIS_ERROR] The port list for this flip flop cannot be mapped to real hardware.")
+                                    error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + codeline + ") [SYNTHESIS_ERROR] The port list for this flip flop cannot be mapped to real hardware.")
                                 }
                                 // missing module errors (safest if checked here since JSON would have been parsed)
                                 else if (related_error.message.match(/referenced in module [^ ]+ in cell [^ ]+ is not part of the design/i)) {
-                                    error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [SYNTHESIS_ERROR] " + related_error.message.replace ('ERROR: ', ''))
+                                    error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [SYNTHESIS_ERROR] " + related_error.message.replace ('ERROR: ', ''))
                                 }
                                 else if (related_error.message.match(/ERROR: Module `top' not found!/i)) {
-                                    error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [MISSING_MODULE] The top module appears to be missing.  ")
+                                    error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/" + ws.filenames.filter (f => f.endsWith ('.sv'))[0] + "(1) [MISSING_MODULE] The top module appears to be missing.  ")
                                 }
                                 else if (related_error.message.match(/ERROR: Identifier `[^']+' doesn't map to any signal/i)) {
                                     [ign, message, filename, lineno] = related_error.message.match (/ERROR: (Identifier `[^']+' doesn't map to any signal) at \/tmp\/tmpcode\/[a-z0-9]+\/([^\.]+\.sv):([0-9]+)/)
-                                    error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + lineno + ") " + message)
+                                    error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + lineno + ") " + message)
                                 }
                                 else {
                                     general_error = /\/tmp\/tmpcode\/[a-z0-9]+\/([^\.]+\.sv)\:([0-9]+)\: ?(.+)/
@@ -346,27 +346,27 @@ function connection(ws, request) {
                                         filename = related_error.message.match(general_error)[1]
                                         lineno = related_error.message.match(general_error)[2] || "1"
                                         message = related_error.message.match(general_error)[3]
-                                        error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + lineno + ") " + message)
+                                        error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/" + filename + "(" + lineno + ") " + message)
                                     }
                                     catch (ex) {
                                         var message = related_error.message
                                         if (related_error.message.includes ("cmd error aborting 'source ")) {   // known to appear when outputs are multiply driven
-                                            error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/"+ ws.filenames.filter (f => f.endsWith ('.sv'))[0] +"(1)No line number information - " + message + "\nPossible duplicate connections to outputs.")
+                                            error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/"+ ws.filenames.filter (f => f.endsWith ('.sv'))[0] +"(1)No line number information - " + message + "\nPossible duplicate connections to outputs.")
                                         }
                                         else {
-                                            error.push("**/tmp/tmpcode/hiddentmpcodefolderpath/"+ ws.filenames.filter (f => f.endsWith ('.sv'))[0] +"(1)No line number information - " + message)
+                                            error.push("**/var/tmp/tmpcode/hiddentmpcodefolderpath/"+ ws.filenames.filter (f => f.endsWith ('.sv'))[0] +"(1)No line number information - " + message)
                                         }
                                     }
                                 }
                             }
                         }
                     }
-    
+
                     // Custom error checks based on Regex
                     blif_unmapped_ffs = []
                     try {
                         if (error.length == 0) {
-                            blif = fs.readFileSync('/tmp/tmpcode/' + ws.unique_client + '/temp.blif').toString().split('\n')
+                            blif = fs.readFileSync('/var/tmp/tmpcode/' + ws.unique_client + '/temp.blif').toString().split('\n')
                             valid_flip_flops = ['_DFFE',
                                 '_DFFSR',
                                 '_DFFR',
@@ -386,7 +386,7 @@ function connection(ws, request) {
                                 '_DFFNER',
                                 '_DFFNESS',
                                 '_DFFNES']
-    
+
                             blif.filter(function (v, i, a) {
                                 if (v.match("_DFF") && !valid_flip_flops.includes(v.match("_DFF[^ ]+")[0])) {
                                     blif_unmapped_ffs.push(a[i])
@@ -397,7 +397,7 @@ function connection(ws, request) {
                     catch (ex) {
                         // ignore.
                     }
-    
+
                     // Line-by-line checks (no inline logic initializations, etc.)
                     ws.codelist.forEach ((e, fi) => {
                         linebyline = e.split('\n')
@@ -414,7 +414,7 @@ function connection(ws, request) {
                                     if (v.match(always_regex)) {
                                         // console.log (v)
                                         message = "[CUSTOM_ERROR] Flip flops cannot have both an asynchronous set and reset. Use only either one."
-                                        error.push('**/tmp/tmpcode/hiddentmpcodefolderpath/' + ws.filenames[fi] + '(' + (i + 1).toString() + "): " + message)
+                                        error.push('**/var/tmp/tmpcode/hiddentmpcodefolderpath/' + ws.filenames[fi] + '(' + (i + 1).toString() + "): " + message)
                                     }
                                 })
         
@@ -428,13 +428,12 @@ function connection(ws, request) {
                             not_typedef = !v.match(/typedef enum (?:logic|reg)? (?:[\[\]0-9\:]+) \{?/gi)
                             reg_regex = !ta_override && not_equating && !v.match(/(?:reg|logic) +\=+/i) && not_typedef && is_reg_or_logic && startup_reg && !v.match(/\<\=/gi)
                             if (reg_regex) {
-                                message = "[CUSTOM_ERROR] You should not initialize a reg/logic outside an always block!"
-                                error.push('**/tmp/tmpcode/hiddentmpcodefolderpath/' + ws.filenames[fi] + '(' + (i + 1).toString() + "): " + message)
+                               message = "[CUSTOM_ERROR] You should not initialize a reg/logic outside an always block!"
+                               error.push('**/var/tmp/tmpcode/hiddentmpcodefolderpath/' + ws.filenames[fi] + '(' + (i + 1).toString() + "): " + message)
                             }
                         })
                     })
                 }
-
 
                 if (ws.simType == 'mapped' && error.length != '0') {
                     modded_error = []
@@ -443,9 +442,9 @@ function connection(ws, request) {
                             if (err) { throw err; }
                         })
                     }
-                    fs.moveSync("/tmp/tmpcode/" + ws.unique_client, __dirname + "/error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
+                    fs.moveSync("/var/tmp/tmpcode/" + ws.unique_client, "error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
                     error.forEach(function (element) {
-                        modded_err_rgx = /\*?\*?\/tmp\/tmpcode\/[a-z0-9]+\/([\w]+\.sv):?\(? ?([0-9]+)\)?/
+                        modded_err_rgx = /\*?\*?\/var\/tmp\/tmpcode\/[a-z0-9]+\/([\w]+\.sv):?\(? ?([0-9]+)\)?/
                         colon_check = /\.sv\([0-9]+\)\:/
                         try {
                             var name = element.match(modded_err_rgx)[1]
@@ -454,7 +453,7 @@ function connection(ws, request) {
                                 modded_err_msg = element.replace(modded_err_rgx, name + ': Line ' + num.toString())
                             else
                                 modded_err_msg = element.replace(modded_err_rgx, name + ': Line ' + num.toString() + ": ")
-                            modded_err_msg = modded_err_msg.replace(/\/tmp\/tmpcode\/[^\/]+\/([\w]+\.sv):[0-9]+: /, '')
+                            modded_err_msg = modded_err_msg.replace(/\/var\/tmp\/tmpcode\/[^\/]+\/([\w]+\.sv):[0-9]+: /, '')
                             modded_error.push(modded_err_msg)
                         }
                         catch (ex) {
@@ -481,34 +480,34 @@ function connection(ws, request) {
                     debugLog("Starting " + ws.unique_client + ' on IcarusVerilog'); 
                     // additional compile step - ugh
                     var IVL = 'iverilog ';
-                    var VARGS = `-o /tmp/tmpcode/${ws.unique_client}/simcomm.vvp -g2012 -gspecify `;
+                    var VARGS = `-o /var/tmp/tmpcode/${ws.unique_client}/simcomm.vvp -g2012 -gspecify `;
                     if (ws.simType == 'source') {
-                        var FILES = `${__dirname}/sim_modules/simcomm.sv /tmp/tmpcode/${ws.unique_client}/*.sv ` ;
+                        var FILES = `${__dirname}/sim_modules/simcomm.sv /var/tmp/tmpcode/${ws.unique_client}/*.sv ` ;
                         var CELLS = ``;     // no need to use cell files for source simulations
                     }
                     else {
-                        var FILES = `${__dirname}/sim_modules/simcomm.sv /tmp/tmpcode/${ws.unique_client}/struct_code.v ` ;
+                        var FILES = `${__dirname}/sim_modules/simcomm.sv /var/tmp/tmpcode/${ws.unique_client}/struct_code.v ` ;
                         var CELLS = `${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `;
                     }
                     
                     // run compile step
                     try {
-                        var output = cp.execSync(IVL + VARGS + FILES + CELLS, { cwd: `/tmp/tmpcode/${ws.unique_client}` });
+                        var output = cp.execSync(IVL + VARGS + FILES + CELLS, { cwd: `/var/tmp/tmpcode/${ws.unique_client}` });
                     }
                     catch (err) {
                         console.error (err)
-                        ws.send('Error occurred in Icarus compile step: ' + err.stderr.toString()); 
+                        ws.send('Error occurred in Icarus compile step: ' + err.stderr.toString().replace(new RegExp(`/var/tmp/tmpcode/${ws.unique_client}/`, "g"), '')); 
                         ws.close();
                         return;
                     }
 
                     // now for the actual simulation
-                    var sargs = `-M. -m ${__dirname}/sim_modules/simcomm /tmp/tmpcode/${ws.unique_client}/simcomm.vvp`.split(" ");
+                    var sargs = `-M. -m ${__dirname}/sim_modules/simcomm /var/tmp/tmpcode/${ws.unique_client}/simcomm.vvp`.split(" ");
                     env.RECV_PIPE = '1';
                     env.SEND_PIPE = '0';
                     try {
                         // pipe stderr to stdout just in case we don't catch something
-                        ws.simulator_object = cp.spawn('vvp', sargs, { cwd: `/tmp/tmpcode/${ws.unique_client}`, env: env, stdio: [ 'pipe', 'pipe', process.stdout ] });
+                        ws.simulator_object = cp.spawn('vvp', sargs, { cwd: `/var/tmp/tmpcode/${ws.unique_client}`, env: env, stdio: [ 'pipe', 'pipe', process.stdout ] });
                     }
                     catch (err) {
                         console.error (err)
@@ -558,10 +557,10 @@ function connection(ws, request) {
                             }
                         }
                     });
-                    
+
                     ws.simulator_object.on('exit', (code, signal) => {
-                        if (fs.existsSync(`/tmp/tmpcode/${ws.unique_client}/trace.vcd`)) {
-                            fs.readFile(`/tmp/tmpcode/${ws.unique_client}/trace.vcd`, (err, data) => {
+                        if (fs.existsSync(`/var/tmp/tmpcode/${ws.unique_client}/trace.vcd`)) {
+                            fs.readFile(`/var/tmp/tmpcode/${ws.unique_client}/trace.vcd`, (err, data) => {
                                 if (err) ws.send(JSON.stringify({'vcd': 'Error in reading VCD data.  Please try again.'}));
                                 else ws.send(JSON.stringify({'vcd': data.toString()}));
                                 ws.close()
@@ -602,7 +601,7 @@ function connection(ws, request) {
         function close() {
             try {
                 if (ws.simulator_object) {
-                    deleteFolderRecursive(path.resolve('/tmp/tmpcode', ws.unique_client))
+                    deleteFolderRecursive(path.resolve('/var/tmp/tmpcode', ws.unique_client))
                     debugLog("Stopped " + ws.unique_client)
                     ws.simulator_object.kill('SIGINT')
                 }

@@ -28,7 +28,7 @@ Any modern distribution of Linux.  The setup script included in the repo is targ
 
 ~~I don't use or have a Mac, so I don't know if this works on macOS.  If you can get it working, though, I look forward to your pull request!~~
 
-If you install Verilator, Yosys and IcarusVerilog using Homebrew, create a new folder under `/tmp` called `tmpcode`, install packages with `npm i` and try running the simulator with `node cluster.js` which should start it on port 4500, it *should* work.  YMMV.
+If you install Verilator, Yosys and IcarusVerilog using Homebrew, create a new folder under `/var/tmp` called `tmpcode`, install packages with `npm i` and try running the simulator with `node cluster.js` which should start it on port 4500, it *should* work.  YMMV.
 
 ## Installation
 ### The scripted way

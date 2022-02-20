@@ -97,7 +97,6 @@ then
     /usr/bin/npm config set unsafe-perm true
 fi
 /usr/bin/npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
-mkdir -p /tmp/tmpcode
 if [ "$INSIDE_DOCKER" != "YES" ]
 then
     echo "Starting node server..."
