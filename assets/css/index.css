@@ -543,7 +543,7 @@ body {
 
 #editor-workspace {
     min-width: 400px;
-    max-width: 100%;
+    max-width: 850px;
     flex: 1;
     display: flex;
     flex-direction: row;

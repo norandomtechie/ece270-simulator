@@ -527,12 +527,6 @@ function switchTabHandler (e) {
 }
 
 window.onload = function () {
-	if (window.localStorage.editor_width) {
-		$("#editor-workspace").css("flex", "none")
-		$('#editor-workspace').width (window.localStorage.editor_width || '65%')
-		$('#outputview').width (window.localStorage.editor_width || '65%')
-	}
-	var last_page_x = $('#resize-editor').position().left;
 
 	window.addEventListener("mousewheel", codescroll, { passive: false })
 	// load_button.innerHTML = load_btn_text
@@ -754,14 +748,6 @@ window.onload = function () {
 	).on ('click', '#mainview > div,nav', () => {
 		if ($(".notifications").css("opacity") == "1") 
 			toggleNotifs(true);
-	}).on ('mousedown', '#resize-editor', e => {
-		e.preventDefault();
-		if (term) {
-			term.resize (parseInt ($("#editor-workspace").width() / 10.5), parseInt ($("#editor-workspace").height() / 22.5))
-        }
-		$(e.target).addClass ('dragging')
-		last_page_x = e.pageX
-		return false;
 	}).on ('click', '.module_check', e => {
 		var icon  = e.currentTarget;
 		var mod   = icon.parentNode.querySelector('label').innerHTML;
@@ -804,37 +790,7 @@ window.onload = function () {
 		localStorage.switchsim = 'workspace'
 		$('#switchsim')[0].innerHTML = 'Workspace Simulation'
 	}
-
-	$(document).mousemove (e => {
-		if ($('#resize-editor')[0].classList.contains ("dragging")) {
-			if (last_page_x == 0) { //first time adjusting the editor
-				last_page_x = $('#resize-editor').position().left;
-			}
-			if (e.pageX < last_page_x) {
-				// left
-				var diff = (last_page_x - e.pageX)*2;	//doubled to try to match width diff to fast cursor movement
-				$("#editor-workspace").width($("#editor-workspace").width() - diff)
-				$("#outputview").width($("#editor-workspace").width() - diff)
-			}
-			else {
-				// right - make sure not to drag it larger than the width of the window!
-				var diff = (e.pageX - last_page_x)*2;	//doubled to try to match width diff to fast cursor movement
-				if ($("#status-navbar").width() - $("#editor-workspace").width() - diff >= 700
-						|| ($("#status-navbar").width() < 1675 &&  $("#editor-workspace").width() + diff < 1600)) {
-					$("#editor-workspace").width($("#editor-workspace").width() + diff)
-					$("#outputview").width($("#editor-workspace").width() + diff)
-				}
-			}
-			last_page_x = e.pageX
-			$("#editor-workspace").css("flex", "none")
-		}
-	})
-
-	$(document).mouseup (e => {
-		$('#resize-editor').removeClass ('dragging')
-		return false;
-	})
-
+	
 	// When the simulator starts for the first time, load template and set up tabs:
 	promised_code = new Promise((resolve, reject) => {
 		try {
