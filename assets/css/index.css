@@ -1179,22 +1179,6 @@ Apple screws everything up for everyone who tries to develop on its platforms */
     color: var(--tutorial-btn-hover);
 }
 
-#resize-editor {
-    height: 200px;
-    width: 10px;
-    cursor: w-resize;
-    background-color: transparent;
-    border-left: 3px solid var(--display-4-color);
-    transition: border 0.2s;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-#resize-editor:hover {
-    border-left: 9px solid var(--display-4-color);
-}
-
-
 /* sorry not sorry */
 
 #nevergonnagiveyouup:hover {
