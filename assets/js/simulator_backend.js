@@ -1006,7 +1006,6 @@ function display_info(sect) {
 
 window.onbeforeunload = function() {
     window.localStorage.evalboardtheme = document.getElementById("evalthemeselector").value;
-    window.localStorage.editor_width = $("#editor-workspace").width();
     localStorage.ace_options = JSON.stringify(editor.getOptions());
     if (localStorage.ice40DarkMode == "true")
         localStorage.ace_dark_theme = editor.getOption("theme");
