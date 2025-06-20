@@ -6,7 +6,7 @@ fi
 printf "ECE 270 simulator setup\n\n"
 
 declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["yosys"]="https://github.com/YosysHQ/yosys" ["iverilog"]="https://github.com/steveicarus/iverilog" )
-declare -A relcommits=( ["verilator"]="e6554e061c0615eccab83c4ce48f280813fc8773" ["yosys"]="a4522d628296ccaea5e26b6cec1756f01475ceb5" ["iverilog"]="84b4ebee0cfcda28a242d89a07020cd70b1d3e7f" )
+declare -A relcommits=( ["verilator"]="eca2b4c9603554a6a4596befd485c3dd4f550769" ["yosys"]="44aa313ba976b68476aaa3d548098d7f54e61094" ["iverilog"]="4fd5291632232fbe1ba49b2c26bb6b2bf1c6c9cf" )
 declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["iverilog"]="iverilog" )
 
 echo "Setting up folders..."
