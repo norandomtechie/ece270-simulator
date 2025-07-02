@@ -2,11 +2,11 @@
 WARNS=-Wall
 
 # change path if not running test from installed directory location
-INCS=-Isrc
+INCS=-Ivpifiles
 # maybe want -O<something> and/or -g
 CFLAGS= -fPIC -m64 -D_GNU_SOURCE $(INCS)
 LFLAGS= -G -shared -export-dynamic -melf_x86_64
-FILEPATH=src
+FILEPATH=vpifiles
 OBJPATH=sim_modules
 FILES=$(FILEPATH)/svdpi_handler.c
 

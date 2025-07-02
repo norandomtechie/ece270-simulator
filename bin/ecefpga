@@ -1,0 +1,3 @@
+#! /bin/bash
+# run ../setup/setup.sh first
+node cluster.js 4500

@@ -95,21 +95,22 @@ echo "Installing node modules..."
 # https://stackoverflow.com/questions/51811564/sh-1-node-permission-denied
 if [ "$INSIDE_DOCKER" == "YES" ]
 then
-    /usr/bin/npm config set user 0
-    /usr/bin/npm config set unsafe-perm true
+    npm config set user 0
+    npm config set unsafe-perm true
 fi
-/usr/bin/npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
-if [ "$INSIDE_DOCKER" != "YES" ]
-then
-    echo "Starting node server..."
-    runuser -l $SUDO_USER -c "node $(pwd)/cluster.js > $(pwd)/serverlog 2>&1 &"
-    sleep 3     # give some spin-up time
-    if [ "$(cat serverlog)" == "Simulator started and running on port 4500." ]
-    then
-        echo "The node server with dependencies have been successfully set up!  Visit localhost:4500 to access the simulator hosted on this machine, or configure https://verilog.ecn.purdue.edu/ to use your computer to perform simulations!"
-        exit 0
-    else
-        echo "An error has occurred.  Please post the output of 'cat serverlog' in a GitHub issue along with any other errors that may have printed out from this script."
-        exit 1
-    fi
-fi
+npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
+#if [ "$INSIDE_DOCKER" != "YES" ]
+#then
+#    echo "Starting node server..."
+#    # runuser -l $SUDO_USER -c "node $(pwd)/cluster.js > $(pwd)/serverlog 2>&1 &"
+#    node $(pwd)/cluster.js > $(pwd)/serverlog 2>&1 &
+#    sleep 3     # give some spin-up time
+#    if [ "$(cat serverlog)" == "Simulator started and running on port 4500." ]
+#    then
+#        echo "The node server with dependencies have been successfully set up!  Visit localhost:4500 to access the simulator hosted on this machine, or configure https://verilog.ecn.purdue.edu/ to use your computer to perform simulations!"
+#        exit 0
+#    else
+#        echo "An error has occurred.  Please post the output of 'cat serverlog' in a GitHub issue along with any other errors that may have printed out from this script."
+#        exit 1
+#    fi
+#fi
