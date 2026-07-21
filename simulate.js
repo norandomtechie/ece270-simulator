@@ -88,6 +88,29 @@ function deleteFolderRecursive (path) {
     })
 };
 
+function runSpawnSync(command, args, options = {}) {
+    const result = cp.spawnSync(command, args, {
+        ...options,
+        shell: false,
+        encoding: options.encoding || 'utf8'
+    });
+
+    if (result.error) {
+        throw result.error;
+    }
+
+    if (typeof result.status === 'number' && result.status !== 0) {
+        const errOutput = (result.stderr || result.stdout || '').toString();
+        const err = new Error(errOutput || `${command} failed with code ${result.status}`);
+        err.status = result.status;
+        err.stdout = result.stdout;
+        err.stderr = result.stderr;
+        throw err;
+    }
+
+    return result;
+}
+
 /*****************************************************/
 
 function debugLog(message) {
@@ -156,18 +179,24 @@ function connection(ws, request) {
                 var supports = payload.settings.support.map (e => 'support/' + e);
                 var error = [], modded_error = [], error_line = [];
                 var FILES;
+                var SV_FILES = ws.filenames
+                    .filter(f => f.endsWith('.sv'))
+                    .map(f => path.resolve('/var/tmp/tmpcode', ws.unique_client, f));
                 try {
                     const VERILATOR = "verilator"
-                    const VFLAGS    = "--lint-only --top-module top"
-                          SUPPORTS  = supports.reduce ((p,n) => p + " " + n, "") + " "
-                          FILES     = `${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `
-                          FILES     += ws.filenames.filter (f => f.endsWith ('.sv')).map (f => path.resolve ('/var/tmp/tmpcode', ws.unique_client, f)).join (' ')
-                    const WARNINGS  = ['%Warning-WIDTH', '%Warning-SELRANGE', '%Warning-COMBDLY']
-                    var err_regex = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/var/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)", "g")
-                    var err_regex_single = new RegExp ("(?:%Error|" + WARNINGS.join ('|') + ")(?:\-[A-Z0-9]+)?: " + '/var/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)")
+                    const VFLAGS = ["--lint-only", "--top-module", "top", "--timing"]
+                    const WERRORS = ["-Werror-NULLPORT", "-Werror-WIDTH", "-Werror-SELRANGE", "-Werror-COMBDLY", "-Werror-LATCH", "-Wno-ENUMVALUE"]
+                    const FILES_LIST = [
+                        `${__dirname}/sim_modules/cells_sim_timing.v`,
+                        `${__dirname}/sim_modules/cells_map_timing.v`,
+                        ...SV_FILES
+                    ]
+                    FILES = FILES_LIST.join(' ')
+                    var err_regex = new RegExp ("(?:%Error)(?:\-[A-Z0-9]+)?: " + '/var/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)", "g")
+                    var err_regex_single = new RegExp ("(?:%Error)(?:\-[A-Z0-9]+)?: " + '/var/tmp/tmpcode/[a-z0-9]+/([^:]+)' + ":([0-9]+):[0-9]+: (.+)")
                     var ignore_err_rgx = /(This may be because there\'s no search path specified with)/
                     
-                    cp.execSync ([VERILATOR, VFLAGS, SUPPORTS, FILES].join (" "), { cwd: __dirname })
+                    runSpawnSync(VERILATOR, [...VFLAGS, ...WERRORS, ...supports, ...FILES_LIST], { cwd: __dirname })
                 }
                 catch (e) {
                     if (e) {
@@ -214,34 +243,41 @@ function connection(ws, request) {
                 // 5/23/2021
                 // run Yosys only if we're doing mapped simulations
                 if (ws.simType == 'mapped') {
-                    // remove yosys files from list
-                    FILES = FILES.replace (`${__dirname}/sim_modules/cells_sim_timing.v ${__dirname}/sim_modules/cells_map_timing.v `, '')
+                    FILES = SV_FILES.join(' ')
                     JSONS = ws.filenames.filter (f => f.endsWith ('.json'));
-                    SUPPORTS = supports.map (e => `${__dirname}/${e}`).reduce ((p,n) => `${p} ${n}`, "") + " ";
+                    const SUPPORTS_ARR = supports.map(e => `${__dirname}/${e}`);
                     
                     try {
-                        yosys_out = cp.execSync('yosys -p ' + 
-                                                (JSONS.length > 0 ? ('"read_json ' + JSONS.join (' ') + '; ') : '" ') +
-                                                `read_verilog -sv ${SUPPORTS} ${FILES}; ` +
-                                                'synth_ice40 -top top; ' +
-                                                'write_verilog /var/tmp/tmpcode/' + ws.unique_client + '/struct_code.v; ' + 
-                                                'write_json /var/tmp/tmpcode/' + ws.unique_client + '/struct.json;" ' + 
-                                                '-l /var/tmp/tmpcode/' + ws.unique_client + '/yosyslog', {timeout: 60000, cwd: path.resolve ('/var/tmp/tmpcode', ws.unique_client)})
+                        const yosysScript =
+                            (JSONS.length > 0 ? `read_json ${JSONS.join(' ')}; ` : '') +
+                            `read_verilog -sv ${[...SUPPORTS_ARR, FILES].join(' ')}; ` +
+                            'synth_ice40 -top top; ' +
+                            `write_verilog /var/tmp/tmpcode/${ws.unique_client}/struct_code.v; ` +
+                            `write_json /var/tmp/tmpcode/${ws.unique_client}/struct.json;`;
+                        runSpawnSync('yosys', ['-p', yosysScript, '-l', `/var/tmp/tmpcode/${ws.unique_client}/yosyslog`], {
+                            stdio: 'ignore',
+                            timeout: 60000,
+                            cwd: path.resolve('/var/tmp/tmpcode', ws.unique_client)
+                        })
                         ws.yosysJSON = fs.readFileSync(path.resolve('/var/tmp/tmpcode', ws.unique_client, 'struct.json')).toString()
+                        try {
+                            yosys_out = fs.readFileSync(path.resolve('/var/tmp/tmpcode', ws.unique_client, 'yosyslog')).toString()
+                        } catch(err) {
+                            //ignore
+                        }
                         fs.unlinkSync(path.resolve('/var/tmp/tmpcode', ws.unique_client, 'yosyslog'))
                         ws.initYosys = true
                     }
                     catch (ex) {
-                        if (ex.errno == 'ETIMEDOUT') {
-                            // Can't kill Yosys by PID since it changes after execSync for some weird reason
-                            // So we got to use ps and find it by its unique client ID
-                            psy = cp.execSync ("ps -eo pcpu,pid,args | sort -k1 -r -n | grep yosys").toString().split ("\n")
+                        if (ex.errno == 'ETIMEDOUT' || ex.code == 'ETIMEDOUT') {
+                            // Can't kill Yosys by PID reliably, so find it by its unique client ID.
+                            psy = runSpawnSync('ps', ['-eo', 'pcpu,pid,args']).stdout.toString().split("\n")
                             psy = psy.map (el => {
                                 if (el.slice (0, 1) == ' ')
                                     return el.slice (1)
                                 else
                                     return el
-                            }).filter (el => el != '')
+                            }).filter(el => el != '' && el.includes('yosys'))
                             psy.forEach (proc => {
                                 if (proc == '')
                                     return
@@ -257,7 +293,7 @@ function connection(ws, request) {
                                     }
                                 }
                             });
-                            ws.send ("YOSYS HUNG: " + ex.output.toString())
+                            ws.send ("YOSYS HUNG: " + (ex.message || (ex.output ? ex.output.toString() : 'Timed out')))
                             ws.close()
                             return;
                         }
@@ -423,7 +459,7 @@ function connection(ws, request) {
                             ta_override = e.match (/give me a magic override against the inline logic assignment/gi)
                             startup_reg = !v.match(/(?:reg|logic) ?\[2\:0\] ?startup ?\= ?0\;/gi)
                             not_equating = !v.match(/(?:reg|logic) +[^=]+\={2}/i)
-                            is_reg_or_logic = v.match(/(?:logic|reg) +[^=]+= *.+/gi)
+                            is_reg_or_logic = v.match(/(?:logic|reg) +[^=\/\/]+= *.+/gi)
                             // added 10/24/2020
                             not_typedef = !v.match(/typedef enum (?:logic|reg)? (?:[\[\]0-9\:]+) \{?/gi)
                             reg_regex = !ta_override && not_equating && !v.match(/(?:reg|logic) +\=+/i) && not_typedef && is_reg_or_logic && startup_reg && !v.match(/\<\=/gi)
@@ -444,7 +480,7 @@ function connection(ws, request) {
                     }
                     fs.moveSync("/var/tmp/tmpcode/" + ws.unique_client, "error_log/" + username + "/" + getTime().replaceAll(" ", "_") + "_" + ws.unique_client)
                     error.forEach(function (element) {
-                        modded_err_rgx = /\*?\*?\/var\/tmp\/tmpcode\/[a-z0-9]+\/([\w]+\.sv):?\(? ?([0-9]+)\)?/
+                        modded_err_rgx = /\*?\*?\/var\/tmp\/tmpcode\/[a-z0-9]+\/([\w\-_]+\.sv):?\(? ?([0-9]+)\)?/
                         colon_check = /\.sv\([0-9]+\)\:/
                         try {
                             var name = element.match(modded_err_rgx)[1]
@@ -459,6 +495,7 @@ function connection(ws, request) {
                         catch (ex) {
                             debugLog("Cannot parse this error: " + element)
                             num = 1
+                            modded_error.push("code.sv: Line 1: " + element.replace(/\/var\/tmp\/tmpcode\/[^\/]+\/([\w]+\.sv):[0-9]+: /, ''))
                         }
                     })
 
@@ -492,11 +529,24 @@ function connection(ws, request) {
                     
                     // run compile step
                     try {
-                        var output = cp.execSync(IVL + VARGS + FILES + CELLS, { cwd: `/var/tmp/tmpcode/${ws.unique_client}` });
+                        const ivlArgs = ['-o', `/var/tmp/tmpcode/${ws.unique_client}/simcomm.vvp`, '-g2012', '-gspecify', `${__dirname}/sim_modules/simcomm.sv`]
+                        if (ws.simType == 'source') {
+                            ivlArgs.push(...ws.filenames
+                                .filter(f => f.endsWith('.sv'))
+                                .map(f => path.resolve('/var/tmp/tmpcode', ws.unique_client, f)))
+                        }
+                        else {
+                            ivlArgs.push(
+                                `/var/tmp/tmpcode/${ws.unique_client}/struct_code.v`,
+                                `${__dirname}/sim_modules/cells_sim_timing.v`,
+                                `${__dirname}/sim_modules/cells_map_timing.v`
+                            )
+                        }
+                        var output = runSpawnSync('/home/shay/a/ece270/bin/iverilog', ivlArgs, { cwd: `/var/tmp/tmpcode/${ws.unique_client}` });
                     }
                     catch (err) {
                         console.error (err)
-                        ws.send('Error occurred in Icarus compile step: ' + err.stderr.toString().replace(new RegExp(`/var/tmp/tmpcode/${ws.unique_client}/`, "g"), '')); 
+                        ws.send('Error occurred in Icarus compile step: ' + (err.stderr || '').toString().replace(new RegExp(`/var/tmp/tmpcode/${ws.unique_client}/`, "g"), '')); 
                         ws.close();
                         return;
                     }
@@ -605,7 +655,7 @@ function connection(ws, request) {
                     debugLog("Stopped " + ws.unique_client)
                     ws.simulator_object.kill('SIGINT')
                 }
-                // try to find CVC process and kill it with a SIGTERM
+                // try to find IcarusVerilog vvp process and kill it with a SIGTERM
                 cmd = "ps -eo pcpu,pid,args | grep " + ws.unique_client
                 psy = cp.execSync (cmd).toString().split ("\n")
                 psy.forEach ((ps) => {
