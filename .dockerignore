@@ -1,0 +1,10 @@
+node_modules
+.git
+.env
+*.pem
+*.key
+error_log
+setup/verilator
+setup/yosys
+setup/iverilog
+Dockerfile

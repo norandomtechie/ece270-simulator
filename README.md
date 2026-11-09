@@ -20,7 +20,7 @@ The public version which will only be updated every semester with the Purdue ver
 **The ece270-simulator is available as a Docker container!**  You can pull and run it with the following commands:
 ```
 docker pull norandomtechie/ece270-simulator
-docker run -d -p 4500:4500 --name 270sim norandomtechie/ece270-simulator
+docker run -d --network host --name 270sim norandomtechie/ece270-simulator
 ```
 
 ## Requirements

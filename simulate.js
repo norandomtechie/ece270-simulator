@@ -542,7 +542,7 @@ function connection(ws, request) {
                                 `${__dirname}/sim_modules/cells_map_timing.v`
                             )
                         }
-                        var output = runSpawnSync('/home/shay/a/ece270/bin/iverilog', ivlArgs, { cwd: `/var/tmp/tmpcode/${ws.unique_client}` });
+                        var output = runSpawnSync('iverilog', ivlArgs, { cwd: `/var/tmp/tmpcode/${ws.unique_client}` });
                     }
                     catch (err) {
                         console.error (err)

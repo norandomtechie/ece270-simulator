@@ -3,16 +3,19 @@ if [[ "$(pwd)" != *setup ]]
 then
     cd setup || (echo "The setup directory is missing.  Please ensure that you cloned the simulator repository properly, and that you're running it inside the repo folder." && exit 1)
 fi
+JOBS="${JOBS:-$(nproc)}"   # parallel make jobs; override with JOBS=n
 printf "ECE 270 simulator setup\n\n"
 
 declare -A gitlinks=( ["verilator"]="https://github.com/verilator/verilator" ["yosys"]="https://github.com/YosysHQ/yosys" ["iverilog"]="https://github.com/steveicarus/iverilog" )
-declare -A relcommits=( ["verilator"]="eca2b4c9603554a6a4596befd485c3dd4f550769" ["yosys"]="44aa313ba976b68476aaa3d548098d7f54e61094" ["iverilog"]="4fd5291632232fbe1ba49b2c26bb6b2bf1c6c9cf" )
+# Release tags (previously pinned to older commits). Verilator 5.x is required for --timing.
+declare -A relcommits=( ["verilator"]="v5.054" ["yosys"]="v0.70" ["iverilog"]="v13_0" )
+NODE_VERSION="v24.22.2"   # Node.js 24 LTS
 declare -A foldernames=( ["verilator"]="verilator" ["yosys"]="yosys" ["iverilog"]="iverilog" )
 
 echo "Setting up folders..."
 for folder in ../error_log /var/tmp/tmpcode
 do
-    mkdir -p $folder && chown $SUDO_USER:$SUDO_USER $folder
+    mkdir -p $folder && chown "${APP_USER:-${SUDO_USER:-root}}:${APP_USER:-${SUDO_USER:-root}}" $folder
 done
 
 echo "Checking for dependencies..."
@@ -32,34 +35,36 @@ do
         # no need to clone again
         if [ ! -d "${foldernames["$command"]}" ]
         then
-            git clone "${gitlinks["$command"]}"
+            git clone --recurse-submodules "${gitlinks["$command"]}"
         fi
         
         case "$command" in
         "verilator")
             cd verilator
             apt-get -y install perl python3 make g++ libfl2 libfl-dev zlib1g zlib1g-dev autoconf flex bison help2man
-            git checkout stable
+            git checkout "${relcommits["$command"]}"
             autoconf
             ./configure
             echo "Verilator will be installed in 5 seconds using all available cores on your system.  If you wish to change the number of cores used, press Ctrl+C twice and change the \$(nproc) argument on the corresponding make command to your preferred number of cores."
             sleep 5
-            make -j$(nproc) || (echo "Compiling verilator failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
+            make -j"$JOBS" || { echo "Compiling verilator failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above."; exit 1; }
             make install
             cd -
             ;;
         "yosys")
             cd yosys/
             git checkout "${relcommits["$command"]}"
+            git submodule update --init --recursive
             apt-get -y install build-essential clang bison flex \
             libreadline-dev gawk tcl-dev libffi-dev git \
             graphviz xdot pkg-config python3 libboost-system-dev \
-            libboost-python-dev libboost-filesystem-dev zlib1g-dev
-            make config-gcc
+            libboost-filesystem-dev zlib1g-dev cmake lld libfl-dev
+            # Yosys >= 0.6x builds with CMake (needs CMake >= 3.28)
+            cmake -B build -DCMAKE_BUILD_TYPE=Release
             echo "yosys will be installed in 5 seconds using all available cores on your system.  If you wish to change the number of cores used, press Ctrl+C twice and change the \$(nproc) argument on the corresponding make command to your preferred number of cores."
             sleep 5
-            make -j$(nproc) || (echo "Compiling yosys failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
-            make install
+            cmake --build build -j"$JOBS" || { echo "Compiling yosys failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above."; exit 1; }
+            cmake --install build
             cd -
             ;;
         "iverilog")
@@ -68,19 +73,22 @@ do
             apt-get install -y gperf
             autoconf
             ./configure
-            make -j$(nproc) || (echo "Compiling IcarusVerilog failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above." && exit 1)
+            make -j"$JOBS" || { echo "Compiling IcarusVerilog failed.  Please post an issue with the output of the command 'uname -a' on the simulator's GitHub page as well as the output produced above."; exit 1; }
             make install
             cd - 
             ;;
         "node")
-            wget https://nodejs.org/dist/v14.17.0/node-v14.17.0-linux-x64.tar.xz
-            unxz node-v14.17.0-linux-x64.tar.xz
-            tar -xf node-v14.17.0-linux-x64.tar
-            mv node-v14.17.0-linux-x64 node
-            for i in $(/usr/bin/ls $(pwd)/node/bin/*); 
-            do 
-                ln -s $i /usr/bin/$(basename $i);
+            NODE_TAR="node-${NODE_VERSION}-linux-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/')"
+            wget "https://nodejs.org/dist/${NODE_VERSION}/${NODE_TAR}.tar.xz" "https://nodejs.org/dist/${NODE_VERSION}/SHASUMS256.txt"
+            # verify download integrity before installing
+            grep " ${NODE_TAR}.tar.xz\$" SHASUMS256.txt | sha256sum -c - || exit 1
+            tar -xf "${NODE_TAR}.tar.xz"
+            rm -rf /usr/local/node && mv "${NODE_TAR}" /usr/local/node
+            for i in /usr/local/node/bin/*
+            do
+                ln -sf "$i" /usr/local/bin/$(basename "$i")
             done
+            rm -f "${NODE_TAR}.tar.xz" SHASUMS256.txt
             ;;
         *)
             echo "wait... what?  You modified this script, didn't you!?"
@@ -98,7 +106,9 @@ then
     npm config set user 0
     npm config set unsafe-perm true
 fi
-npm i || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
+# reproducible install from the lockfile, skipping dependency lifecycle scripts.
+# (devDependencies are NOT omitted: cors and express-sanitizer are required at runtime.)
+npm ci --ignore-scripts || echo "npm was not installed correctly.  This might be because the node.js installation was not successful.  Install node.js manually and re-run this script."
 #if [ "$INSIDE_DOCKER" != "YES" ]
 #then
 #    echo "Starting node server..."

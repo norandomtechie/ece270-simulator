@@ -48,6 +48,7 @@ module top (
       {div, div2, div3, div4} <= {div, div2, div3, div4} + 32'h01010101;
     end
     
+  logic [3:0] num;
   ssdec s7 (num[3:0], 1'b1, ss7);
   ssdec s6 (num[3:0], 1'b1, ss6);
   ssdec s5 (num[3:0], 1'b1, ss5);
@@ -57,7 +58,6 @@ module top (
   ssdec s1 (num[3:0], 1'b1, ss1);
   ssdec s0 (num[3:0], 1'b1, ss0);
   
-  logic [3:0] num;
   logic clk;
   assign clk = pb[0] ? hzf : pb[1] ? hz4 : pb[2] ? hz2 : hz1;
   always_ff @(posedge clk, posedge reset)
