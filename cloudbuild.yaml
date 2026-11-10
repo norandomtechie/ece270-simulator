@@ -57,6 +57,8 @@ steps:
       - --quiet
 
 options:
+  # lets a trigger's _IMG value contain ${SHORT_SHA} (substitutions inside substitution values)
+  dynamicSubstitutions: true
   machineType: E2_HIGHCPU_32
   logging: CLOUD_LOGGING_ONLY
 
