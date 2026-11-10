@@ -1,0 +1,63 @@
+# Build the simulator image, push it to Artifact Registry, and deploy it to Cloud Run.
+#
+# Runs automatically on pushes to main (trigger), or manually:
+#   gcloud builds submit --config=cloudbuild.yaml \
+#     --substitutions=_IMG=us-central1-docker.pkg.dev/PROJECT_ID/sim/ece270:v1 .
+#
+# Compiling Verilator, Yosys and Icarus takes ~15 minutes even on a large machine.
+#
+# Cloud Run gives the service an https://...run.app URL with a managed certificate.
+# A deploy shifts new connections to the new revision; running simulations on the old
+# revision are cut off when it scales down, so avoid deploying during a lab.
+#
+# The build's service account needs roles/run.admin (project) and
+# roles/iam.serviceAccountUser on the runtime service account (_RUN_SA).
+# _RUN_SA should have NO roles: student code can read its token from the metadata server.
+substitutions:
+  _IMG: us-central1-docker.pkg.dev/${PROJECT_ID}/sim/ece270:latest
+  _JOBS: "16"   # parallel make jobs; keep <= vCPUs of the machineType below
+  _SERVICE: ece270-simulator
+  _REGION: us-central1
+  _RUN_SA: sim-run@${PROJECT_ID}.iam.gserviceaccount.com
+
+steps:
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    args: ["build", "--build-arg", "JOBS=${_JOBS}", "-t", "${_IMG}", "."]
+
+  # Explicit push (not `images:`) so the image exists before Cloud Run pulls it.
+  - id: push
+    name: gcr.io/cloud-builders/docker
+    args: ["push", "${_IMG}"]
+
+  # --no-cpu-throttling: simulations keep running between websocket messages.
+  # --timeout=3600: websocket sessions can last up to an hour.
+  # --session-affinity: keep each student's reconnects on the same instance.
+  # --concurrency / --max-instances: capacity and cost caps (20 sessions x 10 instances).
+  - id: deploy
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --image=${_IMG}
+      - --region=${_REGION}
+      - --port=4500
+      - --service-account=${_RUN_SA}
+      - --cpu=4
+      - --memory=8Gi
+      - --no-cpu-throttling
+      - --timeout=3600
+      - --concurrency=20
+      - --max-instances=10
+      - --session-affinity
+      - --execution-environment=gen2
+      - --allow-unauthenticated
+      - --quiet
+
+options:
+  machineType: E2_HIGHCPU_32
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 3600s

@@ -28,6 +28,7 @@ RUN useradd --system --create-home --uid 10001 simulator \
 WORKDIR /opt/ece270-simulator
 COPY --chown=simulator:simulator . .
 COPY --from=builder --chown=simulator:simulator /opt/ece270-simulator/node_modules ./node_modules
+RUN sed -i 's/127.0.0.1/0.0.0.0/g' cluster.js
 USER simulator
 EXPOSE 4500
 CMD ["node", "cluster.js"]
