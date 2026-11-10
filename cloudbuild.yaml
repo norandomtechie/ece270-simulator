@@ -1,8 +1,7 @@
 # Build the simulator image, push it to Artifact Registry, and deploy it to Cloud Run.
 #
 # Runs automatically on pushes to main (trigger), or manually:
-#   gcloud builds submit --config=cloudbuild.yaml \
-#     --substitutions=_IMG=us-central1-docker.pkg.dev/PROJECT_ID/sim/ece270:v1 .
+#   gcloud builds submit --config=cloudbuild.yaml .
 #
 # Compiling Verilator, Yosys and Icarus takes ~15 minutes even on a large machine.
 #
@@ -11,24 +10,27 @@
 # revision are cut off when it scales down, so avoid deploying during a lab.
 #
 # The build's service account needs roles/run.admin (project) and
-# roles/iam.serviceAccountUser on the runtime service account (_RUN_SA).
-# _RUN_SA should have NO roles: student code can read its token from the metadata server.
+# roles/iam.serviceAccountUser on sim-run@PROJECT_ID.iam.gserviceaccount.com.
+# That runtime account should have NO roles: student code can read its token from the metadata server.
 substitutions:
-  _IMG: us-central1-docker.pkg.dev/${PROJECT_ID}/sim/ece270:latest
   _JOBS: "16"   # parallel make jobs; keep <= vCPUs of the machineType below
   _SERVICE: ece270-simulator
   _REGION: us-central1
-  _RUN_SA: sim-run@${PROJECT_ID}.iam.gserviceaccount.com
+  _REPO: sim
+  # Unused. Declared only so a trigger that still passes _IMG does not fail the build.
+  _IMG: unused
 
+# The image is tagged with the build ID (always set, also for manual `gcloud builds submit`).
+# No substitution value refers to another variable on purpose: that needs extra options.
 steps:
   - id: build
     name: gcr.io/cloud-builders/docker
-    args: ["build", "--build-arg", "JOBS=${_JOBS}", "-t", "${_IMG}", "."]
+    args: ["build", "--build-arg", "JOBS=${_JOBS}", "-t", "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/ece270:${BUILD_ID}", "."]
 
   # Explicit push (not `images:`) so the image exists before Cloud Run pulls it.
   - id: push
     name: gcr.io/cloud-builders/docker
-    args: ["push", "${_IMG}"]
+    args: ["push", "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/ece270:${BUILD_ID}"]
 
   # --no-cpu-throttling: simulations keep running between websocket messages.
   # --timeout=3600: websocket sessions can last up to an hour.
@@ -41,10 +43,10 @@ steps:
       - run
       - deploy
       - ${_SERVICE}
-      - --image=${_IMG}
+      - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/ece270:${BUILD_ID}
       - --region=${_REGION}
       - --port=4500
-      - --service-account=${_RUN_SA}
+      - --service-account=sim-run@${PROJECT_ID}.iam.gserviceaccount.com
       - --cpu=4
       - --memory=8Gi
       - --no-cpu-throttling
@@ -57,8 +59,6 @@ steps:
       - --quiet
 
 options:
-  # lets a trigger's _IMG value contain ${SHORT_SHA} (substitutions inside substitution values)
-  dynamicSubstitutions: true
   machineType: E2_HIGHCPU_32
   logging: CLOUD_LOGGING_ONLY
 
